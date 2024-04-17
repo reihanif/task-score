@@ -13,7 +13,7 @@
                 <p class="mb-4 text-lg font-light text-gray-500 dark:text-gray-400">Sorry, we couldn’t find the page you’re looking for.</p>
                 <a class="my-4 inline-flex rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
                     href="/">
-                    Back to Homepage
+                    Back to Home
                 </a>
             </div>
         </div>
