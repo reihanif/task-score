@@ -17,6 +17,10 @@ class Permission
     {
         $allowAccess = false;
 
+        if ($request->user()->role == 'superadmin') {
+            $allowAccess = true;
+        }
+
         if ($permission == 'manage_user' && $request->user()->permission->manage_user) {
             $allowAccess = true;
         }

@@ -28,6 +28,7 @@ class User extends Authenticatable
         'username',
         'password',
         'role',
+        'position_id',
         'provider',
         'login_attempts',
         'last_login_at',

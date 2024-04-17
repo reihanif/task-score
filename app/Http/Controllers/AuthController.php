@@ -36,25 +36,25 @@ class AuthController extends Controller
 
         $ldap_rdn = env('LDAP_DOMAIN') . '\\' . $username;
         $password = $credentials['password'];
-        // connect ke ldap server
+        // connect to ldap server
         $ldap_connect = ldap_connect(env('LDAP_HOST')) or die("Could not connect to LDAP server.");
         ldap_set_option($ldap_connect, LDAP_OPT_PROTOCOL_VERSION, 3);
 
-        // berhasil connect ke ldap server
+        // successfully connect to ldap server
         if (!$ldap_connect) {
             return redirect()->back()->withErrors('ldap', 'Failed to connect into ldap server');
         } else {
             try {
-                // binding ke ldap server
+                // binding to ldap server using credentials
                 ldap_bind($ldap_connect, $ldap_rdn, $password);
                 $exception = false;
             } catch (\Exception $exception) {
                 session()->flash('error', __($exception->getMessage()));
             }
 
-            // binding ke ldap server berhasil
+            // successfully binding to ldap server
             if (!$exception) {
-                // ambil data user dari ldap
+                // filtering user and get specific user data from ldap
                 $ldap_base_dn = 'OU=PTGN,OU=User Accounts,OU=PERTAGAS,DC=pertamina,DC=com';
                 $ldap_filter = '(mailnickname=' . $username . ')';
                 $ldap_search = ldap_search($ldap_connect, $ldap_base_dn, $ldap_filter);
@@ -78,12 +78,12 @@ class AuthController extends Controller
         }
 
         if(!Auth::check()) {
-            // dd('failed');
             // Authentication failed
             return redirect()->route('auth.index')->withErrors('The provided credentials do not match our records.')->onlyInput('username');
         } else {
             // Authentication success
-            // Update user login details
+            // Update user login details without updated_at timestamps
+            $user->timestamps = false;
             $user->update([
                 'login_attempts' => $user->login_attempts + 1,
                 'last_login_at' => Carbon::now()->toDateTimeString(),
