@@ -86,12 +86,13 @@
                                         data-user-id="{{ $user->id }}"
                                         body="empty">
                                         <!-- Modal body -->
-                                        <form class="p-4 md:p-5"
+                                        <form id="form-change-password" class="p-4 md:p-5"
                                             x-on:submit="loading = ! loading"
+                                            x-on:keydown.enter.prevent
                                             x-data="{
                                                 password: '',
                                                 password_confirmation: '',
-                                                isValid: false
+                                                isValid: false,
                                             }"
                                             action="{{ route('account.change-password', $user->id) }}"
                                             method="post">
@@ -452,7 +453,6 @@
 @section('script')
     <script>
         function checkPassword() {
-            console.log('check');
             this.isValid = this.password.length > 0 &&
                 this.password.length >= 8 &&
                 this.password == this.password_confirmation &&
