@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -44,5 +45,13 @@ class Assignment extends Model
     public function taskmaster(): BelongsTo
     {
         return $this->belongsTo(User::class, 'taskmaster_id');
+    }
+
+    /**
+     * Get the assignment's file.
+     */
+    public function file(): MorphOne
+    {
+        return $this->morphOne(File::class, 'fileable');
     }
 }
