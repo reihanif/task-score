@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AssignmentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -43,7 +44,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/account/{user}/permissions-update', [AccountController::class, 'updatePermissions'])->name('account.update-permissions');
     });
 
-    Route::name('taskscore.', ['prefix' => 'task-score'])->group(function () {
+    // Route::group(['as' => 'taskscore.', 'prefix' => 'task-score'], function () {
+    Route::group(['as' => 'taskscore.'], function () {
+            Route::get('/my-assignments', [AssignmentController::class, 'index'])->name('assignment.index');
+            Route::get('/create-assignment', [AssignmentController::class, 'create'])->name('assignment.create');
     });
 
     Route::group(['middleware' => 'permission:manage_user'], function () {
