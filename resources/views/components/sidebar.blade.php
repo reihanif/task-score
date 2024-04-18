@@ -4,34 +4,26 @@
     <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
 
-            @if (request()->route()->named('homepage'))
-                <li>
-                    <a class="group flex items-center rounded-lg bg-gray-100 p-2 text-gray-900 dark:bg-gray-700 dark:text-white"
-                        href="{{ route('homepage') }}">
-                        <x-icons.chart-pie
-                            class="h-5 w-5 text-gray-500 text-gray-900 transition duration-75 dark:text-gray-400 dark:text-white"></x-icons.chart-pie>
-                        <span class="ms-3">Dashboard</span>
-                    </a>
-                </li>
-            @else
-                <li>
-                    <a class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        href="{{ route('homepage') }}">
-                        <x-icons.chart-pie
-                            class="h-5 w-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></x-icons.chart-pie>
-                        <span class="ms-3">Dashboard</span>
-                    </a>
-                </li>
-            @endif
+            <x-sidebar-menu data-menu-name="Dashboard" data-route-name="homepage">
+                <x-icons.chart-pie/>
+            </x-sidebar-menu>
+
 
             @if (in_array(Auth::User()->role, ['superadmin', 'admin', 'user']))
+            <x-sidebar-menu data-menu-name="Created Assignment" data-route-name="taskscore.assignment.create">
+                <x-icons.clipboard-plus-fill/>
+            </x-sidebar-menu>
+
+            <x-sidebar-menu data-menu-name="My Assignment" data-route-name="taskscore.assignment.index" data-badge-content="3" data-badge-color="blue">
+                <x-icons.person-fill-check/>
+            </x-sidebar-menu>
+
                 <li x-data="{ expanded: false }">
                     <button
                         class="group flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                         type="button"
                         x-on:click="expanded = ! expanded">
-                        <x-icons.desktop-pc
-                            class="h-5 w-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></x-icons.desktop-pc>
+                        <x-icons.desktop-pc class="h-5 w-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></x-icons.desktop-pc>
                         <span class="ml-3 flex-1 whitespace-nowrap text-left">Pages</span>
                         <svg class="h-6 w-6 transition"
                             aria-hidden="true"
@@ -72,17 +64,7 @@
                             class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></x-icons.grid>
                         <span class="ms-3 flex-1 whitespace-nowrap">Kanban</span>
                         <span
-                            class="ms-3 inline-flex items-center justify-center rounded-full bg-gray-100 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">Pro</span>
-                    </a>
-                </li>
-                <li>
-                    <a class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        href="#">
-                        <x-icons.mailbox
-                            class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></x-icons.mailbox>
-                        <span class="ms-3 flex-1 whitespace-nowrap">Inbox</span>
-                        <span
-                            class="ms-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-blue-100 p-3 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">3</span>
+                            class="ms-3 inline-flex items-center justify-center rounded-full px-2 text-sm font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">Pro</span>
                     </a>
                 </li>
             @endif
