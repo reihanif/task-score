@@ -9,11 +9,29 @@ use Illuminate\View\Component;
 class SidebarExpandedMenu extends Component
 {
     /**
-     * Create a new component instance.
+     * The sidebar menus.
+     *
+     * @var array
      */
-    public function __construct()
+    public $menus;
+
+    /**
+     * The sidebar routes.
+     *
+     * @var array
+     */
+    public $routes;
+
+    /**
+     * Create a new component instance.
+     *
+     * @return void
+     */
+    public function __construct($menu = [])
     {
-        //
+        // dd(collect($menu)->pluck('data-route-name')->toArray());
+        $this->routes = collect($menu)->pluck('data-route-name');
+        $this->menus = $menu;
     }
 
     /**

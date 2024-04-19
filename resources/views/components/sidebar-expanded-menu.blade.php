@@ -1,15 +1,21 @@
-@if (request()->route()->named(['positions.*', 'hierarchy']))
+@if (request()->route()->named($routes))
     <li x-data="{ expanded: true }">
         <button
             class="group flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
             type="button"
             x-on:click="expanded = ! expanded">
-            <span class="*:h-5 *:w-5 *:text-gray-500 *:transition *:duration-75 group-hover:*:text-gray-900 dark:*:text-gray-400 dark:group-hover:*:text-white">
-                <x-icons.users-group></x-icons.users-group>
-            </span>
-            <span class="ml-3 flex-1 whitespace-nowrap text-left">
-                Organizations
-            </span>
+            @if ($slot->toHtml() !== '')
+                <span class="*:h-5 *:w-5 *:flex-shrink-0 *:text-gray-900 *:transition *:duration-75 dark:*:text-white">
+                    {{ $slot }}
+                </span>
+                <span class="ms-3 flex-1 whitespace-nowrap text-left">
+                    {{ $attributes->get('data-group-name') }}
+                </span>
+            @else
+                <span class="flex-1 whitespace-nowrap text-left">
+                    {{ $attributes->get('data-group-name') }}
+                </span>
+            @endif
             <!-- Chevron Icons -->
             <svg class="h-6 w-6 transition"
                 aria-hidden="true"
@@ -27,23 +33,25 @@
         <ul class="space-y-2 py-2"
             x-show="expanded"
             x-collapse>
-            <!-- Menu Item -->
-            @if (request()->route()->named('positions.*'))
-                <li>
-                    <a class="group flex w-full items-center rounded-lg bg-gray-100 p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 dark:bg-gray-700 dark:text-white"
-                        href="{{ route('positions.index') }}">
-                        Positions
-                    </a>
-                </li>
-            @else
-                <li>
-                    <a class="group flex w-full items-center rounded-lg p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                        href="{{ route('positions.index') }}">
-                        Positions
-                    </a>
-                </li>
-            @endif
-            <!-- End of Menu Item -->
+            @foreach ($menus as $key => $menu)
+                <!-- Menu Item -->
+                @if (request()->route()->named($menu['data-route-name']))
+                    <li>
+                        <a class="group flex w-full items-center rounded-lg bg-gray-100 p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 dark:bg-gray-700 dark:text-white"
+                            href="{{ $menu['data-route-name'] ? route($menu['data-route-name']) : '#' }}">
+                            {{ $menu['data-menu-name'] }}
+                        </a>
+                    </li>
+                @else
+                    <li>
+                        <a class="group flex w-full items-center rounded-lg p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                            href="{{ $menu['data-route-name'] ? route($menu['data-route-name']) : '#' }}">
+                            {{ $menu['data-menu-name'] }}
+                        </a>
+                    </li>
+                @endif
+                <!-- End of Menu Item -->
+            @endforeach
         </ul>
     </li>
 @else
@@ -52,9 +60,19 @@
             class="group flex w-full items-center rounded-lg p-2 text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
             type="button"
             x-on:click="expanded = ! expanded">
-            <x-icons.users-group
-                class="h-5 w-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"></x-icons.users-group>
-            <span class="ml-3 flex-1 whitespace-nowrap text-left">Organizations</span>
+            @if ($slot->toHtml() !== '')
+                <span
+                    class="*:h-5 *:w-5 *:text-gray-500 *:transition *:duration-75 group-hover:*:text-gray-900 dark:*:text-gray-400 dark:group-hover:*:text-white">
+                    {{ $slot }}
+                </span>
+                <span class="ms-3 flex-1 whitespace-nowrap text-left">
+                    {{ $attributes->get('data-group-name') }}
+                </span>
+            @else
+                <span class="flex-1 whitespace-nowrap text-left">
+                    {{ $attributes->get('data-group-name') }}
+                </span>
+            @endif
             <svg class="h-6 w-6 transition"
                 aria-hidden="true"
                 :class="expanded ? 'rotate-180' : ''"
@@ -69,18 +87,25 @@
         <ul class="space-y-2 py-2"
             x-show="expanded"
             x-collapse>
-            <li>
-                <a class="group flex w-full items-center rounded-lg p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                    href="{{ route('positions.index') }}">
-                    Positions
-                </a>
-            </li>
-            <li>
-                <a class="group flex w-full items-center rounded-lg p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                    href="{{ route('hierarchy') }}">
-                    Hierarchy
-                </a>
-            </li>
+            @foreach ($menus as $key => $menu)
+                <!-- Menu Item -->
+                @if (request()->route()->named($menu['data-route-name']))
+                    <li>
+                        <a class="group flex w-full items-center rounded-lg bg-gray-100 p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 dark:bg-gray-700 dark:text-white"
+                            href="{{ $menu['data-route-name'] ? route($menu['data-route-name']) : '#' }}">
+                            {{ $menu['data-menu-name'] }}
+                        </a>
+                    </li>
+                @else
+                    <li>
+                        <a class="group flex w-full items-center rounded-lg p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                            href="{{ $menu['data-route-name'] ? route($menu['data-route-name']) : '#' }}">
+                            {{ $menu['data-menu-name'] }}
+                        </a>
+                    </li>
+                @endif
+                <!-- End of Menu Item -->
+            @endforeach
         </ul>
     </li>
 @endif
