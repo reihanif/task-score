@@ -1,5 +1,5 @@
 @if (request()->route()->named($attributes->get('data-route-name')))
-    <li>
+    <li title="{{ $attributes->get('data-menu-title') }}">
         <a class="group flex items-center rounded-lg bg-gray-100 p-2 text-gray-900 dark:bg-gray-700 dark:text-white"
             href="{{ route($attributes->get('data-route-name')) }}">
             @if ($slot->toHtml() !== '')
@@ -22,7 +22,7 @@
         </a>
     </li>
 @else
-    <li>
+    <li title="{{ $attributes->get('data-menu-title') }}">
         <a class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
             href="{{ route($attributes->get('data-route-name')) }}">
             @if ($slot->toHtml() !== '')

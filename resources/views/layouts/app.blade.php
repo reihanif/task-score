@@ -25,8 +25,11 @@
     </script>
 </head>
 
-<body x-on:load.window="loading = false" x-data="{ loading: true }" class="dark:bg-gray-900">
-    <div x-show="loading" class="flex items-center justify-center fixed bottom-0 left-0 right-0 top-0 z-[100] h-full w-full cursor-default bg-gray-900/60">
+<body class="dark:bg-gray-900"
+    x-on:load.window="loading = false"
+    x-data="{ loading: true }">
+    <div class="fixed bottom-0 left-0 right-0 top-0 z-[100] flex h-full w-full cursor-default items-center justify-center bg-gray-900/60"
+        x-show="loading">
         <div role="status">
             <svg class="inline h-12 w-12 animate-spin fill-white text-gray-200 dark:text-gray-600"
                 aria-hidden="true"
@@ -45,7 +48,7 @@
     </div>
 
     <!-- Check route to hide sidebar -->
-    @if (request()->route()->named(['homepage', '*.index', 'account.*']))
+    @if (request()->route()->named(['homepage', '*.index', 'account.*', 'taskscore.assignment.create']))
         <x-navbar></x-navbar>
         <x-sidebar
             class="fixed left-0 top-0 z-[31] h-screen w-64 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 sm:translate-x-0"></x-sidebar>

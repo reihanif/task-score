@@ -5,7 +5,8 @@
         <ul class="space-y-2 font-medium">
 
             <x-sidebar-menu data-menu-name="Dashboard"
-                data-route-name="homepage">
+                data-route-name="homepage"
+                data-menu-title="">
                 <x-icons.chart-pie />
             </x-sidebar-menu>
 
@@ -74,15 +75,17 @@
                 @endif
 
                 @if (Auth::User()->permission->manage_position)
-                    <x-sidebar-expanded-menu data-group-name="Organizations"
+                    <x-sidebar-expanded-menu data-group-name="Organizations" data-group-title="Organizations management"
                         :menu="collect([
                             [
                                 'data-menu-name' => 'Position',
                                 'data-route-name' => 'positions.index',
+                                'data-menu-title' => 'Position lists inside organizations',
                             ],
                             [
                                 'data-menu-name' => 'Hierarchy',
                                 'data-route-name' => 'hierarchy',
+                                'data-menu-title' => 'Hierarchy organizations',
                             ],
                         ])">
                         <x-icons.users-group />
