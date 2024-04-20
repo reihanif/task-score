@@ -63,7 +63,70 @@
                     @method('put')
                     @csrf
                     <div class="mb-5">
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 space-x-4">
+                                <x-forms.select id="input-assignee"
+                                    name="assignee"
+                                    label="Assignee"
+                                    state="initial"
+                                    required>
+                                    <option value="">Select assignee</option>
+                                </x-forms.select>
+                                <x-forms.select id="input-category"
+                                    name="category"
+                                    label="Category"
+                                    state="initial"
+                                    required>
+                                    <option value="">Select assignment category</option>
+                                    <option value="Pembuatan Memorandum">Pembuatan Memorandum</option>
+                                    <option value="Pembuatan Surat">Pembuatan Surat</option>
+                                    <option value="Membuat bahan presentasi">Membuat bahan presentasi</option>
+                                    <option value="Menghadiri rapat">Menghadiri rapat</option>
+                                    <option value="Melakukan perjalanan dinas">Melakukan perjalanan dinas</option>
+                                    <option value="Pembuatan SP3">Pembuatan SP3</option>
+                                    <option value="Pembuatan Berita Acara">Pembuatan Berita Acara</option>
+                                    <option value="Pembuatan Sales Order">Pembuatan Sales Order</option>
+                                </x-forms.select>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                                    for="message">Description
+                                </label>
+                                <textarea
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                    id="message"
+                                    rows="4"
+                                    placeholder="Assignment description and details"></textarea>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                                    for="file">Attachment
+                                </label>
+                                <input id="file"
+                                    type="file">
+                            </div>
 
+                            <div class="grid grid-cols-2 space-x-4">
+                                <x-forms.input id="input-date"
+                                    name="date"
+                                    type="text"
+                                    placeholder="Select due date"
+                                    autocomplete="off"
+                                    state="initial"
+                                    label="Due date"
+                                    helper="Select due date for this assignment"
+                                    required />
+
+                                <x-forms.input id="input-time"
+                                    name="time"
+                                    type="time"
+                                    onfocus="showPicker()"
+                                    state="initial"
+                                    label="Due time"
+                                    helper="Select due time for this assignment"
+                                    required />
+                            </div>
+                        </div>
                     </div>
                     <div class="flex place-content-end">
                         <button

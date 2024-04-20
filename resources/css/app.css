@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* the text color of the drop label*/
+.filepond--root .filepond--drop-label {
+    font-size: small;
+    height: fit-content;
+    cursor: pointer;
+}
+
+/* the text color of the drop label*/
+.filepond--root {
+    margin-bottom: 0 !important;
+}
+
+/* the text color of the drop label*/
+.filepond--root .filepond--panel-root {
+    background-color: #f9fafb;
+}
+
 .tree {
     width: 3000px;
 }
@@ -45,7 +62,7 @@
     border-left: 1px solid #ccc;
 }
 
-/*We need to remove left-right connectors from elements without 
+/*We need to remove left-right connectors from elements without
 any siblings*/
 .tree li:only-child::after,
 .tree li:only-child::before {
@@ -57,7 +74,7 @@ any siblings*/
     padding-top: 0;
 }
 
-/*Remove left connector from first child and 
+/*Remove left connector from first child and
 right connector from last child*/
 .tree li:first-child::before,
 .tree li:last-child::after {
@@ -182,3 +199,8 @@ right connector from last child*/
 .ts-dropdown .active {
     @apply bg-indigo-100 text-indigo-900;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator, input[type="time"]::-webkit-calendar-picker-indicator {
+    @apply hidden;
+}
+

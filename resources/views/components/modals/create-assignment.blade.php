@@ -3,7 +3,7 @@
     id="{{ $attributes->get('id') }}"
     aria-hidden="true"
     tabindex="-1">
-    <div class="relative max-h-full w-full max-w-5xl p-4">
+    <div class="relative max-h-full w-full max-w-3xl p-4">
         <!-- Modal content -->
         <div class="relative rounded-lg bg-white shadow dark:bg-gray-800">
             <!-- Modal header -->
