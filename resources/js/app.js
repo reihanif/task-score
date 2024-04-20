@@ -1,5 +1,6 @@
 import "./bootstrap";
 import "flowbite";
+import Datepicker from "flowbite-datepicker/Datepicker";
 
 import { Modal } from "flowbite";
 
@@ -11,6 +12,20 @@ import TomSelect_remove_button from "tom-select/dist/esm/plugins/remove_button/p
 import TomSelect_caret_position from "tom-select/dist/esm/plugins/caret_position/plugin";
 import "tom-select/dist/css/tom-select.css";
 import "../css/app.css";
+
+// import 'tinymce/tinymce';
+// import 'tinymce/skins/ui/oxide/skin.min.css';
+// import 'tinymce/skins/content/default/content.min.css';
+// import 'tinymce/skins/content/default/content.css';
+// import 'tinymce/icons/default/icons';
+// import 'tinymce/themes/silver/theme';
+// import 'tinymce/models/dom/model';
+
+document.querySelectorAll(".datepicker").forEach((el) => {
+    new Datepicker(el, {
+        //
+    });
+});
 
 import Chart from "chart.js/auto";
 window.Chart = Chart;
@@ -45,10 +60,7 @@ for (const tableRowsButton of tableRowsButtons) {
 document.querySelectorAll(".tom-select").forEach((el) => {
     if (el.hasAttribute("multiple")) {
         new TomSelect(el, {
-            plugins: [
-                "remove_button",
-                "caret_position",
-            ],
+            plugins: ["remove_button", "caret_position"],
             create: false,
             sortField: {
                 field: "text",

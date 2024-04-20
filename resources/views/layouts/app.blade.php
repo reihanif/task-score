@@ -14,6 +14,11 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css"
+        rel="stylesheet">
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css"
+        rel="stylesheet">
+
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
@@ -25,8 +30,11 @@
     </script>
 </head>
 
-<body x-on:load.window="loading = false" x-data="{ loading: true }" class="dark:bg-gray-900">
-    <div x-show="loading" class="flex items-center justify-center fixed bottom-0 left-0 right-0 top-0 z-[100] h-full w-full cursor-default bg-gray-900/60">
+<body class="dark:bg-gray-900"
+    x-on:load.window="loading = false"
+    x-data="{ loading: true }">
+    <div class="fixed bottom-0 left-0 right-0 top-0 z-[100] flex h-full w-full cursor-default items-center justify-center bg-gray-900/60"
+        x-show="loading">
         <div role="status">
             <svg class="inline h-12 w-12 animate-spin fill-white text-gray-200 dark:text-gray-600"
                 aria-hidden="true"
@@ -45,7 +53,7 @@
     </div>
 
     <!-- Check route to hide sidebar -->
-    @if (request()->route()->named(['homepage', '*.index', 'account.*']))
+    @if (request()->route()->named(['homepage', '*.index', 'account.*', 'taskscore.assignment.create']))
         <x-navbar></x-navbar>
         <x-sidebar
             class="fixed left-0 top-0 z-[31] h-screen w-64 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 sm:translate-x-0"></x-sidebar>
@@ -63,6 +71,15 @@
     <!-- End of route check -->
 
     @yield('script')
+
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js">
+    </script>
+    <script
+        src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js">
+    </script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
 
     <script>
         var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
@@ -105,6 +122,52 @@
                 }
             }
 
+        });
+    </script>
+    <script>
+        /*
+            We want to preview images, so we need to register the Image Preview plugin
+            */
+        FilePond.registerPlugin(
+
+            // encodes the file as base64 data
+            FilePondPluginFileEncode,
+
+            // validates the size of the file
+            FilePondPluginFileValidateSize,
+
+            // corrects mobile image orientation
+            FilePondPluginImageExifOrientation,
+
+            // previews dropped images
+            FilePondPluginImagePreview
+        );
+
+        // Select the file input and use create() to turn it into a pond
+        FilePond.create(document.querySelector('input[type="file"]'), {
+            labelIdle: `<div class="flex flex-col cursor-pointer items-center justify-center pt-5 pb-6">
+            <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+            </svg>
+            <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+            </div>`,
+            credits: false
+        });
+
+        // Style the dark mode
+        const backgrounds = document.querySelectorAll('.filepond--panel-root');
+        backgrounds.forEach(background => {
+            background.classList.add('dark:text-gray-400');
+            background.classList.add('dark:bg-gray-700');
+        });
+
+        const labels = document.querySelectorAll('.filepond--drop-label');
+        labels.forEach(label => {
+            label.classList.add('dark:text-gray-400');
+            label.classList.add('dark:hover:bg-gray-600');
+            label.classList.add('hover:rounded-lg');
+            label.classList.add('hover:bg-gray-100');
         });
     </script>
 </body>
