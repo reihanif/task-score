@@ -10,8 +10,7 @@
             </label>
         @endif
         <div>
-            <select class="tom-select"
-                {{ $attributes }}>
+            <select {{ $attributes }}>
                 {{ $slot }}
             </select>
             @if ($attributes->has('helper'))
@@ -31,8 +30,7 @@
             </label>
         @endif
         <div>
-            <select class="tom-select"
-                {{ $attributes }}>
+            <select {{ $attributes }}>
                 {{ $slot }}
             </select>
             @if ($attributes->has('helper'))

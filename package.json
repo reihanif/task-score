@@ -15,8 +15,19 @@
     },
     "dependencies": {
         "@alpinejs/collapse": "^3.13.7",
+        "@tiptap/core": "^2.3.0",
+        "@tiptap/extension-history": "^2.3.0",
+        "@tiptap/extension-list-item": "^2.3.0",
+        "@tiptap/extension-ordered-list": "^2.3.0",
+        "@tiptap/extension-placeholder": "^2.3.0",
+        "@tiptap/extension-text-align": "^2.3.0",
+        "@tiptap/extension-underline": "^2.3.0",
+        "@tiptap/pm": "^2.3.0",
+        "@tiptap/starter-kit": "^2.3.0",
         "alpinejs": "^3.13.7",
         "chart.js": "^4.4.2",
+        "flowbite-datepicker": "^1.2.6",
+        "tinymce": "^7.0.1",
         "tom-select": "^2.3.1"
     }
 }

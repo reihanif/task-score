@@ -200,7 +200,42 @@ right connector from last child*/
     @apply bg-indigo-100 text-indigo-900;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator, input[type="time"]::-webkit-calendar-picker-indicator {
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
     @apply hidden;
 }
 
+input[datepicker] {
+    @apply cursor-pointer;
+}
+
+.datepicker-controls button:disabled {
+    @apply bg-white hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-700 cursor-default;
+}
+
+.datepicker-controls button:disabled > svg {
+    @apply text-gray-300 dark:text-gray-600;
+}
+
+.datepicker-cell.disabled,
+.datepicker-cell.prev.disabled,
+.datepicker-cell.next.disabled {
+    @apply bg-white hover:bg-white dark:bg-gray-700 dark:hover:bg-gray-700 cursor-default text-gray-300 dark:text-gray-600;
+}
+
+.datepicker-cell.prev,
+.datepicker-cell.next {
+    @apply text-gray-500 dark:text-gray-400;
+}
+
+.tiptap {
+    @apply dark:text-white outline-none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+}
