@@ -13,7 +13,7 @@ class AssignmentController extends Controller
      */
     public function index()
     {
-        return view('app.assignments.index');
+        return view('app.taskscore.assignments.index');
     }
 
     /**
@@ -23,7 +23,7 @@ class AssignmentController extends Controller
      */
     public function create()
     {
-        return view('app.assignments.create');
+        return view('app.taskscore.assignments.create');
     }
 
     /**
