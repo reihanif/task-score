@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AssignmentController extends Controller
 {
@@ -23,7 +25,11 @@ class AssignmentController extends Controller
      */
     public function create()
     {
-        return view('app.taskscore.assignments.create');
+        $assignees = User::where('id', '!=', Auth::User()->id)->get()->sortBy('name');
+
+        return view('app.taskscore.assignments.create', [
+            'assignees' => $assignees
+        ]);
     }
 
     /**
@@ -34,7 +40,7 @@ class AssignmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd($request);
     }
 
     /**

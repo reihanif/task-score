@@ -58,9 +58,8 @@
                 <!-- Modal body -->
                 <form class="p-4 md:p-5"
                     x-on:submit="loading = ! loading"
-                    action="#"
+                    action="{{ route('taskscore.assignment.store') }}"
                     method="post">
-                    @method('put')
                     @csrf
                     <div class="mb-5">
                         <div class="space-y-4">
@@ -71,6 +70,9 @@
                                     state="initial"
                                     required>
                                     <option value="">Select assignee</option>
+                                    @foreach ($assignees as $assignee)
+                                    <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
+                                    @endforeach
                                 </x-forms.select>
                                 <x-forms.select id="input-category"
                                     name="category"
@@ -132,7 +134,7 @@
                                     </div>
                                 </label>
                                 <input id="file"
-                                    type="file">
+                                    type="file" name="attachment">
                             </div>
                             <div class="space-y-4"
                                 x-data="{ selectedOption: '' }">
