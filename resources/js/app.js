@@ -119,6 +119,39 @@ window.Alpine = Alpine;
 Alpine.plugin(collapse);
 Alpine.start();
 
+/*
+Flowbite Datepicker
+*/
+document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
+    var title = datepickerEl.hasAttribute("datepicker-title");
+    var minDate = datepickerEl.hasAttribute("datepicker-min-date");
+    var maxDate = datepickerEl.hasAttribute("datepicker-max-date");
+    var orientation = datepickerEl.hasAttribute("datepicker-orientation");
+    var options = {
+        todayBtn: true,
+        clearBtn: true,
+        autohide: true,
+        todayBtnMode: 1,
+        format: "dd-mm-yy",
+    };
+    if (title) {
+        options.title = datepickerEl.getAttribute("datepicker-title");
+    }
+    if (minDate) {
+        options.minDate = datepickerEl.getAttribute("datepicker-min-date");
+    }
+    if (maxDate) {
+        options.maxDate = datepickerEl.getAttribute("datepicker-max-date");
+    }
+    if (orientation) {
+        options.orientation = datepickerEl.getAttribute(
+            "datepicker-orientation"
+        );
+    }
+
+    new Datepicker(datepickerEl, options);
+});
+
 // make table row clickable
 const tableRows = document.querySelectorAll(".table-clickable tbody tr");
 for (const tableRow of tableRows) {
@@ -163,33 +196,6 @@ document.querySelectorAll("select").forEach((el) => {
             },
         });
     }
-});
-
-/*
-Flowbite Datepicker
-*/
-document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
-    var title = datepickerEl.hasAttribute("datepicker-title");
-    var minDate = datepickerEl.hasAttribute("datepicker-min-date");
-    var maxDate = datepickerEl.hasAttribute("datepicker-max-date");
-    var options = {
-        todayBtn: true,
-        clearBtn: true,
-        autohide: true,
-        todayBtnMode: 1,
-        format: "dd-mm-yy",
-    };
-    if (title) {
-        options.title = datepickerEl.getAttribute("datepicker-title");
-    }
-    if (minDate) {
-        options.minDate = datepickerEl.getAttribute("datepicker-min-date");
-    }
-    if (maxDate) {
-        options.maxDate = datepickerEl.getAttribute("datepicker-max-date");
-    }
-
-    new Datepicker(datepickerEl, options);
 });
 
 /*

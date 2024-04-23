@@ -1,9 +1,14 @@
-<label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-    for="message">Description
-</label>
-<div>
-    <div class="mb-4 h-fit w-full rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700"
-        x-data="editor('')">
+@if ($attributes->has('label'))
+    <p class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+        {{ $attributes->get('label') }}
+        @if ($attributes->has('required'))
+            <span class="text-red-600 dark:text-red-500">*</span>
+        @endif
+    </p>
+@endif
+<div class="mb-4"
+    x-data="editor('')">
+    <div class="h-fit w-full rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700">
         <template x-if="isLoaded()">
             <div class="flex items-center justify-between border-b px-3 py-2 dark:border-gray-600">
                 <div
@@ -153,8 +158,12 @@
                 x-ref="element">
             </div>
         </div>
-        <input x-model="content"
-            name=""></input>
-        <div x-show="content.match('<p></p>')">ERROR</div>
     </div>
+    <p class="mt-1 text-sm text-red-600 dark:text-red-500"
+        x-show="!content.match('^(?!^<p><\/p>$).*')">{{ $attributes->get('label') ?? 'This field' }} cannot be empty</p>
+    {{-- <p class="mt-1 text-sm text-gray-900 dark:text-white" x-show="content == ''">{{ $attributes->get('label') ?? 'This field' }} cannot be empty</p> --}}
+    <input class="hidden"
+        {{ $attributes }}
+        x-model="content"
+        pattern="^(?!^<p><\/p>$).*"></input>
 </div>
