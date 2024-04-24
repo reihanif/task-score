@@ -62,4 +62,12 @@ class Assignment extends Model
     {
         return $this->morphMany(File::class, 'fileable');
     }
+
+    /**
+     * Get the assignment's file.
+     */
+    public function attachments(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable')->whereColumn('created_at', 'created_at');
+    }
 }

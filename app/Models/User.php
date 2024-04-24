@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -69,5 +70,13 @@ class User extends Authenticatable
     public function permission(): HasOne
     {
         return $this->hasOne(Permission::class);
+    }
+
+    /**
+     * Get the assignments associated with the user.
+     */
+    public function assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class, 'assigned_to');
     }
 }

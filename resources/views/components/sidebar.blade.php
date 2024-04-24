@@ -17,12 +17,19 @@
                     <x-icons.clipboard-plus-fill />
                 </x-sidebar-menu>
 
-                <x-sidebar-menu data-menu-name="My Assignment"
-                    data-route-name="taskscore.assignment.index"
-                    data-badge-content="99+"
-                    data-badge-color="blue">
-                    <x-icons.person-fill-check />
-                </x-sidebar-menu>
+                @if (Auth::User()->assignments->count() > 0)
+                    <x-sidebar-menu data-menu-name="My Assignment"
+                        data-route-name="taskscore.assignment.index"
+                        data-badge-content="{{ Auth::User()->assignments->count() }}"
+                        data-badge-color="blue">
+                        <x-icons.person-fill-check />
+                    </x-sidebar-menu>
+                @else
+                    <x-sidebar-menu data-menu-name="My Assignment"
+                        data-route-name="taskscore.assignment.index">
+                        <x-icons.person-fill-check />
+                    </x-sidebar-menu>
+                @endif
 
                 <x-sidebar-expanded-menu data-group-name="Pages"
                     :menu="collect([
@@ -75,7 +82,8 @@
                 @endif
 
                 @if (Auth::User()->permission->manage_position)
-                    <x-sidebar-expanded-menu data-group-name="Organizations" data-group-title="Organizations management"
+                    <x-sidebar-expanded-menu data-group-name="Organizations"
+                        data-group-title="Organizations management"
                         :menu="collect([
                             [
                                 'data-menu-name' => 'Position',
