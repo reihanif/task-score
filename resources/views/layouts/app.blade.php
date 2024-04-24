@@ -8,6 +8,9 @@
     <meta http-equiv="X-UA-Compatible"
         content="ie=edge">
     <title>{{ env('APP_NAME') }} - @yield('title')</title>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <link type="image/x-icon"
         href="{{ asset('assets/img/logo-pertamina.png') }}"
         rel="icon">

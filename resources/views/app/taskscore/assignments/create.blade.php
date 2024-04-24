@@ -59,7 +59,8 @@
                 <form class="p-4 md:p-5"
                     x-on:submit="loading = ! loading"
                     action="{{ route('taskscore.assignment.store') }}"
-                    method="post">
+                    method="post"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="mb-5">
                         <div class="space-y-4">
@@ -71,7 +72,7 @@
                                     required>
                                     <option value="">Select assignee</option>
                                     @foreach ($assignees as $assignee)
-                                    <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
+                                        <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
                                     @endforeach
                                 </x-forms.select>
                                 <x-forms.select id="input-category"
@@ -134,7 +135,8 @@
                                     </div>
                                 </label>
                                 <input id="file"
-                                    type="file" name="attachment">
+                                    name="attachment"
+                                    type="file">
                             </div>
                             <div class="space-y-4"
                                 x-data="{ selectedOption: '' }">
@@ -150,7 +152,6 @@
                                                 <input
                                                     class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
                                                     id="horizontal-list-radio-license"
-                                                    name="list-radio"
                                                     type="radio"
                                                     value="interval-time"
                                                     x-model="selectedOption"
@@ -164,7 +165,6 @@
                                                 <input
                                                     class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
                                                     id="horizontal-list-radio-passport"
-                                                    name="list-radio"
                                                     type="radio"
                                                     value="exact-time"
                                                     x-model="selectedOption"
@@ -381,7 +381,11 @@
                         </th>
                         <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
-                            Nama
+                            Subject
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
+                            scope="col">
+                            Assignee
                         </th>
                         <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
@@ -389,7 +393,7 @@
                         </th>
                         <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
-                            Last Updated
+                            Deadline
                         </th>
                         @if (Auth::User()->role == 'superadmin')
                             <th class="px-6 py-3"
@@ -399,22 +403,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {{-- @foreach ($assignments as $key => $assignment)
+                    @forelse ($assignments as $key => $assignment)
                         <tr class="cursor-pointer border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-                            data-href="{{ route('assignments.show', $assignment->id) }}">
+                            data-href="#">
                             <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
                                 {{ ($assignments->currentpage() - 1) * $assignments->perpage() + $key + 1 }}
                             </th>
                             <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
-                                {{ $assignment->name }}
+                                {{ $assignment->subject }}
                             </th>
                             <td class="whitespace-nowrap px-6 py-4">
-                                {{ $assignment->created_at->format('d F Y, H:i') }}
+                                {{ $assignment->assignee->name }}
                             </td>
                             <td class="whitespace-nowrap px-6 py-4">
-                                {{ $assignment->updated_at->diffForHumans() }}
+                                {{ $assignment->created_at->format('d F Y H:i') }}
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                {{ $assignment->due->diffForHumans() }}
                             </td>
                             @if (Auth::User()->role == 'superadmin')
                                 <td class="float-end py-4 pe-2 ps-6">
@@ -439,12 +446,6 @@
                                             <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
                                                 aria-labelledby="dropdownMenuIconButton{{ $key }}">
                                                 <li>
-                                                    <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                        data-modal-target="edit-assignments-modal-{{ $assignment->id }}"
-                                                        data-modal-show="edit-assignments-modal-{{ $assignment->id }}"
-                                                        type="button">Edit</a>
-                                                </li>
-                                                <li>
                                                     <a class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-600 dark:hover:text-red-400"
                                                         data-modal-target="delete-assignments-modal-{{ $assignment->id }}"
                                                         data-modal-show="delete-assignments-modal-{{ $assignment->id }}"
@@ -452,20 +453,27 @@
                                                 </li>
                                             </ul>
                                         </div>
-                                        <x-modals.edit-assignment :assignment="$assignment"
-                                            :positions="$positions" />
-                                        <x-modals.delete-assignment id="{{ $assignment->id }}"
-                                            name="{{ $assignment->name }}" />
+                                        {{-- <x-modals.delete-assignment id="{{ $assignment->id }}"
+                                            name="{{ $assignment->name }}" /> --}}
                                     </div>
                                 </td>
                             @endif
                         </tr>
-                    @endforeach --}}
+                    @empty
+                        <tr>
+                            <td class="text-center text-lg"
+                                colspan="8">
+                                <object class="mx-auto w-full p-10 sm:h-96 sm:w-96 sm:p-0"
+                                    data="{{ asset('assets/illustrations/no-data-animate.svg') }}"></object>
+                                <div class="mb-10">No data found</div>
+                            </td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
         <div class="mt-4">
-            {{-- {{ $assignments->links() }} --}}
+            {{ $assignments->links() }}
         </div>
     </div>
 @endsection

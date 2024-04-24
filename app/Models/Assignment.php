@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Assignment extends Model
 {
@@ -34,7 +34,7 @@ class Assignment extends Model
     /**
      * Get the assignee of the assignments.
      */
-    public function asignee(): BelongsTo
+    public function assignee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
@@ -48,10 +48,18 @@ class Assignment extends Model
     }
 
     /**
+     * Get the assignee of the assignments.
+     */
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class, 'department_id');
+    }
+
+    /**
      * Get the assignment's file.
      */
-    public function file(): MorphOne
+    public function files(): MorphMany
     {
-        return $this->morphOne(File::class, 'fileable');
+        return $this->morphMany(File::class, 'fileable');
     }
 }

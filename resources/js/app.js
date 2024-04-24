@@ -215,6 +215,9 @@ FilePond.registerPlugin(
     FilePondPluginImagePreview
 );
 
+const csrfToken = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
 // Select the file input and use create() to turn it into a pond
 FilePond.create(document.querySelector('input[type="file"]'), {
     labelIdle: `<div class="flex flex-col cursor-pointer items-center justify-center pt-5 pb-6">
@@ -225,6 +228,8 @@ FilePond.create(document.querySelector('input[type="file"]'), {
     <p class="text-xs text-gray-500 dark:text-gray-400">pdf, docx, xlsx, pptx, png, zip (max. 40MB)</p>
     </div>`,
     credits: false,
+}).setOptions({
+    storeAsFile: true,
 });
 
 // Style the dark mode
