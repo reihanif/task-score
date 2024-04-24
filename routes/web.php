@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/my-assignments', [AssignmentController::class, 'index'])->name('assignment.index');
             Route::get('/create-assignment', [AssignmentController::class, 'create'])->name('assignment.create');
             Route::post('/store-assignment', [AssignmentController::class, 'store'])->name('assignment.store');
+            Route::get('/{assignment}/details', [AssignmentController::class, 'show'])->name('assignment.show');
     });
 
     Route::group(['middleware' => 'permission:manage_user'], function () {

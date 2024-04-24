@@ -18,7 +18,11 @@ class AssignmentController extends Controller
      */
     public function index()
     {
-        return view('app.taskscore.assignments.index');
+        $assignments = Assignment::where('assigned_to', Auth::User()->id)->orderBy('created_at')->paginate(10);
+
+        return view('app.taskscore.assignments.index', [
+            'assignments' => $assignments,
+        ]);
     }
 
     /**
@@ -104,7 +108,11 @@ class AssignmentController extends Controller
      */
     public function show($id)
     {
-        //
+        $assignment = Assignment::findOrFail($id);
+
+        return view('app.taskscore.assignments.show', [
+            'assignment' => $assignment
+        ]);
     }
 
     /**

@@ -405,7 +405,7 @@
                 <tbody>
                     @forelse ($assignments as $key => $assignment)
                         <tr class="cursor-pointer border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-                            data-href="#">
+                            data-href="{{ route('taskscore.assignment.show', $assignment->id) }}">
                             <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
                                 {{ ($assignments->currentpage() - 1) * $assignments->perpage() + $key + 1 }}
