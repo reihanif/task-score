@@ -20,9 +20,9 @@ return new class extends Migration
             $table->string('subject');
             $table->text('description');
             $table->datetime('due');
-            $table->datetime('resolved_at');
+            $table->datetime('resolved_at')->nullable();
             $table->enum('status', array('open','closed'))->default('open');
-            $table->datetime('closed_at');
+            $table->datetime('closed_at')->nullable();
             $table->timestamps();
         });
     }

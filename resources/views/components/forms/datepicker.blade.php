@@ -1,0 +1,16 @@
+<x-forms.input class="cursor-pointer"
+    id="input-date"
+    name="date"
+    format="dd/mm/yy"
+    type="date"
+    value="today()"
+    onclick="showPicker()"
+    datepicker
+    datepicker-format="dd/mm/yy"
+    datepicker-min-date="20/04/2024"
+    datepicker-max-date="20/07/2024"
+    datepicker-orientation="top left"
+    autocomplete="off"
+    state="initial"
+    label="Date"
+    required />
