@@ -16,30 +16,30 @@
                         <a href="#">
                             {{ $position->name }}
                         </a>
-                        @if (!$position->subordinates->isEmpty())
+                        @if (!$position->direct_subordinates->isEmpty())
                             <ul>
-                                @foreach ($position->subordinates as $subordinate1)
+                                @foreach ($position->direct_subordinates as $subordinate1)
                                     <li>
                                         <a href="#">
                                             {{ $subordinate1->name }}
                                         </a>
-                                        @if (!$subordinate1->subordinates->isEmpty())
+                                        @if (!$subordinate1->direct_subordinates->isEmpty())
                                             <ul>
-                                                @foreach ($subordinate1->subordinates as $subordinate2)
+                                                @foreach ($subordinate1->direct_subordinates as $subordinate2)
                                                     <li>
                                                         <a href="#">
                                                             {{ $subordinate2->name }}
                                                         </a>
-                                                        @if (!$subordinate2->subordinates->isEmpty())
+                                                        @if (!$subordinate2->direct_subordinates->isEmpty())
                                                             <ul>
-                                                                @foreach ($subordinate2->subordinates as $subordinate3)
+                                                                @foreach ($subordinate2->direct_subordinates as $subordinate3)
                                                                     <li>
                                                                         <a href="#">
                                                                             {{ $subordinate3->name }}
                                                                         </a>
-                                                                        @if (!$subordinate3->subordinates->isEmpty())
+                                                                        @if (!$subordinate3->direct_subordinates->isEmpty())
                                                                             <ul>
-                                                                                @foreach ($subordinate3->subordinates as $subordinate4)
+                                                                                @foreach ($subordinate3->direct_subordinates as $subordinate4)
                                                                                     <li>
                                                                                         <a href="#">
                                                                                             {{ $subordinate4->name }}

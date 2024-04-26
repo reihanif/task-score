@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id('id');
             $table->string('name');
             $table->string('path');
-            $table->string('type');
+            $table->string('extension');
             $table->string('size');
             $table->uuid('fileable_id');
             $table->string('fileable_type');

@@ -129,46 +129,135 @@
         <div class="relative col-span-full grid md:col-span-9">
             <div class="overflow-x-hidden">
                 <div
-                    class="border-1 relative rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                    {{ Str::of($assignment->description)->toHtmlString }}
-                </div>
-                @if (count($assignment->attachments) > 0)
-                    <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-                        <dt class="text-sm font-medium leading-6 text-gray-900 dark:text-white">
-                            Attachments
-                            <span class="float-right">:</span>
-                        </dt>
-                        <dd class="mt-2 text-sm text-gray-900 dark:text-gray-400 sm:col-span-2 sm:mt-0">
-                            <ul class="divide-y divide-gray-100 rounded-md border border-gray-200 dark:divide-gray-700 dark:border-gray-700"
-                                role="list">
-                                @foreach ($assignment->attachments as $attachment)
-                                    <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
-                                        <div class="flex w-0 flex-1 items-center">
-                                            <svg class="h-5 w-5 flex-shrink-0 text-gray-400"
-                                                aria-hidden="true"
-                                                viewBox="0 0 20 20"
-                                                fill="currentColor">
-                                                <path fill-rule="evenodd"
-                                                    d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            <div class="ml-4 flex min-w-0 flex-1 gap-2">
-                                                <span
-                                                    class="truncate font-medium">{{ $attachment->name . '.' . $attachment->type }}</span>
-                                                <span class="flex-shrink-0 text-gray-400">{{ FileSize::bytesToHuman($attachment->size) }}</span>
+                    class="border-1 relative h-fit rounded-lg border border-gray-200 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                    <div class="rounded-t-lg border-b border-gray-200 bg-gray-50 p-2 dark:border-gray-700 dark:bg-gray-700">
+                        <div
+                            class="flex flex-wrap items-center justify-end divide-gray-200 dark:divide-gray-600 sm:divide-x sm:rtl:divide-x-reverse">
+
+
+                            <div class="flex flex-wrap items-center justify-end space-x-1 rtl:space-x-reverse">
+                                <button
+                                    class="inline-flex cursor-pointer items-center rounded p-2 text-center text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+                                    data-modal-target="create-assignment-modal"
+                                    data-modal-show="create-assignment-modal"
+                                    type="button">
+                                    <svg class="h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 16 16">
+                                        <path
+                                            d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z" />
+                                    </svg>
+                                    <span class="ms-2">Resolve</span>
+                                </button>
+                                <!-- Modal -->
+                                <x-modal id="create-assignment-modal"
+                                    data-title="Resolve assignment">
+                                    <!-- Modal body -->
+                                    <form class="p-4 md:p-5"
+                                        x-on:submit="loading = ! loading"
+                                        action="{{ route('taskscore.assignment.store') }}"
+                                        method="post"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        <div class="mb-5">
+                                            <div class="space-y-4">
+                                                <div class="col-span-2">
+                                                    <x-forms.text-editor name="description"
+                                                        label="Description"
+                                                        placeholder="Assignment description and details"
+                                                        required>
+                                                    </x-forms.text-editor>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <label
+                                                        class="mb-2 inline-flex gap-1 text-sm font-medium text-gray-900 dark:text-white"
+                                                        for="file">Attachment
+                                                        <button
+                                                            class="text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
+                                                            data-tooltip-target="tooltip-default"
+                                                            type="button">
+                                                            <svg class="h-4 w-4"
+                                                                aria-hidden="true"
+                                                                fill="currentColor"
+                                                                viewBox="0 0 20 20"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                                                    clip-rule="evenodd"></path>
+                                                            </svg>
+                                                        </button>
+
+                                                        <div class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-normal text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
+                                                            id="tooltip-default"
+                                                            role="tooltip">
+                                                            Attach documents that related to this assignment
+                                                            <div class="tooltip-arrow"
+                                                                data-popper-arrow></div>
+                                                        </div>
+                                                    </label>
+                                                    <input id="file"
+                                                        name="attachments[]"
+                                                        type="file"
+                                                        required
+                                                        multiple>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="ml-4 flex-shrink-0">
-                                            <a class="font-medium text-indigo-600 hover:text-indigo-500"
-                                                href="{{ Storage::url($attachment->path) }}"
-                                                download>Download</a>
+                                        <div class="flex place-content-end">
+                                            <button
+                                                class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                type="submit">
+                                                Save
+                                            </button>
                                         </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </dd>
+                                    </form>
+                                </x-modal>
+                            </div>
+                        </div>
                     </div>
-                @endif
+                    <div class="h-fit p-4">
+                        {{ Str::of($assignment->description)->toHtmlString }}
+                        @if (count($assignment->attachments) > 0)
+                            <div class="px-4 pt-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
+                                <dt class="text-sm font-medium leading-6 text-gray-900 dark:text-white">
+                                    Attachments
+                                    <span class="sm:float-right">:</span>
+                                </dt>
+                                <dd class="mt-2 text-sm text-gray-900 dark:text-gray-400 sm:col-span-2 sm:mt-0">
+                                    <ul class="divide-y divide-gray-100 rounded-md border border-gray-200 dark:divide-gray-700 dark:border-gray-700"
+                                        role="list">
+                                        @foreach ($assignment->attachments as $attachment)
+                                            <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6">
+                                                <div class="flex w-0 flex-1 items-center">
+                                                    <svg class="h-5 w-5 flex-shrink-0 text-gray-400"
+                                                        aria-hidden="true"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor">
+                                                        <path fill-rule="evenodd"
+                                                            d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
+                                                            clip-rule="evenodd" />
+                                                    </svg>
+                                                    <div class="ml-4 flex min-w-0 flex-1 gap-2">
+                                                        <span
+                                                            class="truncate font-medium">{{ $attachment->name . '.' . $attachment->type }}</span>
+                                                        <span
+                                                            class="flex-shrink-0 text-gray-400">{{ FileSize::bytesToHuman($attachment->size) }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="ml-4 flex-shrink-0">
+                                                    <a class="font-medium text-blue-600 hover:text-blue-500"
+                                                        href="{{ Storage::url($attachment->path) }}"
+                                                        download>Download</a>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </dd>
+                            </div>
+                        @endif
+                    </div>
+                </div>
             </div>
         </div>
     </div>

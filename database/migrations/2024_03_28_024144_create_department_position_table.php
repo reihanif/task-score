@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('department_position', function (Blueprint $table) {
             $table->foreignUuid('department_id')->references('id')->on('departments')->onDelete('cascade');
-            $table->foreignId('position_id')->references('id')->on('positions')->onDelete('cascade');
+            $table->foreignUuid('position_id')->references('id')->on('positions')->onDelete('cascade');
             $table->timestamp('added_at')->nullable();
             $table->foreignUuid('adder_id')->nullable()->references('id')->on('users')->onDelete('cascade');
         });

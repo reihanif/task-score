@@ -2,6 +2,15 @@ import "./bootstrap";
 import "flowbite";
 import Datepicker from "flowbite-datepicker/Datepicker";
 
+import * as FilePond from "filepond";
+import "filepond/dist/filepond.min.css";
+import FilePondPluginImagePreview from "filepond-plugin-image-preview";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import FilePondPluginFileEncode from "filepond-plugin-file-encode";
+import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
+import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+
 import { Modal } from "flowbite";
 
 import Alpine from "alpinejs";
@@ -212,24 +221,60 @@ FilePond.registerPlugin(
     FilePondPluginImageExifOrientation,
 
     // previews dropped images
-    FilePondPluginImagePreview
+    FilePondPluginImagePreview,
+
+    // validates the type of the file
+    FilePondPluginFileValidateType
 );
 
-const csrfToken = document
-    .querySelector('meta[name="csrf-token"]')
-    .getAttribute("content");
 // Select the file input and use create() to turn it into a pond
-FilePond.create(document.querySelector('input[type="file"]'), {
-    labelIdle: `<div class="flex flex-col cursor-pointer items-center justify-center pt-5 pb-6">
-    <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-    </svg>
-    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-    <p class="text-xs text-gray-500 dark:text-gray-400">pdf, docx, xlsx, pptx, png, zip (max. 40MB)</p>
-    </div>`,
-    credits: false,
-}).setOptions({
-    storeAsFile: true,
+document.querySelectorAll("input[type='file']").forEach((filepondEl) => {
+    FilePond.create(filepondEl, {
+        labelIdle: `<div class="flex flex-col cursor-pointer items-center justify-center pt-5 pb-6">
+        <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+        </svg>
+        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">pdf, docx, xlsx, pptx, png, jpg, zip (max. 25 MB)</p>
+        </div>`,
+        credits: false,
+    }).setOptions({
+        storeAsFile: true,
+        maxFiles: filepondEl.getAttribute('max-files'),
+        maxFileSize: "10MB",
+        // use mime type
+        acceptedFileTypes: [
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/vnd.ms-excel",
+            "text/csv",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "application/vnd.ms-powerpoint",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            "image/png",
+            "image/jpeg",
+            "application/zip",
+            "application/x-zip-compressed",
+            "application/x-compressed",
+        ],
+        // validation label to replace mime
+        fileValidateTypeLabelExpectedTypesMap: {
+            'application/pdf': '.pdf',
+            'application/msword': '.docx',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+            'application/vnd.ms-excel': '.xlsx',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+            'text/csv': '.csv',
+            'application/vnd.ms-powerpoint': '.pptx',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
+            'image/png': '.png',
+            'image/jpeg': '.jpg',
+            'application/zip': '.zip',
+            'application/x-zip-compressed': '.zip',
+            'application/x-compressed': '.zip',
+        }
+    });
 });
 
 // Style the dark mode

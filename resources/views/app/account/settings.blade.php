@@ -6,18 +6,29 @@
     <div class="col-span-full flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
             <h5 class="mr-3 font-semibold dark:text-white">Account Settings</h5>
-            <x-breadcrumbs class="mt-2"
-                :menus="collect([['name' => 'Account Settings', 'route' => null]])" />
+            @if (in_array(true, [
+                Auth::User()->permission->manage_user,
+            ]))
+                <x-breadcrumbs class="mt-2"
+                    :menus="collect([
+                        [
+                            'name' => 'Users',
+                            'route' => route('users.index'),
+                        ],
+                        [
+                            'name' => 'Account Settings',
+                            'route' => null,
+                        ],
+                    ])" />
+            @else
+                <x-breadcrumbs class="mt-2"
+                    :menus="collect([['name' => 'Account Settings', 'route' => null]])" />
+            @endif
         </div>
     </div>
 
     @if (Auth::User()->role == 'superadmin')
         <x-tabs :tabs="collect([
-            [
-                'state' => 'default',
-                'name' => 'Account Details',
-                'route' => '#',
-            ],
             [
                 'state' => 'active',
                 'name' => 'Account Settings',
@@ -86,7 +97,8 @@
                                         data-user-id="{{ $user->id }}"
                                         body="empty">
                                         <!-- Modal body -->
-                                        <form id="form-change-password" class="p-4 md:p-5"
+                                        <form class="p-4 md:p-5"
+                                            id="form-change-password"
                                             x-on:submit="loading = ! loading"
                                             x-on:keydown.enter.prevent
                                             x-data="{

@@ -36,7 +36,7 @@
             </a>
         </div>
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400" id="table-users">
+            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400" id="table-users">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
                         <th class="max-w-4 px-6 py-3" scope="col">
@@ -64,7 +64,8 @@
                 <tbody>
                     @foreach ($users as $key => $user)
                         <tr
-                            class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+                            class="cursor-pointer border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
+                            data-href="{{ route('account.settings', $user->id) }}">
                             <th class="max-w-4 whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
                                 <div>

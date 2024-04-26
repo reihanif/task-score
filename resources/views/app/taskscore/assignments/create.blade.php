@@ -3,6 +3,9 @@
 @section('title', 'Create Assignment')
 
 @section('content')
+    {{-- @php
+        dd(Auth::User()->position->subordinates)
+    @endphp --}}
     <div class="col-span-full flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
             <h5 class="mr-3 font-semibold dark:text-white">Assignment</h5>
@@ -53,7 +56,7 @@
                 Add Assignment
             </button>
             <!-- Modal -->
-            <x-modals.create-assignment id="create-assignment-modal"
+            <x-modal id="create-assignment-modal"
                 data-title="Create new assignment">
                 <!-- Modal body -->
                 <form class="p-4 md:p-5"
@@ -135,7 +138,7 @@
                                     </div>
                                 </label>
                                 <input id="file"
-                                    name="attachment"
+                                    name="attachments[]" multiple max-files="2"
                                     type="file">
                             </div>
                             <div class="space-y-4"
@@ -369,7 +372,7 @@
                         </button>
                     </div>
                 </form>
-            </x-modals.create-assignment>
+            </x-modal>
         </div>
         <div class="overflow-x-auto">
             <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">

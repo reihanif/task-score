@@ -55,12 +55,11 @@ class AssignmentController extends Controller
             $request['due'] = Carbon::parse("$request->date $request->time");
         }
 
-        // if ($request->attachment) {
-        //     $request->validate([
-        //         'attachment' => 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,png,jpg,jpeg,zip',
-        //     ]);
-        // }
-        // dd($request);
+        if ($request->hasFile('attachment')) {
+            $request->validate([
+                'attachments' => 'max:40000000|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,png,jpg,jpeg,zip',
+            ]);
+        }
 
         $request->validate([
             'assignee' => 'required',
@@ -79,22 +78,24 @@ class AssignmentController extends Controller
         $assignment->due = $request->due;
         $assignment->save();
 
-        if ($request->hasFile('attachment')) {
-            $clientOriginalName = $request->file('attachment')->getClientOriginalName();
-            $filename = pathinfo($clientOriginalName, PATHINFO_FILENAME);
-            $extension = $request->file('attachment')->getClientOriginalExtension();
-            $unique_filename = $filename . '_' . time() . '.' . $extension;
+        if ($request->hasFile('attachments')) {
+            foreach($request->file('attachments') as $attachment) {
+                $client_original_name = $attachment->getClientOriginalName();
+                $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
+                $extension = $attachment->getClientOriginalExtension();
+                $unique_filename = $filename . '_' . time() . '.' . $extension;
 
-            $path = $request->file('attachment')->storeAs('public/assignment/' . $assignment->id, $unique_filename);
+                $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
 
-            $file = new File();
-            $file->name = $filename;
-            $file->path = $path;
-            $file->type = $extension;
-            $file->size = $request->file('attachment')->getSize();
-            $file->fileable_id = $assignment->id;
-            $file->fileable_type = Assignment::class;
-            $file->save();
+                $file = new File();
+                $file->name = $filename;
+                $file->path = $path;
+                $file->extension = $extension;
+                $file->size = $attachment->getSize();
+                $file->fileable_id = $assignment->id;
+                $file->fileable_type = Assignment::class;
+                $file->save();
+            }
         }
 
         return redirect()->back()->with('success', 'Assignment sent to ' . $assignment->assignee);
