@@ -87,7 +87,11 @@ document.addEventListener("alpine:init", () => {
                         Text,
                         Strike,
                         Italic,
-                        Bold,
+                        Bold.configure({
+                            HTMLAttributes: {
+                                class: "font-semibold",
+                            },
+                        }),
                         Underline,
                         BulletList.configure({
                             HTMLAttributes: {
@@ -240,8 +244,8 @@ document.querySelectorAll("input[type='file']").forEach((filepondEl) => {
         credits: false,
     }).setOptions({
         storeAsFile: true,
-        maxFiles: filepondEl.getAttribute('max-files'),
-        maxFileSize: "10MB",
+        maxFiles: filepondEl.getAttribute("max-files"),
+        maxFileSize: "25MB",
         // use mime type
         acceptedFileTypes: [
             "application/pdf",
@@ -260,20 +264,23 @@ document.querySelectorAll("input[type='file']").forEach((filepondEl) => {
         ],
         // validation label to replace mime
         fileValidateTypeLabelExpectedTypesMap: {
-            'application/pdf': '.pdf',
-            'application/msword': '.docx',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
-            'application/vnd.ms-excel': '.xlsx',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
-            'text/csv': '.csv',
-            'application/vnd.ms-powerpoint': '.pptx',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx',
-            'image/png': '.png',
-            'image/jpeg': '.jpg',
-            'application/zip': '.zip',
-            'application/x-zip-compressed': '.zip',
-            'application/x-compressed': '.zip',
-        }
+            "application/pdf": ".pdf",
+            "application/msword": ".docx",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                ".docx",
+            "application/vnd.ms-excel": ".xlsx",
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+                ".xlsx",
+            "text/csv": ".csv",
+            "application/vnd.ms-powerpoint": ".pptx",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+                ".pptx",
+            "image/png": ".png",
+            "image/jpeg": ".jpg",
+            "application/zip": ".zip",
+            "application/x-zip-compressed": ".zip",
+            "application/x-compressed": ".zip",
+        },
     });
 });
 

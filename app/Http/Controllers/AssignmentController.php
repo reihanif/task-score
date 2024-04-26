@@ -32,7 +32,10 @@ class AssignmentController extends Controller
      */
     public function create()
     {
-        $assignees = User::where('id', '!=', Auth::User()->id)->get()->sortBy('name');
+        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function($query){
+            $query->where('path', 'LIKE', '%' . Auth::User()->position->id . '%');
+         })->get()->sortBy('name');
+
         $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at')->paginate(10);
 
         return view('app.taskscore.assignments.create', [
@@ -55,11 +58,15 @@ class AssignmentController extends Controller
             $request['due'] = Carbon::parse("$request->date $request->time");
         }
 
-        if ($request->hasFile('attachment')) {
-            $request->validate([
-                'attachments' => 'max:40000000|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,png,jpg,jpeg,zip',
-            ]);
-        }
+        // if ($request->hasFile('attachments')) {
+        //     foreach($request->file('attachments') as $attachment) {
+        //         $client_original_name = $attachment->getClientOriginalName();
+        //         $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
+        //         $extension = $attachment->getClientOriginalExtension();
+        //         $unique_filename = $filename . '_' . time() . '.' . $extension;
+        //         dd([$client_original_name, $filename, $extension, $unique_filename]);
+        //     }
+        // }
 
         $request->validate([
             'assignee' => 'required',
