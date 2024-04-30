@@ -12,15 +12,29 @@ use Illuminate\Support\Facades\Auth;
 class AssignmentController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the unresolved assignments.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function unresolved()
     {
-        $assignments = Assignment::where('assigned_to', Auth::User()->id)->orderBy('created_at')->paginate(10);
+        $assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', null)->orderBy('created_at')->paginate(10);
 
-        return view('app.taskscore.assignments.index', [
+        return view('app.taskscore.assignments.unresolved', [
+            'assignments' => $assignments,
+        ]);
+    }
+
+    /**
+     * Display a listing of the resolved assignments.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function resolved()
+    {
+        $assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', '!=', null)->orderBy('created_at')->paginate(10);
+
+        return view('app.taskscore.assignments.resolved', [
             'assignments' => $assignments,
         ]);
     }
@@ -58,16 +72,6 @@ class AssignmentController extends Controller
             $request['due'] = Carbon::parse("$request->date $request->time");
         }
 
-        // if ($request->hasFile('attachments')) {
-        //     foreach($request->file('attachments') as $attachment) {
-        //         $client_original_name = $attachment->getClientOriginalName();
-        //         $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
-        //         $extension = $attachment->getClientOriginalExtension();
-        //         $unique_filename = $filename . '_' . time() . '.' . $extension;
-        //         dd([$client_original_name, $filename, $extension, $unique_filename]);
-        //     }
-        // }
-
         $request->validate([
             'assignee' => 'required',
             'category' => 'required',
@@ -99,6 +103,7 @@ class AssignmentController extends Controller
                 $file->path = $path;
                 $file->extension = $extension;
                 $file->size = $attachment->getSize();
+                $file->type = 'attachment';
                 $file->fileable_id = $assignment->id;
                 $file->fileable_type = Assignment::class;
                 $file->save();
@@ -144,6 +149,63 @@ class AssignmentController extends Controller
     public function update(Request $request, $id)
     {
         //
+    }
+
+    /**
+     * Resolve the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function resolve(Request $request, $id)
+    {
+        $request->validate([
+            'resolution' => 'required'
+        ]);
+
+        $assignment = Assignment::findOrFail($id);
+        $assignment->resolution = $request->resolution;
+        $assignment->resolved_at = Carbon::now()->toDateTimeString();
+
+        if ($request->hasFile('attachments')) {
+            foreach($request->file('attachments') as $attachment) {
+                $client_original_name = $attachment->getClientOriginalName();
+                $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
+                $extension = $attachment->getClientOriginalExtension();
+                $unique_filename = $filename . '_' . time() . '.' . $extension;
+
+                $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
+
+                $file = new File();
+                $file->name = $filename;
+                $file->path = $path;
+                $file->extension = $extension;
+                $file->size = $attachment->getSize();
+                $file->type = 'resolution';
+                $file->fileable_id = $assignment->id;
+                $file->fileable_type = Assignment::class;
+                $file->save();
+            }
+        }
+
+        $assignment->save();
+
+        return redirect()->back()->with('success', $assignment->name . 'has been resolved');
+    }
+
+    /**
+     * Soft delete the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete($id)
+    {
+        $assignment = Assignment::findOrFail($id);
+        $assignment->trashed();
+
+        return redirect()->back()->with('success', $assignment->name . 'has been deleted');
     }
 
     /**

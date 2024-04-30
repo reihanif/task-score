@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreignUuid('position_id')->nullable()->after('role')->references('id')->on('positions')->onDelete('cascade');
+        Schema::table('files', function (Blueprint $table) {
+            $table->string('type')->after('size')->default(null);
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('position_id');
+        Schema::table('files', function (Blueprint $table) {
+            $table->dropColumn('type');
         });
     }
 };

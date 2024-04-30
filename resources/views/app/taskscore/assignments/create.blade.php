@@ -138,8 +138,10 @@
                                     </div>
                                 </label>
                                 <input id="file"
-                                    name="attachments[]" multiple max-files="2"
-                                    type="file">
+                                    name="attachments[]"
+                                    type="file"
+                                    multiple
+                                    max-files="2">
                             </div>
                             <div class="space-y-4"
                                 x-data="{ selectedOption: '' }">
@@ -392,11 +394,15 @@
                         </th>
                         <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
-                            Created at
+                            Deadline
                         </th>
                         <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
-                            Deadline
+                            Resolution
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
+                            scope="col">
+                            Created at
                         </th>
                         @if (Auth::User()->role == 'superadmin')
                             <th class="px-6 py-3"
@@ -421,10 +427,23 @@
                                 {{ $assignment->assignee->name }}
                             </td>
                             <td class="whitespace-nowrap px-6 py-4">
-                                {{ $assignment->created_at->format('d F Y H:i') }}
+                                {{ $assignment->due->diffForHumans() }}
                             </td>
                             <td class="whitespace-nowrap px-6 py-4">
-                                {{ $assignment->due->diffForHumans() }}
+                                @if ($assignment->isResolved())
+                                    <span
+                                        class="me-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                        Resolved
+                                    </span>
+                                @else
+                                    <span
+                                        class="me-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                                        Unresolved
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="whitespace-nowrap px-6 py-4">
+                                {{ $assignment->created_at->format('d F Y H:i') }}
                             </td>
                             @if (Auth::User()->role == 'superadmin')
                                 <td class="float-end py-4 pe-2 ps-6">

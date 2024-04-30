@@ -12,21 +12,21 @@
 
 
             @if (in_array(Auth::User()->role, ['superadmin', 'admin', 'user']))
-                <x-sidebar-menu data-menu-name="Created Assignment"
+                <x-sidebar-menu data-menu-name="Assignment"
                     data-route-name="taskscore.assignment.create">
                     <x-icons.clipboard-plus-fill />
                 </x-sidebar-menu>
 
-                @if (Auth::User()->assignments->count() > 0)
+                @if (Auth::User()->unresolved_assignments->count() > 0)
                     <x-sidebar-menu data-menu-name="My Assignment"
-                        data-route-name="taskscore.assignment.index"
-                        data-badge-content="{{ Auth::User()->assignments->count() }}"
+                        data-route-name="taskscore.assignment.unresolved"
+                        data-badge-content="{{ Auth::User()->unresolved_assignments->count() }}"
                         data-badge-color="blue">
                         <x-icons.person-fill-check />
                     </x-sidebar-menu>
                 @else
                     <x-sidebar-menu data-menu-name="My Assignment"
-                        data-route-name="taskscore.assignment.index">
+                        data-route-name="taskscore.assignment.unresolved">
                         <x-icons.person-fill-check />
                     </x-sidebar-menu>
                 @endif

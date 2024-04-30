@@ -3,7 +3,7 @@
 @section('title', 'My Assignment')
 
 @section('content')
-    <div class="col-span-full flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
+    <div class="col-span-2 flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
             <h5 class="mr-3 font-semibold dark:text-white">My Assignment</h5>
             <x-breadcrumbs class="mt-2"
@@ -16,12 +16,27 @@
         </div>
     </div>
 
+    <div class="col-span-2">
+        <x-tabs :tabs="collect([
+            [
+                'state' => 'active',
+                'name' => 'Unresolved Assignment',
+                'route' => route('taskscore.assignment.unresolved'),
+            ],
+            [
+                'state' => 'default',
+                'name' => 'Resolved Assignment',
+                'route' => route('taskscore.assignment.resolved'),
+            ],
+        ])" />
+    </div>
+
     <div
         class="border-1 relative col-span-2 overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
         <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
             <div>
-                <h5 class="mr-3 font-semibold dark:text-white">Subordinate Assignments</h5>
-                <p class="text-gray-500 dark:text-gray-400">Manage all your existing subordinate assignment or add a new one
+                <h5 class="mr-3 font-semibold dark:text-white">Unresolved Assignment</h5>
+                <p class="text-gray-500 dark:text-gray-400">Manage all your unresolved assignments
                 </p>
             </div>
         </div>

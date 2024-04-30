@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Assignment extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, SoftDeletes;
 
     /**
      * The attributes that should be cast.
@@ -56,11 +57,11 @@ class Assignment extends Model
     }
 
     /**
-     * Get the assignment's file.
+     * Get the resolution's file.
      */
     public function files(): MorphMany
     {
-        return $this->morphMany(File::class, 'fileable');
+        return $this->morphMany(File::class, 'fileable')->where('files.type', 'resolution');
     }
 
     /**
@@ -68,6 +69,29 @@ class Assignment extends Model
      */
     public function attachments(): MorphMany
     {
-        return $this->morphMany(File::class, 'fileable')->whereColumn('created_at', 'created_at');
+        return $this->morphMany(File::class, 'fileable')->where('files.type', 'attachment');
+    }
+
+    public function isResolved()
+    {
+        return $this->resolved_at !== null;
+    }
+
+    public function score()
+    {
+        $interval = $this->created_at->diff($this->resolved_at);
+        $due_interval = $this->created_at->diff($this->due);
+
+        $resolved =
+            $interval->days * 86400 + $interval->h * 3600 + $interval->i * 60 + $interval->s;
+
+        $due =
+            $due_interval->days * 86400 +
+            $due_interval->h * 3600 +
+            $due_interval->i * 60 +
+            $due_interval->s;
+        $score = ($due / $resolved) * 100;
+
+        return round($score);
     }
 }

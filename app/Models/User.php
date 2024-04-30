@@ -73,10 +73,48 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the assignments associated with the user.
+     * Get all the assignments associated with the user as assignee.
      */
     public function assignments(): HasMany
     {
         return $this->hasMany(Assignment::class, 'assigned_to');
+    }
+
+    /**
+     * Get the resolved assignments associated with the user as assignee.
+     */
+    public function resolved_assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class, 'assigned_to')->where('resolved_at', '!=', null);
+    }
+
+    /**
+     * Get the unresolved assignments associated with the user as assignee.
+     */
+    public function unresolved_assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class, 'assigned_to')->where('resolved_at', null);
+    }
+
+    /**
+     * Get the assignments associated with the user as taskmaster.
+     */
+    public function created_assignments(): HasMany
+    {
+        return $this->hasMany(Assignment::class, 'taskmaster_id');
+    }
+
+    /**
+     * Check if the user is an assignee.
+     */
+    public function isAssignee() {
+        return $this->assignments()->exists();
+    }
+
+    /**
+     * Check if the user is a taskmaster.
+     */
+    public function isTaskmaster() {
+        return $this->created_assignments()->exists();
     }
 }

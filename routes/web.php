@@ -46,10 +46,12 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Route::group(['as' => 'taskscore.', 'prefix' => 'task-score'], function () {
     Route::group(['as' => 'taskscore.'], function () {
-            Route::get('/my-assignments', [AssignmentController::class, 'index'])->name('assignment.index');
-            Route::get('/create-assignment', [AssignmentController::class, 'create'])->name('assignment.create');
+            Route::get('/my-assignments', [AssignmentController::class, 'unresolved'])->name('assignment.unresolved');
+            Route::get('/my-resolved-assignments', [AssignmentController::class, 'resolved'])->name('assignment.resolved');
+            Route::get('/assignments', [AssignmentController::class, 'create'])->name('assignment.create');
             Route::post('/store-assignment', [AssignmentController::class, 'store'])->name('assignment.store');
             Route::get('/{assignment}/details', [AssignmentController::class, 'show'])->name('assignment.show');
+            Route::put('/{assignment}/resolve', [AssignmentController::class, 'resolve'])->name('assignment.resolve');
     });
 
     Route::group(['middleware' => 'permission:manage_user'], function () {
