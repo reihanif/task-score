@@ -156,13 +156,12 @@
                 placeholder="{{ $attributes->get('placeholder') }}"
                 x-ref="element">
             </div>
+            <input class="hidden"
+                {{ $attributes }}
+                x-model="content"
+                pattern="^(?!^<p><\/p>$).*"></input>
         </div>
     </div>
     <p class="mt-1 text-sm text-red-600 dark:text-red-500"
         x-show="!content.match('^(?!^<p><\/p>$).*')">{{ $attributes->get('label') ?? 'This field' }} cannot be empty</p>
-    {{-- <p class="mt-1 text-sm text-gray-900 dark:text-white" x-show="content == ''">{{ $attributes->get('label') ?? 'This field' }} cannot be empty</p> --}}
-    <input class="hidden"
-        {{ $attributes }}
-        x-model="content"
-        pattern="^(?!^<p><\/p>$).*"></input>
 </div>

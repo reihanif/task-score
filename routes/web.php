@@ -50,8 +50,11 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/my-resolved-assignments', [AssignmentController::class, 'resolved'])->name('assignment.resolved');
             Route::get('/assignments', [AssignmentController::class, 'create'])->name('assignment.create');
             Route::post('/store-assignment', [AssignmentController::class, 'store'])->name('assignment.store');
-            Route::get('/{assignment}/details', [AssignmentController::class, 'show'])->name('assignment.show');
+            Route::get('/assignment/{assignment}', [AssignmentController::class, 'show'])->name('assignment.show');
+            Route::delete('/assignment/{assignment}/delete', [AssignmentController::class, 'delete'])->name('assignment.delete');
             Route::put('/{assignment}/resolve', [AssignmentController::class, 'resolve'])->name('assignment.resolve');
+            Route::put('/{assignment}/approve', [AssignmentController::class, 'approve'])->name('assignment.approve');
+            Route::post('/{assignment}/reassign', [AssignmentController::class, 'reassign'])->name('assignment.reassign');
     });
 
     Route::group(['middleware' => 'permission:manage_user'], function () {

@@ -192,22 +192,30 @@ TomSelect.define("caret_position", TomSelect_caret_position);
 
 document.querySelectorAll("select").forEach((el) => {
     if (el.hasAttribute("multiple")) {
-        new TomSelect(el, {
-            plugins: ["remove_button", "caret_position"],
-            create: false,
-            sortField: {
-                field: "text",
-                direction: "asc",
-            },
-        });
+        if (el.hasAttribute("readonly")) {
+            new TomSelect(el, {}).lock();
+        } else {
+            new TomSelect(el, {
+                plugins: ["remove_button", "caret_position"],
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc",
+                },
+            });
+        }
     } else {
-        new TomSelect(el, {
-            create: false,
-            sortField: {
-                field: "text",
-                direction: "asc",
-            },
-        });
+        if (el.hasAttribute("readonly")) {
+            new TomSelect(el, {}).lock();
+        } else {
+            new TomSelect(el, {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc",
+                },
+            });
+        }
     }
 });
 

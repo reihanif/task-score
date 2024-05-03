@@ -3,9 +3,6 @@
 @section('title', 'Create Assignment')
 
 @section('content')
-    {{-- @php
-        dd(Auth::User()->position->subordinates)
-    @endphp --}}
     <div class="col-span-full flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
             <h5 class="mr-3 font-semibold dark:text-white">Assignment</h5>
@@ -370,7 +367,7 @@
                         <button
                             class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                             type="submit">
-                            Save
+                            Create
                         </button>
                     </div>
                 </form>
@@ -431,10 +428,17 @@
                             </td>
                             <td class="whitespace-nowrap px-6 py-4">
                                 @if ($assignment->isResolved())
-                                    <span
-                                        class="me-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                        Resolved
-                                    </span>
+                                    @if ($assignment->hasChilds())
+                                        <span
+                                            class="me-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                            Reassigned
+                                        </span>
+                                    @else
+                                        <span
+                                            class="me-2 rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
+                                            Resolved
+                                        </span>
+                                    @endif
                                 @else
                                     <span
                                         class="me-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
@@ -469,14 +473,14 @@
                                                 aria-labelledby="dropdownMenuIconButton{{ $key }}">
                                                 <li>
                                                     <a class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-600 dark:hover:text-red-400"
-                                                        data-modal-target="delete-assignments-modal-{{ $assignment->id }}"
-                                                        data-modal-show="delete-assignments-modal-{{ $assignment->id }}"
+                                                        data-modal-target="delete-assignment-modal-{{ $assignment->id }}"
+                                                        data-modal-show="delete-assignment-modal-{{ $assignment->id }}"
                                                         type="button">Delete</a>
                                                 </li>
                                             </ul>
                                         </div>
-                                        {{-- <x-modals.delete-assignment id="{{ $assignment->id }}"
-                                            name="{{ $assignment->name }}" /> --}}
+                                        <x-modals.delete-assignment id="{{ $assignment->id }}"
+                                            name="{{ $assignment->subject }}" />
                                     </div>
                                 </td>
                             @endif

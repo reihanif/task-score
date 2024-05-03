@@ -12,11 +12,6 @@
 
 
             @if (in_array(Auth::User()->role, ['superadmin', 'admin', 'user']))
-                <x-sidebar-menu data-menu-name="Assignment"
-                    data-route-name="taskscore.assignment.create">
-                    <x-icons.clipboard-plus-fill />
-                </x-sidebar-menu>
-
                 @if (Auth::User()->unresolved_assignments->count() > 0)
                     <x-sidebar-menu data-menu-name="My Assignment"
                         data-route-name="taskscore.assignment.unresolved"
@@ -28,6 +23,13 @@
                     <x-sidebar-menu data-menu-name="My Assignment"
                         data-route-name="taskscore.assignment.unresolved">
                         <x-icons.person-fill-check />
+                    </x-sidebar-menu>
+                @endif
+
+                @if (!Auth::User()->position->subordinates()->isEmpty())
+                    <x-sidebar-menu data-menu-name="Subordinate Assignment"
+                        data-route-name="taskscore.assignment.create">
+                        <x-icons.clipboard-plus-fill />
                     </x-sidebar-menu>
                 @endif
 

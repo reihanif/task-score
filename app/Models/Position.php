@@ -38,13 +38,13 @@ class Position extends Model
         return $this->hasMany(Position::class, 'parent_id', 'id');
     }
 
-    // /**
-    //  * Get the subordinates of the positions.
-    //  */
-    // public function subordinates(): HasMany
-    // {
-    //     return $this->hasMany(Position::class, 'path', 'id');
-    // }
+    /**
+     * Get the subordinates of the positions.
+     */
+    public function subordinates()
+    {
+        return $this->where('path', 'LIKE', '%' . $this->id . '%')->get();
+    }
 
     /**
      * Get the departments of the position.

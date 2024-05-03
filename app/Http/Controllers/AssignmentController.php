@@ -46,11 +46,11 @@ class AssignmentController extends Controller
      */
     public function create()
     {
-        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function($query){
+        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
             $query->where('path', 'LIKE', '%' . Auth::User()->position->id . '%');
-         })->get()->sortBy('name');
+        })->get()->sortBy('name');
 
-        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at')->paginate(10);
+        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->doesntHave('parent')->orderBy('created_at')->paginate(10);
 
         return view('app.taskscore.assignments.create', [
             'assignees' => $assignees,
@@ -90,7 +90,7 @@ class AssignmentController extends Controller
         $assignment->save();
 
         if ($request->hasFile('attachments')) {
-            foreach($request->file('attachments') as $attachment) {
+            foreach ($request->file('attachments') as $attachment) {
                 $client_original_name = $attachment->getClientOriginalName();
                 $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
                 $extension = $attachment->getClientOriginalExtension();
@@ -152,7 +152,7 @@ class AssignmentController extends Controller
     }
 
     /**
-     * Resolve the specified resource in storage.
+     * Resolve the specified assignment.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -165,11 +165,12 @@ class AssignmentController extends Controller
         ]);
 
         $assignment = Assignment::findOrFail($id);
+        $assignment->timestamps = false;
         $assignment->resolution = $request->resolution;
         $assignment->resolved_at = Carbon::now()->toDateTimeString();
 
         if ($request->hasFile('attachments')) {
-            foreach($request->file('attachments') as $attachment) {
+            foreach ($request->file('attachments') as $attachment) {
                 $client_original_name = $attachment->getClientOriginalName();
                 $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
                 $extension = $attachment->getClientOriginalExtension();
@@ -195,6 +196,82 @@ class AssignmentController extends Controller
     }
 
     /**
+     * Approve the specified assignment.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function approve($id)
+    {
+        $assignment = Assignment::findOrFail($id);
+        $assignment->timestamps = false;
+        $assignment->status = 'closed';
+        $assignment->closed_at = Carbon::now()->toDateTimeString();
+        $assignment->save();
+
+        return redirect()->back()->with('success', $assignment->name . 'has been approved');
+    }
+
+    /**
+     * Reassign a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function reassign(Request $request, $id)
+    {
+        $request['parent_id'] = $id;
+
+        if ($request->timetable) {
+            $request['due'] = Carbon::now()->addMinutes($request->timetable);
+        } elseif ($request->date && $request->time) {
+            $request['due'] = Carbon::parse("$request->date $request->time");
+        }
+
+        $request->validate([
+            'parent_id' => 'required',
+            'assignee' => 'required',
+            'category' => 'required',
+            'subject' => 'required|unique:assignments,subject',
+            'description' => 'required',
+            'due' => 'required'
+        ]);
+
+        $assignment = new Assignment();
+        $assignment->taskmaster_id = Auth::User()->id;
+        $assignment->assigned_to = $request->assignee;
+        $assignment->parent_id = $request->parent_id;
+        $assignment->type = $request->category;
+        $assignment->subject = $request->subject;
+        $assignment->description = $request->description;
+        $assignment->due = $request->due;
+        $assignment->save();
+
+        if ($request->hasFile('attachments')) {
+            foreach ($request->file('attachments') as $attachment) {
+                $client_original_name = $attachment->getClientOriginalName();
+                $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
+                $extension = $attachment->getClientOriginalExtension();
+                $unique_filename = $filename . '_' . time() . '.' . $extension;
+
+                $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
+
+                $file = new File();
+                $file->name = $filename;
+                $file->path = $path;
+                $file->extension = $extension;
+                $file->size = $attachment->getSize();
+                $file->type = 'attachment';
+                $file->fileable_id = $assignment->id;
+                $file->fileable_type = Assignment::class;
+                $file->save();
+            }
+        }
+
+        return redirect()->back()->with('success', 'Assignment sent to ' . $assignment->assignee);
+    }
+
+    /**
      * Soft delete the specified resource from storage.
      *
      * @param  int  $id
@@ -203,9 +280,10 @@ class AssignmentController extends Controller
     public function delete($id)
     {
         $assignment = Assignment::findOrFail($id);
-        $assignment->trashed();
+        $assignment->timestamps = false;
+        $assignment->delete();
 
-        return redirect()->back()->with('success', $assignment->name . 'has been deleted');
+        return redirect()->route('taskscore.assignment.create')->with('success', $assignment->name . 'has been deleted');
     }
 
     /**
