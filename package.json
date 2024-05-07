@@ -25,7 +25,7 @@
         "@tiptap/pm": "^2.3.0",
         "@tiptap/starter-kit": "^2.3.0",
         "alpinejs": "^3.13.7",
-        "chart.js": "^4.4.2",
+        "apexcharts": "^3.49.0",
         "datatables.net-dt": "^2.0.6",
         "filepond": "^4.31.1",
         "filepond-plugin-file-encode": "^2.1.14",

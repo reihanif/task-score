@@ -3,6 +3,7 @@ import "flowbite";
 import Datepicker from "flowbite-datepicker/Datepicker";
 
 import DataTable from "datatables.net-dt";
+window.DataTable = DataTable;
 
 import * as FilePond from "filepond";
 import "filepond/dist/filepond.min.css";
@@ -15,6 +16,9 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 
 import { Modal } from "flowbite";
 
+import ApexCharts from "apexcharts";
+window.ApexCharts = ApexCharts;
+
 import Alpine from "alpinejs";
 import collapse from "@alpinejs/collapse";
 
@@ -23,9 +27,6 @@ import TomSelect_remove_button from "tom-select/dist/esm/plugins/remove_button/p
 import TomSelect_caret_position from "tom-select/dist/esm/plugins/caret_position/plugin";
 import "tom-select/dist/css/tom-select.css";
 import "../css/app.css";
-
-import Chart from "chart.js/auto";
-window.Chart = Chart;
 
 import { Editor } from "@tiptap/core";
 import Document from "@tiptap/extension-document";
