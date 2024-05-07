@@ -122,6 +122,14 @@ class Assignment extends Model
     }
 
     /**
+     * Check if there is childs of the assignment that unresolved.
+     */
+    public function hasUnresolvedChilds()
+    {
+        return $this->childs()->whereNull('resolved_at')->exists();
+    }
+
+    /**
      * Check if there is siblings of the assignment.
      */
     public function hasSiblings()

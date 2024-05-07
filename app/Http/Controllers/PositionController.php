@@ -14,7 +14,7 @@ class PositionController extends Controller
      */
     public function index()
     {
-        $positions = Position::orderBy('level', 'asc')->paginate(10);
+        $positions = Position::orderBy('level', 'asc')->get();
         $superiors = Position::orderBy('level', 'asc')->get();
 
         return view('app.positions.index', [

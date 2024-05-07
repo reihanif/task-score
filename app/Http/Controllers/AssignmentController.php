@@ -47,7 +47,7 @@ class AssignmentController extends Controller
     public function create()
     {
         $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
-            $query->where('path', 'LIKE', '%' . Auth::User()->position->id . '%');
+            $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
         })->get()->sortBy('name');
 
         $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->doesntHave('parent')->orderBy('created_at')->paginate(10);
@@ -209,6 +209,22 @@ class AssignmentController extends Controller
         $assignment->closed_at = Carbon::now()->toDateTimeString();
         $assignment->save();
 
+        if ($assignment->hasSiblings()) {
+            $siblings = Assignment::whereNot('id', $id)->where('parent_id', $assignment->parent_id)->get();
+            foreach ($siblings as $sibling) {
+                $sibling->status = 'closed';
+                $sibling->closed_at = Carbon::now()->toDateTimeString();
+                $sibling->save();
+            }
+        }
+
+        if ($assignment->hasParent()) {
+            $parent = $assignment->parent;
+            $parent->status = 'closed';
+            $parent->closed_at = Carbon::now()->toDateTimeString();
+            $parent->save();
+        }
+
         return redirect()->back()->with('success', $assignment->name . 'has been approved');
     }
 
@@ -220,7 +236,12 @@ class AssignmentController extends Controller
      */
     public function reassign(Request $request, $id)
     {
-        $request['parent_id'] = $id;
+        $current_assignment = Assignment::findOrFail($id);
+        if ($current_assignment->hasParent()) {
+            $request['parent_id'] = $current_assignment->parent_id;
+        } else {
+            $request['parent_id'] = $id;
+        }
 
         if ($request->timetable) {
             $request['due'] = Carbon::now()->addMinutes($request->timetable);
@@ -236,6 +257,9 @@ class AssignmentController extends Controller
             'description' => 'required',
             'due' => 'required'
         ]);
+
+        $current_assignment->status = 'reassigned';
+        $current_assignment->save();
 
         $assignment = new Assignment();
         $assignment->taskmaster_id = Auth::User()->id;

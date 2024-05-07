@@ -2,6 +2,8 @@ import "./bootstrap";
 import "flowbite";
 import Datepicker from "flowbite-datepicker/Datepicker";
 
+import DataTable from "datatables.net-dt";
+
 import * as FilePond from "filepond";
 import "filepond/dist/filepond.min.css";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
@@ -191,30 +193,32 @@ TomSelect.define("remove_button", TomSelect_remove_button);
 TomSelect.define("caret_position", TomSelect_caret_position);
 
 document.querySelectorAll("select").forEach((el) => {
-    if (el.hasAttribute("multiple")) {
-        if (el.hasAttribute("readonly")) {
-            new TomSelect(el, {}).lock();
+    if (!el.hasAttribute("normal-select")) {
+        if (el.hasAttribute("multiple")) {
+            if (el.hasAttribute("readonly")) {
+                new TomSelect(el, {}).lock();
+            } else {
+                new TomSelect(el, {
+                    plugins: ["remove_button", "caret_position"],
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc",
+                    },
+                });
+            }
         } else {
-            new TomSelect(el, {
-                plugins: ["remove_button", "caret_position"],
-                create: false,
-                sortField: {
-                    field: "text",
-                    direction: "asc",
-                },
-            });
-        }
-    } else {
-        if (el.hasAttribute("readonly")) {
-            new TomSelect(el, {}).lock();
-        } else {
-            new TomSelect(el, {
-                create: false,
-                sortField: {
-                    field: "text",
-                    direction: "asc",
-                },
-            });
+            if (el.hasAttribute("readonly")) {
+                new TomSelect(el, {}).lock();
+            } else {
+                new TomSelect(el, {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc",
+                    },
+                });
+            }
         }
     }
 });
@@ -306,3 +310,49 @@ labels.forEach((label) => {
     label.classList.add("hover:rounded-lg");
     label.classList.add("hover:bg-gray-100");
 });
+
+if (document.querySelector("#positions-table") !== null) {
+    let positionsTable = new DataTable("#positions-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page _MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+    });
+    document.getElementById("table-search-positions").addEventListener("keyup", function () {
+        positionsTable.columns(1).search(this.value).draw();
+    });
+}
+
+if (document.querySelector("#users-table") !== null) {
+    let usersTable = new DataTable("#users-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page _MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+    });
+    document.getElementById("table-search-users").addEventListener("keyup", function () {
+        usersTable.columns(1).search(this.value).draw();
+    });
+    document.getElementById("users-role-filter").addEventListener("change", function () {
+        usersTable.columns(3).search(this.value, false, false, false).draw();
+    });
+    document.getElementById("users-position-filter").addEventListener("change", function () {
+        usersTable.columns(2).search(this.value, false, false, false).draw();
+    });
+}

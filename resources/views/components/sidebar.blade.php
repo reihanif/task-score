@@ -1,7 +1,7 @@
 <aside id="sidebar"
     aria-label="Sidebar"
     {{ $attributes }}>
-    <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
+    <div class="h-full overflow-y-auto bg-white px-3 text-sm pb-4 dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
 
             <x-sidebar-menu data-menu-name="Dashboard"
@@ -26,7 +26,7 @@
                     </x-sidebar-menu>
                 @endif
 
-                @if (!Auth::User()->position->subordinates()->isEmpty())
+                @if (!Auth::User()->position?->subordinates()->isEmpty())
                     <x-sidebar-menu data-menu-name="Subordinate Assignment"
                         data-route-name="taskscore.assignment.create">
                         <x-icons.clipboard-plus-fill />
@@ -60,9 +60,9 @@
         </ul>
 
         @if (in_array(true, [
-                Auth::User()->permission->manage_user,
-                Auth::User()->permission->manage_department,
-                Auth::User()->permission->manage_position,
+                Auth::User()->permission?->manage_user,
+                Auth::User()->permission?->manage_department,
+                Auth::User()->permission?->manage_position,
             ]) && in_array(Auth::User()->role, ['superadmin', 'admin']))
             <ul class="mt-4 space-y-2 border-t border-gray-200 pt-4 font-medium dark:border-gray-700">
                 <h5 class="ps-2 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400">

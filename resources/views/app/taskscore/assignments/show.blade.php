@@ -96,7 +96,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                @if ($assignment->isResolved() && $assignment->isOpen() && in_array(true, [$assignment->hasChilds() ? !$assignment->hasChilds() : false, $assignment->hasSiblings() ? !$assignment->hasUnresolvedSiblings() : false]))
+                                @if ($assignment->isResolved() && $assignment->isOpen())
                                     <div class="inline-flex space-x-1.5">
                                         <!-- Approve Button -->
                                         <div>
@@ -143,7 +143,7 @@
                                                 <!-- Modal body -->
                                                 <form class="p-4 md:p-5"
                                                     x-on:submit="loading = ! loading"
-                                                    action="{{ $assignment->hasParent() ? route('taskscore.assignment.reassign', $assignment->parent_id) : route('taskscore.assignment.reassign', $assignment->id) }}"
+                                                    action="{{ route('taskscore.assignment.reassign', $assignment->id) }}"
                                                     method="post"
                                                     enctype="multipart/form-data">
                                                     @csrf
@@ -605,6 +605,11 @@
                             @if ($assignment->status == 'open')
                                 <span
                                     class="me-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                    {{ ucfirst($assignment->status) }}
+                                </span>
+                            @elseif ($assignment->status == 'reassigned')
+                                <span
+                                    class="me-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
                                     {{ ucfirst($assignment->status) }}
                                 </span>
                             @elseif ($assignment->status == 'closed')

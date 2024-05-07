@@ -428,9 +428,9 @@
                             </td>
                             <td class="whitespace-nowrap px-6 py-4">
                                 @if ($assignment->isResolved())
-                                    @if ($assignment->hasChilds())
+                                    @if ($assignment->hasUnresolvedChilds())
                                         <span
-                                            class="me-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                            class="me-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
                                             Reassigned
                                         </span>
                                     @else
@@ -441,7 +441,7 @@
                                     @endif
                                 @else
                                     <span
-                                        class="me-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
+                                        class="me-2 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">
                                         Unresolved
                                     </span>
                                 @endif

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('description');
             $table->datetime('due');
             $table->datetime('resolved_at')->nullable();
-            $table->enum('status', array('open','closed'))->default('open');
+            $table->enum('status', array('open', 'closed', 'reassigned'))->default('open');
             $table->datetime('closed_at')->nullable();
             $table->timestamps();
         });

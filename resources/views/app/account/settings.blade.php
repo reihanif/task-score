@@ -396,7 +396,7 @@
                             Last login at
                         </dt>
                         <dd class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-400 sm:col-span-2 sm:mt-0">
-                            {{ $user->last_login_at->format('d F Y, H:i:s') }}
+                            {{ $user->last_login_at?->format('d F Y, H:i:s') ?? '-' }}
                         </dd>
                     </div>
                     <div class="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
@@ -404,7 +404,7 @@
                             Last login IP address
                         </dt>
                         <dd class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-400 sm:col-span-2 sm:mt-0">
-                            {{ $user->last_login_ip }}
+                            {{ $user->last_login_ip ?? '-' }}
                         </dd>
                     </div>
                 </dl>

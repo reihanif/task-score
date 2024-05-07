@@ -13,7 +13,7 @@
         </div>
 
         <div
-            class="flex-column flex flex-wrap items-end justify-between space-y-4 bg-white py-4 dark:bg-gray-800 md:flex-row md:space-y-0">
+            class="flex-column flex flex-wrap items-end justify-between space-y-4 bg-white pt-4 dark:bg-gray-800 md:flex-row md:space-y-0">
             <div id="search">
                 <label class="sr-only"
                     for="table-search-users">Search</label>
@@ -23,8 +23,9 @@
                     </div>
                     <input
                         class="block w-auto rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        id="table-search-users"
+                        id="table-search-positions"
                         type="text"
+                        autocomplete="off"
                         placeholder="Search for position">
                 </div>
             </div>
@@ -35,32 +36,154 @@
                 </x-modals.create-position>
             @endif
         </div>
-        <div class="overflow-x-auto">
-            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+        <div>
+            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
+                id="positions-table">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th class="whitespace-nowrap px-6 py-3"
+                        <th class="whitespace-nowrap px-3 py-3"
                             scope="col">
-                            No
+                            <div class="flex items-center">
+                                <span class="grow">
+                                    No
+                                </span>
+                                <span class="ms-2 text-gray-300 dark:text-gray-500">
+                                    <svg class="sort-asc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <svg class="sort-desc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </div>
                         </th>
-                        <th class="whitespace-nowrap px-6 py-3"
+                        <th class="whitespace-nowrap px-3 py-3"
                             scope="col">
-                            Nama
+                            <div class="flex items-center">
+                                <span class="grow">
+                                    Nama
+                                </span>
+                                <span class="ms-2 text-gray-300 dark:text-gray-500">
+                                    <svg class="sort-asc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <svg class="sort-desc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </div>
                         </th>
-                        <th class="whitespace-nowrap px-6 py-3"
+                        <th class="whitespace-nowrap px-3 py-3"
                             scope="col">
-                            Total Departments
+                            <div class="flex items-center">
+                                <span class="grow">
+                                    Total Departments
+                                </span>
+                                <span class="ms-2 text-gray-300 dark:text-gray-500">
+                                    <svg class="sort-asc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <svg class="sort-desc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </div>
                         </th>
-                        <th class="whitespace-nowrap px-6 py-3"
+                        <th class="whitespace-nowrap px-3 py-3"
                             scope="col">
-                            Created at
+                            <div class="flex items-center">
+                                <span class="grow">
+                                    Created at
+                                </span>
+                                <span class="ms-2 text-gray-300 dark:text-gray-500">
+                                    <svg class="sort-asc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <svg class="sort-desc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </div>
                         </th>
-                        <th class="whitespace-nowrap px-6 py-3"
+                        <th class="whitespace-nowrap px-3 py-3"
                             scope="col">
-                            Last Updated
+                            <div class="flex items-center">
+                                <span class="grow">
+                                    Last Updated
+                                </span>
+                                <span class="ms-2 text-gray-300 dark:text-gray-500">
+                                    <svg class="sort-asc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M5.575 13.729C4.501 15.033 5.43 17 7.12 17h9.762c1.69 0 2.618-1.967 1.544-3.271l-4.881-5.927a2 2 0 0 0-3.088 0l-4.88 5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <svg class="sort-desc h-3 w-3"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path fill-rule="evenodd"
+                                            d="M18.425 10.271C19.499 8.967 18.57 7 16.88 7H7.12c-1.69 0-2.618 1.967-1.544 3.271l4.881 5.927a2 2 0 0 0 3.088 0l4.88-5.927Z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </span>
+                            </div>
                         </th>
                         @if (Auth::User()->role == 'superadmin')
-                            <th class="px-6 py-3"
+                            <th class="px-3 py-3"
+                                data-dt-order="disable"
                                 scope="col">
                             </th>
                         @endif
@@ -70,21 +193,22 @@
                     @foreach ($positions as $key => $position)
                         <tr class="cursor-pointer border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
                             data-href="{{ route('positions.show', $position->id) }}">
-                            <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                            <th class="whitespace-nowrap px-3 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
-                                {{ ($positions->currentpage() - 1) * $positions->perpage() + $key + 1 }}
+                                {{ $loop->iteration }}
+                                {{-- {{ ($positions->currentpage() - 1) * $positions->perpage() + $key + 1 }} --}}
                             </th>
-                            <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                            <th class="whitespace-nowrap px-3 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
                                 {{ $position->name }}
                             </th>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-3 py-4 text-center">
                                 {{ $position->departments->count() }}
                             </td>
-                            <td class="whitespace-nowrap px-6 py-4">
+                            <td class="whitespace-nowrap px-3 py-4">
                                 {{ $position->created_at->format('d F Y, H:i') }}
                             </td>
-                            <td class="whitespace-nowrap px-6 py-4">
+                            <td class="whitespace-nowrap px-3 py-4">
                                 {{ $position->updated_at->format('d F Y, H:i') }}
                             </td>
                             @if (Auth::User()->role == 'superadmin')
@@ -136,9 +260,6 @@
                     @endforeach
                 </tbody>
             </table>
-        </div>
-        <div class="mt-4">
-            {{ $positions->links() }}
         </div>
     </div>
 @endsection
