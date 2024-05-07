@@ -18,7 +18,7 @@ class AssignmentController extends Controller
      */
     public function unresolved()
     {
-        $assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', null)->orderBy('created_at')->paginate(10);
+        $assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', null)->orderBy('created_at')->get();
 
         return view('app.taskscore.assignments.unresolved', [
             'assignments' => $assignments,
@@ -32,7 +32,7 @@ class AssignmentController extends Controller
      */
     public function resolved()
     {
-        $assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', '!=', null)->orderBy('created_at')->paginate(10);
+        $assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', '!=', null)->orderBy('created_at')->get();
 
         return view('app.taskscore.assignments.resolved', [
             'assignments' => $assignments,
@@ -50,7 +50,7 @@ class AssignmentController extends Controller
             $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
         })->get()->sortBy('name');
 
-        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->doesntHave('parent')->orderBy('created_at')->paginate(10);
+        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->doesntHave('parent')->orderBy('created_at')->get();
 
         return view('app.taskscore.assignments.create', [
             'assignees' => $assignees,

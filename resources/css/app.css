@@ -284,3 +284,7 @@ input[datepicker] {
 .dt-layout-cell.dt-start {
     @apply inline-flex items-center;
 }
+
+.dt-empty {
+    @apply text-center py-4;
+}

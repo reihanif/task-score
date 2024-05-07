@@ -311,6 +311,11 @@ labels.forEach((label) => {
     label.classList.add("hover:bg-gray-100");
 });
 
+/*
+Datatables
+*/
+
+// Positions Table
 if (document.querySelector("#positions-table") !== null) {
     let positionsTable = new DataTable("#positions-table", {
         layout: {
@@ -326,11 +331,14 @@ if (document.querySelector("#positions-table") !== null) {
             },
         },
     });
-    document.getElementById("table-search-positions").addEventListener("keyup", function () {
-        positionsTable.columns(1).search(this.value).draw();
-    });
+    document
+        .getElementById("table-search-positions")
+        .addEventListener("keyup", function () {
+            positionsTable.columns(1).search(this.value).draw();
+        });
 }
 
+// Users Table
 if (document.querySelector("#users-table") !== null) {
     let usersTable = new DataTable("#users-table", {
         layout: {
@@ -338,21 +346,178 @@ if (document.querySelector("#users-table") !== null) {
             topEnd: {},
             bottomStart: {
                 pageLength: {
-                    text: "Rows per page _MENU_",
+                    text: "Rows per page_MENU_",
                 },
                 info: {
                     text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
                 },
             },
         },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+        },
     });
-    document.getElementById("table-search-users").addEventListener("keyup", function () {
-        usersTable.columns(1).search(this.value).draw();
+    document
+        .getElementById("table-search-users")
+        .addEventListener("keyup", function () {
+            usersTable.columns(1).search(this.value).draw();
+        });
+    document
+        .getElementById("users-role-filter")
+        .addEventListener("change", function () {
+            usersTable
+                .columns(3)
+                .search(this.value, false, false, false)
+                .draw();
+        });
+    document
+        .getElementById("users-position-filter")
+        .addEventListener("change", function () {
+            usersTable
+                .columns(2)
+                .search(this.value, false, false, false)
+                .draw();
+        });
+}
+
+// Departments Table
+if (document.querySelector("#departments-table") !== null) {
+    let departmentsTable = new DataTable("#departments-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page_MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+        },
     });
-    document.getElementById("users-role-filter").addEventListener("change", function () {
-        usersTable.columns(3).search(this.value, false, false, false).draw();
+    document
+        .getElementById("table-search-departments")
+        .addEventListener("keyup", function () {
+            departmentsTable.columns(1).search(this.value).draw();
+        });
+}
+
+// Unresolved Assignments Table
+if (document.querySelector("#unresolved-assignments-table") !== null) {
+    let unresolvedAssignmentsTable = new DataTable("#unresolved-assignments-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page_MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+        },
     });
-    document.getElementById("users-position-filter").addEventListener("change", function () {
-        usersTable.columns(2).search(this.value, false, false, false).draw();
+    document
+        .getElementById("table-search-unresolved-assignments")
+        .addEventListener("keyup", function () {
+            unresolvedAssignmentsTable.columns(1).search(this.value).draw();
+        });
+}
+
+// Resolved Assignments Table
+if (document.querySelector("#resolved-assignments-table") !== null) {
+    let resolvedAssignmentsTable = new DataTable("#resolved-assignments-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page_MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+        },
     });
+    document
+        .getElementById("table-search-resolved-assignments")
+        .addEventListener("keyup", function () {
+            resolvedAssignmentsTable.columns(1).search(this.value).draw();
+        });
+}
+
+// Subordinate Assignments Table
+if (document.querySelector("#subordinate-assignments-table") !== null) {
+    let subordinateAssignmentsTable = new DataTable("#subordinate-assignments-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page_MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+        },
+    });
+    document
+        .getElementById("table-search-subordinate-assignments")
+        .addEventListener("keyup", function () {
+            subordinateAssignmentsTable.columns(1).search(this.value).draw();
+        });
+    document
+        .getElementById("assignments-resolution-filter")
+        .addEventListener("change", function () {
+            subordinateAssignmentsTable
+                .columns(4)
+                .search(this.value, false, false, false)
+                .draw();
+        });
 }

@@ -3,6 +3,7 @@
 @section('title', 'Users')
 
 @section('content')
+    <!-- Filter Dropdown -->
     <div class="z-10 hidden w-72 space-y-3 rounded-lg bg-white p-3 shadow dark:bg-gray-700"
         id="filter-dropdown">
         <div>
@@ -31,6 +32,7 @@
             </select>
         </div>
     </div>
+    <!-- End of Filter Dropdown -->
 
     <div
         class="border-1 relative overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
