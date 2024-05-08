@@ -41,7 +41,7 @@
         @endif
         <div class="mt-2">
             <div class="font-semibold text-gray-500 dark:text-gray-400">Role :</div>
-            <span>{{ $user->role }}</span>
+            <span>{{ ucwords($user->role) }}</span>
         </div>
     </div>
     <div data-popper-arrow></div>

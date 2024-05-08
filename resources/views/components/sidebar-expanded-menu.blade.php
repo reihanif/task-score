@@ -37,14 +37,14 @@
                 <!-- Menu Item -->
                 @if (request()->route()->named($menu['data-route-name']))
                     <li title="{{ array_key_exists('data-menu-title', $menu) ? $menu['data-menu-title'] : null }}">
-                        <a class="group flex w-full items-center rounded-lg bg-gray-100 p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 dark:bg-gray-700 dark:text-white"
+                        <a class="group flex w-full items-center rounded-lg bg-gray-100 p-2 pl-10  font-medium text-gray-900 transition duration-75 dark:bg-gray-700 dark:text-white"
                             href="{{ $menu['data-route-name'] ? route($menu['data-route-name']) : '#' }}">
                             {{ $menu['data-menu-name'] }}
                         </a>
                     </li>
                 @else
                     <li title="{{ array_key_exists('data-menu-title', $menu) ? $menu['data-menu-title'] : null }}">
-                        <a class="group flex w-full items-center rounded-lg p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        <a class="group flex w-full items-center rounded-lg p-2 pl-10  font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                             href="{{ $menu['data-route-name'] ? route($menu['data-route-name']) : '#' }}">
                             {{ $menu['data-menu-name'] }}
                         </a>
@@ -91,14 +91,14 @@
                 <!-- Menu Item -->
                 @if (request()->route()->named($menu['data-route-name']))
                     <li title="{{ array_key_exists('data-menu-title', $menu) ? $menu['data-menu-title'] : null }}">
-                        <a class="group flex w-full items-center rounded-lg bg-gray-100 p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 dark:bg-gray-700 dark:text-white"
+                        <a class="group flex w-full items-center rounded-lg bg-gray-100 p-2 pl-10  font-medium text-gray-900 transition duration-75 dark:bg-gray-700 dark:text-white"
                             href="{{ $menu['data-route-name'] ? route($menu['data-route-name']) : '#' }}">
                             {{ $menu['data-menu-name'] }}
                         </a>
                     </li>
                 @else
                     <li title="{{ array_key_exists('data-menu-title', $menu) ? $menu['data-menu-title'] : null }}">
-                        <a class="group flex w-full items-center rounded-lg p-2 pl-10 text-base font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                        <a class="group flex w-full items-center rounded-lg p-2 pl-10  font-medium text-gray-900 transition duration-75 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                             href="{{ $menu['data-route-name'] ? route($menu['data-route-name']) : '#' }}">
                             {{ $menu['data-menu-name'] }}
                         </a>

@@ -17,12 +17,6 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Filepond File Upload -->
-    <link href="https://unpkg.com/filepond@^4/dist/filepond.css"
-        rel="stylesheet">
-    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css"
-        rel="stylesheet">
-
     <script>
         // On page load or when changing themes, best to add inline in `head` to avoid FOUC
         if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
@@ -57,7 +51,7 @@
     </div>
 
     <!-- Check route to hide sidebar -->
-    @if (request()->route()->named(['homepage', '*.index', 'account.*', 'taskscore.assignment.create']))
+    @if (request()->route()->named(['homepage', '*.index', 'account.*', 'taskscore.assignment.create', 'taskscore.assignment.resolved', 'taskscore.assignment.unresolved']))
         <x-navbar></x-navbar>
         <x-sidebar
             class="fixed left-0 top-0 z-[31] h-screen w-64 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 sm:translate-x-0"></x-sidebar>
@@ -75,16 +69,6 @@
     <!-- End of route check -->
 
     @yield('script')
-
-    <!-- Filepond File Upload -->
-    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-file-encode/dist/filepond-plugin-file-encode.min.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-file-validate-size/dist/filepond-plugin-file-validate-size.min.js">
-    </script>
-    <script
-        src="https://unpkg.com/filepond-plugin-image-exif-orientation/dist/filepond-plugin-image-exif-orientation.min.js">
-    </script>
-    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
 
     <script>
         var themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');

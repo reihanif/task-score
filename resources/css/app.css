@@ -239,3 +239,56 @@ input[datepicker] {
     height: 0;
     pointer-events: none;
 }
+
+/* Datatables */
+.dt-orderable-asc.dt-ordering-asc .sort-asc {
+    @apply text-gray-500 dark:text-white;
+}
+
+.dt-orderable-asc.dt-ordering-desc .sort-desc {
+    @apply text-gray-500 dark:text-white;
+}
+
+.dt-layout-row {
+    @apply sm:flex sm:place-content-between space-y-2 sm:space-y-0 items-center text-sm text-gray-700 dark:text-gray-400;
+}
+
+.dt-layout-row.dt-layout-table {
+    @apply block overflow-x-auto;
+}
+
+.dt-container {
+    @apply space-y-4;
+}
+
+.dt-paging-button.first {
+    @apply h-full py-2 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+}
+
+.dt-paging-button {
+    @apply px-3 py-2 text-sm leading-tight text-gray-500 bg-white border-l border-y border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+}
+
+.dt-paging-button.last {
+    @apply h-full py-2 px-3 leading-tight text-gray-500 bg-white rounded-r-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white;
+}
+
+.dt-paging-button.current {
+    @apply px-3 py-2 text-sm leading-tight border-l border-y text-blue-600 bg-blue-50 border-blue-300 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white;
+}
+
+.dt-length .dt-input {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 mx-2 p-1.5 pe-8 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+}
+
+.dt-layout-cell.dt-start {
+    @apply flex justify-center items-center ;
+}
+
+.dt-layout-cell.dt-end {
+    @apply flex justify-center items-center ;
+}
+
+.dt-empty {
+    @apply text-center py-4;
+}

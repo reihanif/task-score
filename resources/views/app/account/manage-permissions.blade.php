@@ -9,6 +9,10 @@
             <x-breadcrumbs class="mt-2"
                 :menus="collect([
                     [
+                        'name' => 'Users',
+                        'route' => route('users.index'),
+                    ],
+                    [
                         'name' => 'Manage Permissions',
                         'route' => null,
                     ],
@@ -17,11 +21,6 @@
     </div>
 
     <x-tabs :tabs="collect([
-        [
-            'state' => 'default',
-            'name' => 'Account Details',
-            'route' => '#',
-        ],
         [
             'state' => 'default',
             'name' => 'Account Settings',

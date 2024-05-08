@@ -18,7 +18,7 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleBold()"
-                            :class="{ 'is-active': isActive('bold', updatedAt) }">
+                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('bold', updatedAt) }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -35,7 +35,7 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleItalic()"
-                            :class="{ 'is-active': isActive('italic', updatedAt) }">
+                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('italic', updatedAt) }">
                             <svg class="h-4 w-4"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +56,7 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleUnderline()"
-                            :class="{ 'is-active': isActive('underline', updatedAt) }">
+                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('underline', updatedAt) }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -73,7 +73,7 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleStrike()"
-                            :class="{ 'is-active': isActive('strike', updatedAt) }">
+                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('strike', updatedAt) }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -89,7 +89,7 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleBulletList()"
-                            :class="{ 'is-active': isActive('bulletList', updatedAt) }">
+                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('bulletList', updatedAt) }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -103,7 +103,7 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleOrderedList()"
-                            :class="{ 'is-active': isActive('orderedList', updatedAt) }">
+                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('orderedList', updatedAt) }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -135,8 +135,7 @@
                         <button
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
-                            x-on:click="redo"
-                            :class="{ 'is-active': isActive({ textAlign: 'center' }, updatedAt) }">
+                            x-on:click="redo()">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -157,13 +156,12 @@
                 placeholder="{{ $attributes->get('placeholder') }}"
                 x-ref="element">
             </div>
+            <input class="hidden"
+                {{ $attributes }}
+                x-model="content"
+                pattern="^(?!^<p><\/p>$).*"></input>
         </div>
     </div>
     <p class="mt-1 text-sm text-red-600 dark:text-red-500"
         x-show="!content.match('^(?!^<p><\/p>$).*')">{{ $attributes->get('label') ?? 'This field' }} cannot be empty</p>
-    {{-- <p class="mt-1 text-sm text-gray-900 dark:text-white" x-show="content == ''">{{ $attributes->get('label') ?? 'This field' }} cannot be empty</p> --}}
-    <input class="hidden"
-        {{ $attributes }}
-        x-model="content"
-        pattern="^(?!^<p><\/p>$).*"></input>
 </div>
