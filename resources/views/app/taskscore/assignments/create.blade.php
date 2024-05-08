@@ -26,8 +26,7 @@
             </div>
         </div>
 
-        <div
-            class="grid grid-cols-2 space-y-4 bg-white pt-4 dark:bg-gray-800 md:flex-row md:space-y-0">
+        <div class="grid md:grid-cols-2 gap-4 bg-white pt-4 dark:bg-gray-800 md:flex-row md:space-y-0">
             <div class="inline-flex gap-2">
                 <div id="search" class="grow">
                     <label class="sr-only"
@@ -56,7 +55,7 @@
                     </select>
                 </div>
             </div>
-            <div class="grid justify-items-end">
+            <div class="grid justify-items-end order-first md:order-last">
                 <!-- Modal toggle -->
                 <button
                     class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -388,7 +387,7 @@
             </form>
         </x-modal>
         <div>
-            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
+            <table class="table-clickable w-full text-left text-xs sm:text-sm text-gray-500 rtl:text-right dark:text-gray-400"
                 id="subordinate-assignments-table">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
@@ -396,7 +395,7 @@
                             scope="col">
                             No
                         </x-table-head>
-                        <x-table-head class="px-3 py-3"
+                        <x-table-head class="min-w-60 px-3 py-3"
                             scope="col">
                             Subject
                         </x-table-head>

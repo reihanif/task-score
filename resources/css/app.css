@@ -250,7 +250,7 @@ input[datepicker] {
 }
 
 .dt-layout-row {
-    @apply flex place-content-between items-center text-sm text-gray-700 dark:text-gray-400;
+    @apply sm:flex sm:place-content-between space-y-2 sm:space-y-0 items-center text-sm text-gray-700 dark:text-gray-400;
 }
 
 .dt-layout-row.dt-layout-table {
@@ -282,7 +282,11 @@ input[datepicker] {
 }
 
 .dt-layout-cell.dt-start {
-    @apply inline-flex items-center;
+    @apply flex justify-center items-center ;
+}
+
+.dt-layout-cell.dt-end {
+    @apply flex justify-center items-center ;
 }
 
 .dt-empty {
