@@ -319,7 +319,10 @@ Datatables
 // Positions Table
 if (document.querySelector("#positions-table") !== null) {
     let positionsTable = new DataTable("#positions-table", {
+<<<<<<< HEAD
         responsive: true,
+=======
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
         layout: {
             topStart: {},
             topEnd: {},
@@ -343,7 +346,10 @@ if (document.querySelector("#positions-table") !== null) {
 // Users Table
 if (document.querySelector("#users-table") !== null) {
     let usersTable = new DataTable("#users-table", {
+<<<<<<< HEAD
         responsive: true,
+=======
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
         layout: {
             topStart: {},
             topEnd: {},
@@ -392,7 +398,10 @@ if (document.querySelector("#users-table") !== null) {
 // Departments Table
 if (document.querySelector("#departments-table") !== null) {
     let departmentsTable = new DataTable("#departments-table", {
+<<<<<<< HEAD
         responsive: true,
+=======
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
         layout: {
             topStart: {},
             topEnd: {},
@@ -424,6 +433,7 @@ if (document.querySelector("#departments-table") !== null) {
 
 // Unresolved Assignments Table
 if (document.querySelector("#unresolved-assignments-table") !== null) {
+<<<<<<< HEAD
     let unresolvedAssignmentsTable = new DataTable(
         "#unresolved-assignments-table",
         {
@@ -451,6 +461,31 @@ if (document.querySelector("#unresolved-assignments-table") !== null) {
             },
         }
     );
+=======
+    let unresolvedAssignmentsTable = new DataTable("#unresolved-assignments-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page_MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+        },
+    });
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
     document
         .getElementById("table-search-unresolved-assignments")
         .addEventListener("keyup", function () {
@@ -460,6 +495,7 @@ if (document.querySelector("#unresolved-assignments-table") !== null) {
 
 // Resolved Assignments Table
 if (document.querySelector("#resolved-assignments-table") !== null) {
+<<<<<<< HEAD
     let resolvedAssignmentsTable = new DataTable(
         "#resolved-assignments-table",
         {
@@ -487,6 +523,31 @@ if (document.querySelector("#resolved-assignments-table") !== null) {
             },
         }
     );
+=======
+    let resolvedAssignmentsTable = new DataTable("#resolved-assignments-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page_MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+        },
+    });
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
     document
         .getElementById("table-search-resolved-assignments")
         .addEventListener("keyup", function () {
@@ -496,6 +557,7 @@ if (document.querySelector("#resolved-assignments-table") !== null) {
 
 // Subordinate Assignments Table
 if (document.querySelector("#subordinate-assignments-table") !== null) {
+<<<<<<< HEAD
     let subordinateAssignmentsTable = new DataTable(
         "#subordinate-assignments-table",
         {
@@ -523,6 +585,31 @@ if (document.querySelector("#subordinate-assignments-table") !== null) {
             },
         }
     );
+=======
+    let subordinateAssignmentsTable = new DataTable("#subordinate-assignments-table", {
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page_MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+        },
+    });
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
     document
         .getElementById("table-search-subordinate-assignments")
         .addEventListener("keyup", function () {

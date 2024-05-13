@@ -14,21 +14,33 @@
             @if (in_array(Auth::User()->role, ['superadmin', 'admin', 'user']))
                 @if (Auth::User()->unresolved_assignments->count() > 0)
                     <x-sidebar-menu data-menu-name="My Assignment"
+<<<<<<< HEAD
                         data-route-name="taskscore.assignment.my-assignments"
+=======
+                        data-route-name="taskscore.assignment.unresolved"
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                         data-badge-content="{{ Auth::User()->unresolved_assignments->count() }}"
                         data-badge-color="blue">
                         <x-icons.person-fill-check />
                     </x-sidebar-menu>
                 @else
                     <x-sidebar-menu data-menu-name="My Assignment"
+<<<<<<< HEAD
                         data-route-name="taskscore.assignment.my-assignments">
+=======
+                        data-route-name="taskscore.assignment.unresolved">
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                         <x-icons.person-fill-check />
                     </x-sidebar-menu>
                 @endif
 
                 @if (!Auth::User()->position?->subordinates()->isEmpty())
                     <x-sidebar-menu data-menu-name="Subordinate Assignment"
+<<<<<<< HEAD
                         data-route-name="taskscore.assignment.subordinate-assignments">
+=======
+                        data-route-name="taskscore.assignment.create">
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                         <x-icons.clipboard-plus-fill />
                     </x-sidebar-menu>
                 @endif

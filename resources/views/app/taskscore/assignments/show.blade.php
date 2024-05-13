@@ -14,7 +14,11 @@
                                 :menus="collect([
                                     [
                                         'name' => 'Assignment',
+<<<<<<< HEAD
                                         'route' => route('taskscore.assignment.subordinate-assignments'),
+=======
+                                        'route' => route('taskscore.assignment.create'),
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                     ],
                                     [
                                         'name' => $assignment->parent->subject,
@@ -30,7 +34,11 @@
                                 :menus="collect([
                                     [
                                         'name' => 'Assignment',
+<<<<<<< HEAD
                                         'route' => route('taskscore.assignment.subordinate-assignments'),
+=======
+                                        'route' => route('taskscore.assignment.create'),
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                     ],
                                     [
                                         'name' => $assignment->subject,
@@ -40,6 +48,7 @@
                         @endif
                         <!-- User is Assignee of the assignment -->
                     @elseif (Auth::user()->isAssignee())
+<<<<<<< HEAD
                         <x-breadcrumbs class="mb-2"
                             :menus="collect([
                                 [
@@ -51,6 +60,35 @@
                                     'route' => null,
                                 ],
                             ])" />
+=======
+                        <!-- Assignment is resolved -->
+                        @if ($assignment->isResolved())
+                            <x-breadcrumbs class="mb-2"
+                                :menus="collect([
+                                    [
+                                        'name' => 'My Assignment',
+                                        'route' => route('taskscore.assignment.resolved'),
+                                    ],
+                                    [
+                                        'name' => $assignment->subject,
+                                        'route' => null,
+                                    ],
+                                ])" />
+                            <!-- Assignment is not resolved -->
+                        @else
+                            <x-breadcrumbs class="mb-2"
+                                :menus="collect([
+                                    [
+                                        'name' => 'My Assignment',
+                                        'route' => route('taskscore.assignment.unresolved'),
+                                    ],
+                                    [
+                                        'name' => $assignment->subject,
+                                        'route' => null,
+                                    ],
+                                ])" />
+                        @endif
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                     @endif
                     <h6 class="text-lg font-semibold dark:text-white">{{ $assignment->subject }}</h6>
 
@@ -63,8 +101,11 @@
                                     <div>
                                         <button
                                             class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+<<<<<<< HEAD
                                             data-modal-target="edit-assignment-modal"
                                             data-modal-show="edit-assignment-modal"
+=======
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                             type="button">
                                             <svg class="me-1 h-3.5 w-3.5"
                                                 aria-hidden="true"
@@ -78,6 +119,7 @@
                                                     d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
                                                     clip-rule="evenodd" />
                                             </svg>
+<<<<<<< HEAD
                                             Edit Due
                                         </button>
                                     </div>
@@ -408,6 +450,12 @@
                                     </form>
                                 </x-modal>
 
+=======
+                                            Edit
+                                        </button>
+                                    </div>
+                                </div>
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                 @if ($assignment->isResolved() && $assignment->isOpen())
                                     <div class="inline-flex space-x-1.5">
                                         <!-- Approve Button -->
@@ -896,7 +944,11 @@
                             </div>
                             <div>
                                 <!-- Resolve Button -->
+<<<<<<< HEAD
                                 {{-- <button
+=======
+                                <button
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                     class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
                                     data-modal-target="resolve-assignment-modal"
                                     data-modal-show="resolve-assignment-modal"
@@ -913,7 +965,11 @@
                                             clip-rule="evenodd" />
                                     </svg>
                                     Additional Time
+<<<<<<< HEAD
                                 </button> --}}
+=======
+                                </button>
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                             </div>
                         </div>
                     @endif
