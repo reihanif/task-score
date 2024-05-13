@@ -13,7 +13,7 @@
     id="create-departments-modal"
     aria-hidden="true"
     tabindex="-1">
-    <div class="relative h-full w-full max-w-2xl p-4 md:h-auto">
+    <div class="relative h-full w-full max-w-md p-4 md:h-auto">
         <!-- Modal content -->
         <div class="relative rounded-lg bg-white p-4 shadow dark:bg-gray-800 sm:p-5">
             <!-- Modal header -->
@@ -35,7 +35,7 @@
                 action="{{ route('departments.store') }}"
                 method="post">
                 @csrf
-                <div class="mb-4 grid gap-4 sm:grid-cols-2">
+                <div class="mb-4 grid gap-4">
                     <div>
                         <x-forms.input id="name"
                             name="name"

@@ -6,8 +6,11 @@ use Carbon\Carbon;
 use App\Models\File;
 use App\Models\User;
 use App\Models\Assignment;
+use App\Notifications\AssignmentResolved;
 use Illuminate\Http\Request;
+use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class AssignmentController extends Controller
 {
@@ -16,12 +19,14 @@ class AssignmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function unresolved()
+    public function myAssignment()
     {
-        $assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', null)->orderBy('created_at')->get();
+        $unresolved_assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', null)->orderBy('created_at')->get();
+        $resolved_assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', '!=', null)->orderBy('created_at')->get();
 
-        return view('app.taskscore.assignments.unresolved', [
-            'assignments' => $assignments,
+        return view('app.taskscore.assignments.my-assignments', [
+            'unresolved_assignments' => $unresolved_assignments,
+            'resolved_assignments' => $resolved_assignments,
         ]);
     }
 
@@ -44,7 +49,7 @@ class AssignmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function subordinateAssignment()
     {
         $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
             $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
@@ -52,7 +57,7 @@ class AssignmentController extends Controller
 
         $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->doesntHave('parent')->orderBy('created_at')->get();
 
-        return view('app.taskscore.assignments.create', [
+        return view('app.taskscore.assignments.subordinate-assignments', [
             'assignees' => $assignees,
             'assignments' => $assignments
         ]);
@@ -109,6 +114,8 @@ class AssignmentController extends Controller
                 $file->save();
             }
         }
+        $assignees = User::where('id', $assignment->assigned_to)->get();
+        Notification::send($assignees, new NewAssignment($assignment));
 
         return redirect()->back()->with('success', 'Assignment sent to ' . $assignment->assignee);
     }
@@ -191,6 +198,9 @@ class AssignmentController extends Controller
         }
 
         $assignment->save();
+
+        $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
+        Notification::send($taskmasters, new AssignmentResolved($assignment));
 
         return redirect()->back()->with('success', $assignment->name . 'has been resolved');
     }

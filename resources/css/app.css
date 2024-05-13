@@ -241,6 +241,13 @@ input[datepicker] {
 }
 
 /* Datatables */
+<<<<<<< HEAD
+table {
+    @apply !w-full;
+}
+
+=======
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
 .dt-orderable-asc.dt-ordering-asc .sort-asc {
     @apply text-gray-500 dark:text-white;
 }

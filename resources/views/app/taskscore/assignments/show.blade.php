@@ -14,7 +14,11 @@
                                 :menus="collect([
                                     [
                                         'name' => 'Assignment',
+<<<<<<< HEAD
+                                        'route' => route('taskscore.assignment.subordinate-assignments'),
+=======
                                         'route' => route('taskscore.assignment.create'),
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                     ],
                                     [
                                         'name' => $assignment->parent->subject,
@@ -30,7 +34,11 @@
                                 :menus="collect([
                                     [
                                         'name' => 'Assignment',
+<<<<<<< HEAD
+                                        'route' => route('taskscore.assignment.subordinate-assignments'),
+=======
                                         'route' => route('taskscore.assignment.create'),
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                     ],
                                     [
                                         'name' => $assignment->subject,
@@ -40,6 +48,19 @@
                         @endif
                         <!-- User is Assignee of the assignment -->
                     @elseif (Auth::user()->isAssignee())
+<<<<<<< HEAD
+                        <x-breadcrumbs class="mb-2"
+                            :menus="collect([
+                                [
+                                    'name' => 'My Assignment',
+                                    'route' => route('taskscore.assignment.my-assignments'),
+                                ],
+                                [
+                                    'name' => $assignment->subject,
+                                    'route' => null,
+                                ],
+                            ])" />
+=======
                         <!-- Assignment is resolved -->
                         @if ($assignment->isResolved())
                             <x-breadcrumbs class="mb-2"
@@ -67,6 +88,7 @@
                                     ],
                                 ])" />
                         @endif
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                     @endif
                     <h6 class="text-lg font-semibold dark:text-white">{{ $assignment->subject }}</h6>
 
@@ -79,6 +101,11 @@
                                     <div>
                                         <button
                                             class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+<<<<<<< HEAD
+                                            data-modal-target="edit-assignment-modal"
+                                            data-modal-show="edit-assignment-modal"
+=======
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                             type="button">
                                             <svg class="me-1 h-3.5 w-3.5"
                                                 aria-hidden="true"
@@ -92,10 +119,343 @@
                                                     d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
                                                     clip-rule="evenodd" />
                                             </svg>
+<<<<<<< HEAD
+                                            Edit Due
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Modal -->
+                                <x-modal id="edit-assignment-modal"
+                                    data-title="Edit assignment due">
+                                    <!-- Modal body -->
+                                    <form class="p-4 md:p-5"
+                                        x-on:submit="loading = ! loading"
+                                        action="{{ route('taskscore.assignment.store') }}"
+                                        method="post"
+                                        enctype="multipart/form-data">
+                                        @csrf
+                                        {{-- <div class="mb-5">
+                                            <div class="space-y-4">
+                                                <div class="space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
+                                                    <x-forms.select id="input-assignee"
+                                                        name="assignee"
+                                                        label="Assignee"
+                                                        state="initial"
+                                                        readonly>
+                                                        <option>{{ $assignment->assignee->name }}</option>
+                                                    </x-forms.select>
+                                                    <x-forms.select id="input-category"
+                                                        name="category"
+                                                        label="Category"
+                                                        state="initial"
+                                                        required>
+                                                        <option value="">Select assignment category</option>
+                                                        <option value="Pembuatan Memorandum">Pembuatan Memorandum</option>
+                                                        <option value="Pembuatan Surat">Pembuatan Surat</option>
+                                                        <option value="Membuat bahan presentasi">Membuat bahan presentasi
+                                                        </option>
+                                                        <option value="Menghadiri rapat">Menghadiri rapat</option>
+                                                        <option value="Melakukan perjalanan dinas">Melakukan perjalanan
+                                                            dinas</option>
+                                                        <option value="Pembuatan SP3">Pembuatan SP3</option>
+                                                        <option value="Pembuatan Berita Acara">Pembuatan Berita Acara
+                                                        </option>
+                                                        <option value="Pembuatan Sales Order">Pembuatan Sales Order</option>
+                                                    </x-forms.select>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <x-forms.input id="input-subject"
+                                                        name="subject"
+                                                        type="text"
+                                                        autocomplete="off"
+                                                        label="Subject"
+                                                        placeholder="Assignment subject"
+                                                        state="initial"
+                                                        required></x-forms.input>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <x-forms.text-editor name="description"
+                                                        label="Description"
+                                                        placeholder="Assignment description and details"
+                                                        required>
+                                                    </x-forms.text-editor>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <label
+                                                        class="mb-2 inline-flex gap-1 text-sm font-medium text-gray-900 dark:text-white"
+                                                        for="file">Attachment
+                                                        <button
+                                                            class="text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
+                                                            data-tooltip-target="tooltip-default"
+                                                            type="button">
+                                                            <svg class="h-4 w-4"
+                                                                aria-hidden="true"
+                                                                fill="currentColor"
+                                                                viewBox="0 0 20 20"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd"
+                                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                                                    clip-rule="evenodd"></path>
+                                                            </svg>
+                                                        </button>
+
+                                                        <div class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-normal text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
+                                                            id="tooltip-default"
+                                                            role="tooltip">
+                                                            Attach documents that related to this assignment
+                                                            <div class="tooltip-arrow"
+                                                                data-popper-arrow></div>
+                                                        </div>
+                                                    </label>
+                                                    <input id="file"
+                                                        name="attachments[]"
+                                                        type="file"
+                                                        multiple
+                                                        max-files="2">
+                                                </div>
+                                                <div class="space-y-4"
+                                                    x-data="{ selectedOption: '' }">
+                                                    <div>
+                                                        <p
+                                                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                                                            Assignment deadline
+                                                        </p>
+                                                        <ul
+                                                            class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
+                                                            <li
+                                                                class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
+                                                                <div class="flex items-center ps-3">
+                                                                    <input
+                                                                        class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
+                                                                        id="horizontal-list-radio-license"
+                                                                        type="radio"
+                                                                        value="interval-time"
+                                                                        x-model="selectedOption"
+                                                                        required>
+                                                                    <label
+                                                                        class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                                                        for="horizontal-list-radio-license">Select by
+                                                                        interval</label>
+                                                                </div>
+                                                            <li class="w-full dark:border-gray-600">
+                                                                <div class="flex items-center ps-3">
+                                                                    <input
+                                                                        class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
+                                                                        id="horizontal-list-radio-passport"
+                                                                        type="radio"
+                                                                        value="exact-time"
+                                                                        x-model="selectedOption"
+                                                                        required>
+                                                                    <label
+                                                                        class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                                                        for="horizontal-list-radio-passport">Select exact
+                                                                        time</label>
+                                                                </div>
+                                                            </li>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+
+                                                    <div class="sm:grid sm:grid-cols-2"
+                                                        x-show="selectedOption !== ''">
+                                                        <template x-if="selectedOption === 'exact-time'">
+                                                            <div
+                                                                class="col-span-full space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
+                                                                <x-forms.input class="cursor-pointer"
+                                                                    id="input-date"
+                                                                    name="date"
+                                                                    format="dd/mm/yy"
+                                                                    type="date"
+                                                                    value="{{ date('Y-m-d') }}"
+                                                                    onclick="showPicker()"
+                                                                    autocomplete="off"
+                                                                    state="initial"
+                                                                    label="Date"
+                                                                    required />
+                                                                <x-forms.input class="cursor-pointer"
+                                                                    id="input-time"
+                                                                    name="time"
+                                                                    type="time"
+                                                                    x-data="{ timeValue: addMinutesFromCurrentTime(60) }"
+                                                                    x-bind:value="timeValue"
+                                                                    onclick="showPicker()"
+                                                                    state="initial"
+                                                                    label="Time"
+                                                                    required />
+                                                            </div>
+                                                        </template>
+
+                                                        <template x-if="selectedOption === 'interval-time'">
+                                                            <ul class="col-span-2 mb-5 grid w-full grid-cols-6 gap-2"
+                                                                id="timetable">
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="10-am"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="20"
+                                                                        checked>
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="10-am">
+                                                                        20 Minutes
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="10-30-am"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="30">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="10-30-am">
+                                                                        30 Minutes
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="11-am"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="45">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="11-am">
+                                                                        45 Minutes
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="11-30-am"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="60">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="11-30-am">
+                                                                        1 Hours
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="12-am"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="120">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="12-am">
+                                                                        2 Hours
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="12-30-pm"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="180">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="12-30-pm">
+                                                                        3 Hours
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="1-pm"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="240">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="1-pm">
+                                                                        4 Hours
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="1-30-pm"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="300">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="1-30-pm">
+                                                                        5 Hours
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="2-pm"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="1440">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="2-pm">
+                                                                        1 Days
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="2-30-pm"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="2880">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="2-30-pm">
+                                                                        2 Days
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="3-pm"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="4320">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="3-pm">
+                                                                        3 Days
+                                                                    </label>
+                                                                </li>
+                                                                <li>
+                                                                    <input class="peer hidden"
+                                                                        id="3-30-pm"
+                                                                        name="timetable"
+                                                                        type="radio"
+                                                                        value="5760">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                                        for="3-30-pm">
+                                                                        4 Days
+                                                                    </label>
+                                                                </li>
+                                                            </ul>
+                                                        </template>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> --}}
+                                        <div class="flex place-content-end">
+                                            <button
+                                                class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                type="submit">
+                                                Save
+                                            </button>
+                                        </div>
+                                    </form>
+                                </x-modal>
+
+=======
                                             Edit
                                         </button>
                                     </div>
                                 </div>
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                 @if ($assignment->isResolved() && $assignment->isOpen())
                                     <div class="inline-flex space-x-1.5">
                                         <!-- Approve Button -->
@@ -584,7 +944,11 @@
                             </div>
                             <div>
                                 <!-- Resolve Button -->
+<<<<<<< HEAD
+                                {{-- <button
+=======
                                 <button
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                                     class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
                                     data-modal-target="resolve-assignment-modal"
                                     data-modal-show="resolve-assignment-modal"
@@ -601,7 +965,11 @@
                                             clip-rule="evenodd" />
                                     </svg>
                                     Additional Time
+<<<<<<< HEAD
+                                </button> --}}
+=======
                                 </button>
+>>>>>>> 9d5f96df3cf85817c1ccb721faf5362187b900e3
                             </div>
                         </div>
                     @endif
