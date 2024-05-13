@@ -14,7 +14,7 @@
             @if (in_array(Auth::User()->role, ['superadmin', 'admin', 'user']))
                 @if (Auth::User()->unresolved_assignments->count() > 0)
                     <x-sidebar-menu data-menu-name="My Assignment"
-                        data-route-name="taskscore.assignment.my-assignment"
+                        data-route-name="taskscore.assignment.my-assignments"
                         data-badge-content="{{ Auth::User()->unresolved_assignments->count() }}"
                         data-badge-color="blue">
                         <x-icons.person-fill-check />

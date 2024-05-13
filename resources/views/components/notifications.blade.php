@@ -54,7 +54,8 @@
                     <div class="w-full pl-3">
                         <div class="mb-1.5 text-sm font-normal text-gray-500 dark:text-gray-400">
                             {{ str_replace('-', ' ', ucfirst($notification->type)) . ' ' . $notification->data['conjunction'] . ' ' }}
-                            <span class="font-semibold text-gray-900 dark:text-white">{{ $notification->data['from'] }}</span>:
+                            <span
+                                class="font-semibold text-gray-900 dark:text-white">{{ $notification->data['from'] }}</span>:
                             {{ $notification->data['body'] }}
                         </div>
                         <div class="text-xs font-medium text-blue-600 dark:text-blue-500">
@@ -63,12 +64,12 @@
                     </div>
                 </a>
             @empty
-            <a class="cursor-default flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
-            href="#">
-            <div class="w-80 text-center text-sm text-gray-500 dark:text-gray-400">
-                No notifications
-            </div>
-        </a>
+                <a class="flex cursor-default border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+                    href="#">
+                    <div class="w-80 text-center text-sm text-gray-500 dark:text-gray-400">
+                        No notifications
+                    </div>
+                </a>
             @endforelse
             {{-- <a class="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
                 href="#">
