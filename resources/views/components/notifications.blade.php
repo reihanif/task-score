@@ -1,6 +1,7 @@
 <div {{ $attributes }}>
     <!-- Notifications -->
-    <button class="relative mr-1 rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:ring-4 focus:ring-gray-300 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-600"
+    <button
+        class="relative mr-1 rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:ring-4 focus:ring-gray-300 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-600"
         data-dropdown-toggle="notification-dropdown"
         type="button">
         <span class="sr-only">View notifications</span>
@@ -10,47 +11,66 @@
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+            <path
+                d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z">
+            </path>
         </svg>
-        {{-- @if (count(auth()->user()->unreadNotifications) > 0) --}}
-            <span class="absolute start-6 top-1 h-3 w-3 rounded-full border-2 border-white bg-red-500 dark:border-gray-800"></span>
-        {{-- @endif --}}
+        @if (count(auth()->user()->unreadNotifications) > 0)
+            <span
+                class="absolute start-6 top-1 h-3 w-3 rounded-full border-2 border-white bg-red-500 dark:border-gray-800"></span>
+        @endif
     </button>
     <!-- Dropdown menu -->
     <div class="z-50 my-4 hidden max-w-sm list-none divide-y divide-gray-100 overflow-hidden rounded rounded-xl bg-white text-base shadow-lg dark:divide-gray-600 dark:bg-gray-700"
         id="notification-dropdown">
-        <div class="block bg-gray-50 px-4 py-2 text-center text-base font-medium text-gray-700 dark:bg-gray-600 dark:text-gray-300">
+        <div
+            class="block bg-gray-50 px-4 py-2 text-center text-base font-medium text-gray-700 dark:bg-gray-600 dark:text-gray-300">
             Notifications
         </div>
         <div>
-            <a class="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
-                href="#">
-                <div class="flex-shrink-0">
-                    <img class="h-11 w-11 rounded-full"
-                        src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/bonnie-green.png"
-                        alt="Bonnie Green avatar" />
-                    <div class="absolute -mt-5 ml-6 flex h-5 w-5 items-center justify-center rounded-full border border-white bg-blue-700 dark:border-gray-700">
-                        <svg class="h-3 w-3 text-white"
-                            aria-hidden="true"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z"></path>
-                            <path d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z"></path>
-                        </svg>
+            @forelse (auth()->user()->unreadNotifications as $notification)
+                <a class="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+                    href="{{ route($notification->data['route'], $notification->data['route_id']) }}">
+                    <div class="flex-shrink-0">
+                        <img class="h-11 w-11 rounded-full"
+                            src="https://ui-avatars.com/api/?name={{ urlencode($notification->data['from']) }}&background=0D8ABC&color=fff&bold=true"
+                            alt="Bonnie Green avatar" />
+                        <div
+                            class="absolute -mt-5 ml-6 flex h-5 w-5 items-center justify-center rounded-full border border-white bg-blue-700 dark:border-gray-700">
+                            <svg class="h-3 w-3 text-white"
+                                aria-hidden="true"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M8.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l2-2a1 1 0 00-1.414-1.414L11 7.586V3a1 1 0 10-2 0v4.586l-.293-.293z">
+                                </path>
+                                <path
+                                    d="M3 5a2 2 0 012-2h1a1 1 0 010 2H5v7h2l1 2h4l1-2h2V5h-1a1 1 0 110-2h1a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5z">
+                                </path>
+                            </svg>
+                        </div>
                     </div>
-                </div>
-                <div class="w-full pl-3">
-                    <div class="mb-1.5 text-sm font-normal text-gray-500 dark:text-gray-400">
-                        New message from
-                        <span class="font-semibold text-gray-900 dark:text-white">Bonnie Green</span>: "Hey, what's up? All set for the presentation?"
+                    <div class="w-full pl-3">
+                        <div class="mb-1.5 text-sm font-normal text-gray-500 dark:text-gray-400">
+                            {{ str_replace('-', ' ', ucfirst($notification->type)) . ' ' . $notification->data['conjunction'] . ' ' }}
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ $notification->data['from'] }}</span>:
+                            {{ $notification->data['body'] }}
+                        </div>
+                        <div class="text-xs font-medium text-blue-600 dark:text-blue-500">
+                            {{ $notification->created_at->diffForHumans() }}
+                        </div>
                     </div>
-                    <div class="text-xs font-medium text-blue-600 dark:text-blue-500">
-                        a few moments ago
-                    </div>
-                </div>
-            </a>
-            <a class="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+                </a>
+            @empty
+            <a class="cursor-default flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
+            href="#">
+            <div class="w-80 text-center text-sm text-gray-500 dark:text-gray-400">
+                No notifications
+            </div>
+        </a>
+            @endforelse
+            {{-- <a class="flex border-b px-4 py-3 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-600"
                 href="#">
                 <div class="flex-shrink-0">
                     <img class="h-11 w-11 rounded-full"
@@ -164,7 +184,7 @@
                         3 hours ago
                     </div>
                 </div>
-            </a>
+            </a> --}}
         </div>
         <a class="text-md block bg-gray-50 py-2 text-center font-medium text-gray-900 hover:bg-gray-100 dark:bg-gray-600 dark:text-white dark:hover:underline"
             href="#">
