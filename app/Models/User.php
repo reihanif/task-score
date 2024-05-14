@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use stdClass;
 
 class User extends Authenticatable
 {
@@ -105,16 +106,16 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if the user is an assignee.
+     * Check if the user is an assignee of specific assignment.
      */
-    public function isAssignee() {
-        return $this->assignments()->exists();
+    public function isAssignee(Assignment $assignment = null) {
+        return $this->id == $assignment->assigned_to;
     }
 
     /**
-     * Check if the user is a taskmaster.
+     * Check if the user is a taskmaster of specific assignment.
      */
-    public function isTaskmaster() {
-        return $this->created_assignments()->exists();
+    public function isTaskmaster(Assignment $assignment = null) {
+        return $this->id == $assignment->taskmaster_id;
     }
 }

@@ -148,19 +148,33 @@ class Assignment extends Model
      */
     public function score()
     {
-        $interval = $this->created_at->diff($this->resolved_at);
-        $due_interval = $this->created_at->diff($this->due);
+        $realization_interval = $this->created_at->diff($this->resolved_at);
+        $target_interval = $this->created_at->diff($this->due);
 
-        $resolved =
-            $interval->days * 86400 + $interval->h * 3600 + $interval->i * 60 + $interval->s;
+        $realization =
+            $realization_interval->days * 86400 +
+            $realization_interval->h * 3600 +
+            $realization_interval->i * 60 +
+            $realization_interval->s;
 
-        $due =
-            $due_interval->days * 86400 +
-            $due_interval->h * 3600 +
-            $due_interval->i * 60 +
-            $due_interval->s;
-        $score = ($due / $resolved) * 100;
+        $target =
+            $target_interval->days * 86400 +
+            $target_interval->h * 3600 +
+            $target_interval->i * 60 +
+            $target_interval->s;
 
-        return round($score);
+        return number_format(($this->calculate_score($realization, $target)), 2, '.', '');
+    }
+
+    private function calculate_score(float $realization, float $target)
+    {
+        if ($realization >= $target) {
+            return (1 - (($realization - $target) / $target)) * 100;
+        }
+        elseif ($realization <= ($target * 1.1)) {
+            return 110;
+        } else {
+           return (100 + (($realization - $target) * (110 - 100) / ($realization * 1.1) - $target));
+        }
     }
 }
