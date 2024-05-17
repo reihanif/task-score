@@ -33,6 +33,8 @@
                                     state="initial"
                                     label="Username"
                                     placeholder="Type your username"
+                                    aria-autocomplete="username"
+                                    autocomplete="on"
                                     required/>
                             </div>
                             <div>
@@ -42,6 +44,8 @@
                                     state="initial"
                                     label="Password"
                                     placeholder="••••••••••••"
+                                    aria-autocomplete="password"
+                                    autocomplete="on"
                                     required/>
                             </div>
                         </div>

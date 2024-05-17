@@ -85,25 +85,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($unresolved_assignments as $key => $assignment)
+                        @foreach ($unresolved_assignments as $key => $item)
                             <tr class="cursor-pointer border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-                                data-href="{{ route('taskscore.assignment.show', $assignment->id) }}">
+                                data-href="{{ route('taskscore.assignment.show', $item->assignment->id) }}">
                                 <th class="whitespace-nowrap px-3 py-4 font-medium text-gray-900 dark:text-white"
                                     scope="row">
                                     {{ $loop->iteration }}
                                 </th>
                                 <th class="px-3 py-4 font-medium text-gray-900 dark:text-white"
                                     scope="row">
-                                    {{ $assignment->subject }}
+                                    {{ $item->assignment->subject }}
                                 </th>
                                 <td class="whitespace-nowrap px-3 py-4">
-                                    {{ $assignment->taskmaster->name }}
+                                    {{ $item->assignment->taskmaster->name }}
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4">
-                                    {{ $assignment->created_at->format('d F Y H:i') }}
+                                    {{ $item->created_at->format('d F Y H:i') }}
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4">
-                                    {{ $assignment->due->diffForHumans() }}
+                                    {{ $item->due->diffForHumans() }}
                                 </td>
                             </tr>
                         @endforeach
@@ -167,25 +167,25 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($resolved_assignments as $key => $assignment)
+                        @foreach ($resolved_assignments as $key => $item)
                             <tr class="cursor-pointer border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
-                                data-href="{{ route('taskscore.assignment.show', $assignment->id) }}">
+                                data-href="{{ route('taskscore.assignment.show', $item->assignment->id) }}">
                                 <th class="whitespace-nowrap px-3 py-4 font-medium text-gray-900 dark:text-white"
                                     scope="row">
                                     {{ $loop->iteration }}
                                 </th>
                                 <th class="px-3 py-4 font-medium text-gray-900 dark:text-white"
                                     scope="row">
-                                    {{ $assignment->subject }}
+                                    {{ $item->assignment->subject }}
                                 </th>
                                 <td class="whitespace-nowrap px-3 py-4">
-                                    {{ $assignment->taskmaster->name }}
+                                    {{ $item->assignment->taskmaster->name }}
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4">
-                                    {{ $assignment->created_at->format('d F Y H:i') }}
+                                    {{ $item->created_at->format('d F Y H:i') }}
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4">
-                                    {{ $assignment->due->diffForHumans() }}
+                                    {{ $item->due->diffForHumans() }}
                                 </td>
                             </tr>
                         @endforeach

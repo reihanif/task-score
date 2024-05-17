@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('assignments', function (Blueprint $table) {
+        Schema::create('tasks', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('taskmaster_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('type');
-            $table->string('subject');
+            $table->foreignUuid('assignee_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignUuid('assignment_id')->references('id')->on('assignments')->onDelete('cascade');
             $table->text('description');
-            $table->enum('status', array('open', 'closed'))->default('open');
-            $table->datetime('closed_at')->nullable();
+            $table->datetime('due')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assignments');
+        Schema::dropIfExists('tasks');
     }
 };

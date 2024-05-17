@@ -130,11 +130,6 @@ document.addEventListener("alpine:init", () => {
     });
 });
 
-window.Alpine = Alpine;
-
-Alpine.plugin(collapse);
-Alpine.start();
-
 /*
 Flowbite Datepicker
 */
@@ -193,36 +188,50 @@ Tom Select Js
 TomSelect.define("remove_button", TomSelect_remove_button);
 TomSelect.define("caret_position", TomSelect_caret_position);
 
-document.querySelectorAll("select").forEach((el) => {
-    if (!el.hasAttribute("normal-select")) {
-        if (el.hasAttribute("multiple")) {
-            if (el.hasAttribute("readonly")) {
-                new TomSelect(el, {}).lock();
-            } else {
-                new TomSelect(el, {
-                    plugins: ["remove_button", "caret_position"],
-                    create: false,
-                    sortField: {
-                        field: "text",
-                        direction: "asc",
-                    },
-                });
-            }
-        } else {
-            if (el.hasAttribute("readonly")) {
-                new TomSelect(el, {}).lock();
-            } else {
-                new TomSelect(el, {
-                    create: false,
-                    sortField: {
-                        field: "text",
-                        direction: "asc",
-                    },
-                });
+// Store TomSelect instances
+let tomSelectInstances = [];
+
+// Function to initialize TomSelect for all select elements
+function initializeTomSelects() {
+    // Destroy existing TomSelect instances
+    // tomSelectInstances.forEach((instance) => instance.destroy());
+    // tomSelectInstances = [];
+
+    document.querySelectorAll("select").forEach((el) => {
+        if (!el.hasAttribute("normal-select")) {
+            if (!el.classList.contains("dt-input")) {
+                if (!el.classList.contains("tomselected")) {
+                    if (el.hasAttribute("multiple")) {
+                        if (el.hasAttribute("readonly")) {
+                            new TomSelect(el, {}).lock();
+                        } else {
+                            new TomSelect(el, {
+                                plugins: ["remove_button", "caret_position"],
+                                create: false,
+                                sortField: {
+                                    field: "text",
+                                    direction: "asc",
+                                },
+                            });
+                        }
+                    } else {
+                        if (el.hasAttribute("readonly")) {
+                            new TomSelect(el, {}).lock();
+                        } else {
+                            new TomSelect(el, {
+                                create: false,
+                                sortField: {
+                                    field: "text",
+                                    direction: "asc",
+                                },
+                            });
+                        }
+                    }
+                }
             }
         }
-    }
-});
+    });
+}
 
 /*
 Filepond
@@ -537,3 +546,12 @@ if (document.querySelector("#subordinate-assignments-table") !== null) {
                 .draw();
         });
 }
+
+window.TomSelect = TomSelect;
+window.initializeTomSelects = initializeTomSelects;
+window.onload = initializeTomSelects();
+
+window.Alpine = Alpine;
+
+Alpine.plugin(collapse);
+Alpine.start();

@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\File;
+use App\Models\Task;
 use App\Models\User;
 use App\Models\Assignment;
-use App\Notifications\AssignmentResolved;
 use Illuminate\Http\Request;
 use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\AssignmentResolved;
 use Illuminate\Support\Facades\Notification;
 
 class AssignmentController extends Controller
@@ -21,8 +22,15 @@ class AssignmentController extends Controller
      */
     public function myAssignment()
     {
-        $unresolved_assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', null)->orderBy('created_at')->get();
-        $resolved_assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', '!=', null)->orderBy('created_at')->get();
+        // $unresolved_assignments = Assignment::where('assignee_id', Auth::User()->id)->where('resolved_at', null)->orderBy('created_at')->get();
+        // $resolved_assignments = Assignment::where('assignee_id', Auth::User()->id)->where('resolved_at', '!=', null)->orderBy('created_at')->get();
+
+        $unresolved_assignments = Task::whereHas('assignment', function ($query) {
+            $query->where('closed_at', null);
+        })->where('assignee_id', Auth::User()->id)->get();
+        $resolved_assignments = Task::whereHas('assignment', function ($query) {
+            $query->whereNot('closed_at', null);
+        })->where('assignee_id', Auth::User()->id)->get();
 
         return view('app.taskscore.assignments.my-assignments', [
             'unresolved_assignments' => $unresolved_assignments,
@@ -55,7 +63,7 @@ class AssignmentController extends Controller
             $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
         })->get()->sortBy('name');
 
-        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->doesntHave('parent')->orderBy('created_at')->get();
+        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at')->get();
 
         return view('app.taskscore.assignments.subordinate-assignments', [
             'assignees' => $assignees,

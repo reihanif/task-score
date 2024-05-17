@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use stdClass;
 use App\Models\Permission;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use stdClass;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable
 {
@@ -74,27 +75,35 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all the tasks associated with the user as assignee.
+     */
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'assignee_id');
+    }
+
+    /**
      * Get all the assignments associated with the user as assignee.
      */
-    public function assignments(): HasMany
+    public function assignments(): HasManyThrough
     {
-        return $this->hasMany(Assignment::class, 'assigned_to');
+        return $this->hasManyThrough(Assignment::class, Task::class, 'assignee_id', 'id', 'id', 'assignment_id');
     }
 
     /**
      * Get the resolved assignments associated with the user as assignee.
      */
-    public function resolved_assignments(): HasMany
-    {
-        return $this->hasMany(Assignment::class, 'assigned_to')->where('resolved_at', '!=', null);
-    }
+    // public function resolved_assignments(): HasMany
+    // {
+    //     return $this->hasMany(Assignment::class, 'assigned_to')->where('resolved_at', '!=', null);
+    // }
 
     /**
      * Get the unresolved assignments associated with the user as assignee.
      */
     public function unresolved_assignments(): HasMany
     {
-        return $this->hasMany(Assignment::class, 'assigned_to')->where('resolved_at', null);
+        return $this->hasMany(Task::class, 'assignee_id')->where('resolved_at', null);
     }
 
     /**
@@ -108,14 +117,14 @@ class User extends Authenticatable
     /**
      * Check if the user is an assignee of specific assignment.
      */
-    public function isAssignee(Assignment $assignment = null) {
-        return $this->id == $assignment->assigned_to;
+    public function isAssignee($assignment_id) {
+        return Assignment::findOrFail($assignment_id)->tasks->pluck('assignee_id')->contains($this->id);
     }
 
     /**
      * Check if the user is a taskmaster of specific assignment.
      */
-    public function isTaskmaster(Assignment $assignment = null) {
-        return $this->id == $assignment->taskmaster_id;
+    public function isTaskmaster($assignment_id) {
+        return $this->id == Assignment::select('taskmaster_id')->findOrFail($assignment_id)->taskmaster_id;
     }
 }

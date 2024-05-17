@@ -8,7 +8,7 @@
                         @if (array_key_exists('badge', $tab))
                             <a class="active inline-block rounded-t-lg border-blue-600 p-4 py-3 text-blue-600 hover:border-b-2 hover:text-gray-600 dark:border-blue-500 dark:text-blue-500"
                                 href="#"
-                                :class="{
+                                x-bind:class="{
                                     'cursor-default border-b-2 border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500': tab ==
                                         '{{ $tab['route'] }}'
                                 }"
@@ -22,7 +22,7 @@
                         @else
                             <a class="active inline-block rounded-t-lg border-blue-600 p-3.5 text-blue-600 hover:border-b-2 hover:text-gray-600 dark:border-blue-500 dark:text-blue-500"
                                 href="#"
-                                :class="{
+                                x-bind:class="{
                                     'cursor-default border-b-2 border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500': tab ==
                                         '{{ $tab['route'] }}'
                                 }"

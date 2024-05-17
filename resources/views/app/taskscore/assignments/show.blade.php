@@ -8,38 +8,21 @@
             <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
                 <div class="w-full space-y-3">
                     <!-- User is Taskmaster of the assignment -->
-                    @if (Auth::user()->isTaskmaster($assignment))
-                        @if ($assignment->hasParent())
-                            <x-breadcrumbs class="mb-2"
-                                :menus="collect([
-                                    [
-                                        'name' => 'Assignment',
-                                        'route' => route('taskscore.assignment.subordinate-assignments'),
-                                    ],
-                                    [
-                                        'name' => $assignment->parent->subject,
-                                        'route' => route('taskscore.assignment.show', $assignment->parent_id),
-                                    ],
-                                    [
-                                        'name' => $assignment->subject,
-                                        'route' => null,
-                                    ],
-                                ])" />
-                        @else
-                            <x-breadcrumbs class="mb-2"
-                                :menus="collect([
-                                    [
-                                        'name' => 'Assignment',
-                                        'route' => route('taskscore.assignment.subordinate-assignments'),
-                                    ],
-                                    [
-                                        'name' => $assignment->subject,
-                                        'route' => null,
-                                    ],
-                                ])" />
-                        @endif
-                        <!-- User is Assignee of the assignment -->
-                    @elseif (Auth::user()->isAssignee($assignment))
+                    @taskmaster
+                        <x-breadcrumbs class="mb-2"
+                            :menus="collect([
+                                [
+                                    'name' => 'Assignment',
+                                    'route' => route('taskscore.assignment.subordinate-assignments'),
+                                ],
+                                [
+                                    'name' => $assignment->subject,
+                                    'route' => null,
+                                ],
+                            ])" />
+                    @endtaskmaster
+                    <!-- User is Assignee of the assignment -->
+                    @assignee
                         <x-breadcrumbs class="mb-2"
                             :menus="collect([
                                 [
@@ -51,11 +34,18 @@
                                     'route' => null,
                                 ],
                             ])" />
-                    @endif
+                    @endassignee
                     <h6 class="text-lg font-semibold dark:text-white">{{ $assignment->subject }}</h6>
 
+                    @taskmaster
+                        you are taskmaster
+                    @endtaskmaster
+
+                    @assignee
+                        you are assignee
+                    @endassignee
                     <!-- Button if user is a taskmaster -->
-                    @if (Auth::User()->isTaskmaster($assignment))
+                    @taskmaster
                         <div class="grid grid-cols-12 gap-4">
                             <div class="col-span-9 inline-flex w-full space-x-1.5">
                                 <div class="inline-flex md:grow">
@@ -81,7 +71,7 @@
                                             Edit Due
                                         </button>
                                     </div>
-                                    <!-- Modal -->
+                                    <!-- Edit Modal -->
                                     <x-modal id="edit-assignment-modal"
                                         data-title="Edit assignment due">
                                         <!-- Modal body -->
@@ -91,7 +81,7 @@
                                             method="post"
                                             enctype="multipart/form-data">
                                             @csrf
-                                            {{-- <div class="mb-5">
+                                            <div class="mb-5">
                                                 <div class="space-y-4">
                                                     <div class="space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
                                                         <x-forms.select id="input-assignee"
@@ -99,7 +89,7 @@
                                                             label="Assignee"
                                                             state="initial"
                                                             readonly>
-                                                            <option>{{ $assignment->assignee->name }}</option>
+                                                            <option></option>
                                                         </x-forms.select>
                                                         <x-forms.select id="input-category"
                                                             name="category"
@@ -107,9 +97,11 @@
                                                             state="initial"
                                                             required>
                                                             <option value="">Select assignment category</option>
-                                                            <option value="Pembuatan Memorandum">Pembuatan Memorandum</option>
+                                                            <option value="Pembuatan Memorandum">Pembuatan Memorandum
+                                                            </option>
                                                             <option value="Pembuatan Surat">Pembuatan Surat</option>
-                                                            <option value="Membuat bahan presentasi">Membuat bahan presentasi
+                                                            <option value="Membuat bahan presentasi">Membuat bahan
+                                                                presentasi
                                                             </option>
                                                             <option value="Menghadiri rapat">Menghadiri rapat</option>
                                                             <option value="Melakukan perjalanan dinas">Melakukan perjalanan
@@ -117,7 +109,8 @@
                                                             <option value="Pembuatan SP3">Pembuatan SP3</option>
                                                             <option value="Pembuatan Berita Acara">Pembuatan Berita Acara
                                                             </option>
-                                                            <option value="Pembuatan Sales Order">Pembuatan Sales Order</option>
+                                                            <option value="Pembuatan Sales Order">Pembuatan Sales Order
+                                                            </option>
                                                         </x-forms.select>
                                                     </div>
                                                     <div class="col-span-2">
@@ -205,7 +198,8 @@
                                                                             required>
                                                                         <label
                                                                             class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                                                            for="horizontal-list-radio-passport">Select exact
+                                                                            for="horizontal-list-radio-passport">Select
+                                                                            exact
                                                                             time</label>
                                                                     </div>
                                                                 </li>
@@ -395,7 +389,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> --}}
+                                            </div>
                                             <div class="flex place-content-end">
                                                 <button
                                                     class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -408,58 +402,58 @@
                                 </div>
 
 
-                                @if ($assignment->isResolved() && $assignment->isOpen())
-                                    <div class="inline-flex space-x-1.5">
-                                        <!-- Approve Button -->
-                                        <div>
-                                            <button
-                                                class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                                data-modal-show="approve-assignment-modal-{{ $assignment->id }}"
-                                                data-modal-target="approve-assignment-modal-{{ $assignment->id }}"
-                                                type="button">
-                                                <svg class="me-1 h-3.5 w-3.5"
-                                                    aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 24 24">
-                                                    <path d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z" />
-                                                    <path fill-rule="evenodd"
-                                                        d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
-                                                        clip-rule="evenodd" />
-                                                </svg>
-                                                Approve
-                                            </button>
-                                            <x-modals.approve-assignment id="{{ $assignment->id }}"
-                                                name="{{ $assignment->subject }}" />
-                                        </div>
+                                {{-- @if ($assignment->isResolved() && $assignment->isOpen()) --}}
+                                <div class="inline-flex space-x-1.5">
+                                    <!-- Approve Button -->
+                                    <div>
+                                        <button
+                                            class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                            data-modal-show="approve-assignment-modal-{{ $assignment->id }}"
+                                            data-modal-target="approve-assignment-modal-{{ $assignment->id }}"
+                                            type="button">
+                                            <svg class="me-1 h-3.5 w-3.5"
+                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z" />
+                                                <path fill-rule="evenodd"
+                                                    d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            Approve
+                                        </button>
+                                        <x-modals.approve-assignment id="{{ $assignment->id }}"
+                                            name="{{ $assignment->subject }}" />
+                                    </div>
 
-                                        <!-- Reassign Button -->
-                                        <div>
-                                            <button
-                                                class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                                data-modal-target="reassign-assignment-modal"
-                                                data-modal-show="reassign-assignment-modal"
-                                                type="button">
-                                                <svg class="me-1 h-3.5 w-3.5"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 16 16">
-                                                    <path
-                                                        d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z" />
-                                                </svg>
-                                                Reassign
-                                            </button>
-                                            <!-- Reassign Modal -->
-                                            <x-modal id="reassign-assignment-modal"
-                                                data-title="Reassign assignment">
-                                                <!-- Modal body -->
-                                                <form class="p-4 md:p-5"
-                                                    x-on:submit="loading = ! loading"
-                                                    action="{{ route('taskscore.assignment.reassign', $assignment->id) }}"
-                                                    method="post"
-                                                    enctype="multipart/form-data">
-                                                    @csrf
-                                                    <div class="mb-5">
+                                    <!-- Reassign Button -->
+                                    <div>
+                                        <button
+                                            class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                            data-modal-target="reassign-assignment-modal"
+                                            data-modal-show="reassign-assignment-modal"
+                                            type="button">
+                                            <svg class="me-1 h-3.5 w-3.5"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="currentColor"
+                                                viewBox="0 0 16 16">
+                                                <path
+                                                    d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z" />
+                                            </svg>
+                                            Reassign
+                                        </button>
+                                        <!-- Reassign Modal -->
+                                        <x-modal id="reassign-assignment-modal"
+                                            data-title="Reassign assignment">
+                                            <!-- Modal body -->
+                                            <form class="p-4 md:p-5"
+                                                x-on:submit="loading = ! loading"
+                                                action="{{ route('taskscore.assignment.reassign', $assignment->id) }}"
+                                                method="post"
+                                                enctype="multipart/form-data">
+                                                @csrf
+                                                {{-- <div class="mb-5">
                                                         <div class="space-y-4">
                                                             <div
                                                                 class="space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
@@ -756,19 +750,19 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div class="flex place-content-end">
-                                                        <button
-                                                            class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                            type="submit">
-                                                            Reassign
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </x-modal>
-                                        </div>
+                                                    </div> --}}
+                                                <div class="flex place-content-end">
+                                                    <button
+                                                        class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                                                        type="submit">
+                                                        Reassign
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </x-modal>
                                     </div>
-                                @endif
+                                </div>
+                                {{-- @endif --}}
                             </div>
 
                             <!-- Dropdown Menu -->
@@ -806,117 +800,7 @@
                                     name="{{ $assignment->subject }}" />
                             </div>
                         </div>
-                    @endif
-
-                    <!-- Button if user is an assignee -->
-                    @if (!$assignment->isResolved() && Auth::User()->isAssignee($assignment))
-                        <div class="inline-flex gap-2">
-                            <div>
-                                <!-- Resolve Button -->
-                                <button
-                                    class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                    data-modal-target="resolve-assignment-modal"
-                                    data-modal-show="resolve-assignment-modal"
-                                    type="button">
-                                    <svg class="me-1 h-3.5 w-3.5"
-                                        aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd"
-                                            d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a1 1 0 0 0-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.707 8.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Resolve
-                                </button>
-                                <!-- Resolve Modal -->
-                                <x-modal id="resolve-assignment-modal"
-                                    data-title="Resolve assignment">
-                                    <!-- Modal body -->
-                                    <form class="p-4 md:p-5"
-                                        x-on:submit="loading = ! loading"
-                                        action="{{ route('taskscore.assignment.resolve', $assignment->id) }}"
-                                        method="post"
-                                        enctype="multipart/form-data">
-                                        @csrf
-                                        @method('put')
-                                        <div class="mb-5">
-                                            <div class="space-y-4">
-                                                <div class="col-span-2">
-                                                    <x-forms.text-editor name="resolution"
-                                                        label="Description"
-                                                        placeholder="Resolution description and details"
-                                                        required>
-                                                    </x-forms.text-editor>
-                                                </div>
-                                                <div class="col-span-2">
-                                                    <label
-                                                        class="mb-2 inline-flex gap-1 text-sm font-medium text-gray-900 dark:text-white"
-                                                        for="file">Attachment
-                                                        <button
-                                                            class="text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
-                                                            data-tooltip-target="tooltip-default"
-                                                            type="button">
-                                                            <svg class="h-4 w-4"
-                                                                aria-hidden="true"
-                                                                fill="currentColor"
-                                                                viewBox="0 0 20 20"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                                                    clip-rule="evenodd"></path>
-                                                            </svg>
-                                                        </button>
-
-                                                        <div class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-normal text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
-                                                            id="tooltip-default"
-                                                            role="tooltip">
-                                                            Attach documents that related to this assignment
-                                                            <div class="tooltip-arrow"
-                                                                data-popper-arrow></div>
-                                                        </div>
-                                                    </label>
-                                                    <input id="file"
-                                                        name="attachments[]"
-                                                        type="file"
-                                                        required
-                                                        multiple>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex place-content-end">
-                                            <button
-                                                class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                type="submit">
-                                                Submit
-                                            </button>
-                                        </div>
-                                    </form>
-                                </x-modal>
-                            </div>
-                            {{-- <div>
-                                <!-- Resolve Button -->
-                                <button
-                                    class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                    data-modal-target="resolve-assignment-modal"
-                                    data-modal-show="resolve-assignment-modal"
-                                    type="button">
-                                    <svg class="me-1 h-3.5 w-3.5"
-                                        aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        fill="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path fill-rule="evenodd"
-                                            d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z"
-                                            clip-rule="evenodd" />
-                                    </svg>
-                                    Additional Time
-                                </button>
-                            </div> --}}
-                        </div>
-                    @endif
+                    @endtaskmaster
                 </div>
             </div>
         </div>
@@ -926,14 +810,14 @@
             <div class="grid">
                 <div
                     class="border-1 relative space-y-3 rounded-lg border border-gray-200 p-4 text-sm dark:border-gray-700 dark:bg-gray-800">
-                    @if ($assignment->hasParent())
-                        <div class="text-gray-500 dark:text-gray-400">
-                            <p class="font-medium text-gray-600 dark:text-gray-300">Related to</p>
-                            <a class="hover:underline"
-                                href="{{ route('taskscore.assignment.show', $assignment->parent_id) }}">{{ $assignment->parent->subject }}
-                            </a>
-                        </div>
-                    @endif
+                    {{-- @if ($assignment->hasParent()) --}}
+                    <div class="text-gray-500 dark:text-gray-400">
+                        <p class="font-medium text-gray-600 dark:text-gray-300">Related to</p>
+                        <a class="hover:underline"
+                            href="#">related
+                        </a>
+                    </div>
+                    {{-- @endif --}}
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Status</p>
                         <p class="mt-1">
@@ -956,12 +840,6 @@
                         </p>
                     </div>
                     <div class="text-gray-500 dark:text-gray-400">
-                        <p class="font-medium text-gray-600 dark:text-gray-300">Due</p>
-                        <p>
-                            {{ $assignment->due->format('d F Y H:i') . ' ' . '(' . $assignment->due->diffForHumans() . ')' }}
-                        </p>
-                    </div>
-                    <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Taskmaster</p>
                         <x-popover.user-profile id="taskmaster-{{ $assignment->taskmaster->id }}"
                             :user="$assignment->taskmaster" />
@@ -969,8 +847,12 @@
                     </div>
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Assignee</p>
-                        <x-popover.user-profile id="assignee-{{ $assignment->assignee->id }}"
-                            :user="$assignment->assignee" />
+                        @foreach ($assignment->tasks as $task)
+                            <li>
+                                <x-popover.user-profile id="assignee-{{ $task->assignee_id }}"
+                                    :user="$task->assignee" />
+                            </li>
+                        @endforeach
                     </div>
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Category</p>
@@ -1006,27 +888,16 @@
                             {{ $assignment->resolved_at ? 'Resolved at ' . $assignment->resolved_at->format('d F Y, H:i') : 'Unresolved' }}
                         </p>
                     </div>
-                    @if ($assignment->isResolved())
-                        <div class="text-gray-500 dark:text-gray-400">
-                            <p class="font-medium text-gray-600 dark:text-gray-300">Score</p>
-                            <div class="mt-1 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-                                <div class="rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none text-blue-100"
-                                    style="width: {{ $assignment->score() <= 100 ? $assignment->score() : 100 }}%">
-                                    {{ $assignment->score() }}%
-                                </div>
-                            </div>
-                        </div>
-                    @endif
                 </div>
             </div>
         </div>
 
-        <!-- Assignment Description and Resolution -->
-        <div class="col-span-full md:col-span-9">
+        <!-- Assignment Description -->
+        <div class="col-span-full space-y-4 md:col-span-9">
             <div
                 class="border-1 grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                 <div class="space-y-2">
-                    <h6 class="text-md mr-3 font-semibold dark:text-white">Detail and descriptions</h6>
+                    <h6 class="text-md mr-3 font-semibold dark:text-white">Descriptions</h6>
                     <!-- Assignment Description Area -->
                     <div>
                         <div class="h-fit space-y-8">
@@ -1074,10 +945,100 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            @foreach ($assignment->tasks as $task)
+                <div
+                    class="border-1 grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                    <div class="space-y-3">
+                        <dl>
+                            <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Assignee
+                            </dt>
+                            <dd class="inline-flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                                <img class="h-8 w-8 rounded-full"
+                                    src="https://ui-avatars.com/api/?name={{ urlencode($task->assignee->name) }}&background=0D8ABC&color=fff&bold=true"
+                                    alt="{{ $task->assignee->name }} avatar" />
+                                <span>
+                                    <div class="font-semibold text-gray-500 dark:text-gray-300">
+                                        {{ $task->assignee->name }}
+                                    </div>
+                                    <div>
+                                        {{ $task->assignee->position?->name }}
+                                    </div>
+                                </span>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Detail
+                                Assignment</dt>
+                            <dd class="text-sm text-gray-600 dark:text-gray-400">
+                                {{ $task->description }}
+                            </dd>
+                        </dl>
+                        <div class="grid space-y-2 md:grid-cols-3 md:space-y-0">
+                            <dl class="space-y-1 md:col-span-2 md:space-y-0">
+                                <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Due</dt>
+                                <dd class="text-sm text-gray-600 dark:text-gray-400">
+                                    {{ $task->due->format('d F Y H:i') . ' ' . '(' . $task->due->diffForHumans() . ')' }}
+                                </dd>
+                            </dl>
+                            <dl class="space-y-1 md:space-y-0">
+                                <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Score</dt>
+                                <dd class="text-sm text-gray-600 dark:text-gray-400">
+                                    <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                                        <div class="{{ $task->score() > 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none"
+                                            style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
+                                            {{ $task->score() }}%
+                                        </div>
+                                    </div>
+                                </dd>
+                            </dl>
+                        </div>
+                        @assignee
+                            @if (!$task->isResolved())
+                                <div class="flex items-center justify-end space-x-2">
+                                    <button
+                                        class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                        data-modal-target="resolve-assignment-modal"
+                                        data-modal-show="resolve-assignment-modal"
+                                        type="button">
+                                        <svg class="me-1 h-3.5 w-3.5"
+                                            aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd"
+                                                d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a1 1 0 0 0-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.707 8.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        Resolve
+                                    </button>
+                                    <button
+                                        class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                        data-modal-target="resolve-assignment-modal"
+                                        data-modal-show="resolve-assignment-modal"
+                                        type="button">
+                                        <svg class="me-1 h-3.5 w-3.5"
+                                            aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd"
+                                                d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a1 1 0 0 0-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.707 8.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                        Resolve
+                                    </button>
+                                </div>
+                            @endif
+                        @endassignee
+                    </div>
+                </div>
+            @endforeach
 
 
-                <!-- Assignment Resolution Area -->
-                @if ($assignment->isResolved())
+            <!-- Assignment Resolution Area -->
+            {{-- @if ($assignment->isResolved())
                     <div class="space-y-2">
                         <h6 class="text-md mr-3 font-semibold dark:text-white">Resolution</h6>
                         <div>
@@ -1128,10 +1089,10 @@
                             </div>
                         </div>
                     </div>
-                @endif
+                @endif --}}
 
-                <!-- Related Assignment Area -->
-                @if ($assignment->hasChilds())
+            <!-- Related Assignment Area -->
+            {{-- @if ($assignment->hasChilds())
                     <div class="space-y-2">
                         <h6 class="text-md mr-3 font-semibold dark:text-white">Reassignments</h6>
 
@@ -1150,10 +1111,10 @@
                             </div>
                         @endforeach
                     </div>
-                @endif
-                <!-- End of Related Assignment Area -->
-            </div>
+                @endif --}}
+            <!-- End of Related Assignment Area -->
+            {{-- </div>
+        </div> --}}
+            <!-- End of Assignment Description and Resolution -->
         </div>
-        <!-- End of Assignment Description and Resolution -->
-    </div>
-@endsection
+    @endsection

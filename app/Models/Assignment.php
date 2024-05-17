@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Assignment extends Model
 {
@@ -21,34 +23,40 @@ class Assignment extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'due' => 'datetime',
-        'resolved_at' => 'datetime',
         'closed_at' => 'datetime'
     ];
 
     /**
+     * Get the tasks of the assignments.
+     */
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class);
+    }
+
+    /**
      * Get the parent of the assignments.
      */
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Assignment::class, 'parent_id');
-    }
+    // public function parent(): BelongsTo
+    // {
+    //     return $this->belongsTo(Assignment::class, 'parent_id');
+    // }
 
     /**
      * Get the child of the assignments.
      */
-    public function childs(): HasMany
-    {
-        return $this->hasMany(Assignment::class, 'parent_id', 'id');
-    }
+    // public function childs(): HasMany
+    // {
+    //     return $this->hasMany(Assignment::class, 'parent_id', 'id');
+    // }
 
     /**
      * Get the assignee of the assignments.
      */
-    public function assignee(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'assigned_to');
-    }
+    // public function assignee(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class, 'assigned_to');
+    // }
 
     /**
      * Get the taskmaster of the assignments.
@@ -83,20 +91,20 @@ class Assignment extends Model
     }
 
     /**
-     * Check if assignment is resolved.
+     * Check if assignment status is closed.
      */
-    public function isResolved()
+    public function isClosed()
     {
-        return $this->resolved_at !== null;
+        return $this->status == 'closed';
     }
 
     /**
      * Check if assignment childs is resolved.
      */
-    public function childsIsResolved()
-    {
-        return $this->childs()->whereNotNull('resolved_at');
-    }
+    // public function childsIsResolved()
+    // {
+    //     return $this->childs()->whereNotNull('resolved_at');
+    // }
 
     /**
      * Check if assignment status is open.
@@ -109,39 +117,39 @@ class Assignment extends Model
     /**
      * Check if there is parent of the assignment.
      */
-    public function hasParent()
-    {
-        return $this->parent()->exists();
-    }
+    // public function hasParent()
+    // {
+    //     return $this->parent()->exists();
+    // }
 
     /**
      * Check if there is childs of the assignment.
      */
-    public function hasChilds()
-    {
-        return $this->childs()->exists();
-    }
+    // public function hasChilds()
+    // {
+    //     return $this->childs()->exists();
+    // }
 
     /**
      * Check if there is childs of the assignment that unresolved.
      */
-    public function hasUnresolvedChilds()
-    {
-        return $this->childs()->whereNull('resolved_at')->exists();
-    }
+    // public function hasUnresolvedChilds()
+    // {
+    //     return $this->childs()->whereNull('resolved_at')->exists();
+    // }
 
     /**
      * Check if there is siblings of the assignment.
      */
-    public function hasSiblings()
-    {
-        return $this->whereNotNull('parent_id')->whereNot('parent_id', $this->id)->where('parent_id', $this->parent_id)->exists();
-    }
+    // public function hasSiblings()
+    // {
+    //     return $this->whereNotNull('parent_id')->whereNot('parent_id', $this->id)->where('parent_id', $this->parent_id)->exists();
+    // }
 
-    public function hasUnresolvedSiblings()
-    {
-        return $this->whereNotNull('parent_id')->whereNot('parent_id', $this->id)->where('parent_id', $this->parent_id)->whereNull('resolved_at')->exists();
-    }
+    // public function hasUnresolvedSiblings()
+    // {
+    //     return $this->whereNotNull('parent_id')->whereNot('parent_id', $this->id)->where('parent_id', $this->parent_id)->whereNull('resolved_at')->exists();
+    // }
 
     /**
      * Return assignment score.

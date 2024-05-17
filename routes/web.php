@@ -47,7 +47,7 @@ Route::group(['middleware' => 'auth'], function () {
     // Route::group(['as' => 'taskscore.', 'prefix' => 'task-score'], function () {
     Route::group(['as' => 'taskscore.'], function () {
             Route::get('/my-assignments', [AssignmentController::class, 'myAssignment'])->name('assignment.my-assignments');
-            Route::get('/assignments', [AssignmentController::class, 'subordinateAssignment'])->name('assignment.subordinate-assignments');
+            Route::get('/subordinate-assignments', [AssignmentController::class, 'subordinateAssignment'])->name('assignment.subordinate-assignments');
             Route::post('/store-assignment', [AssignmentController::class, 'store'])->name('assignment.store');
             Route::get('/assignment/{assignment}', [AssignmentController::class, 'show'])->name('assignment.show');
             Route::delete('/assignment/{assignment}/delete', [AssignmentController::class, 'delete'])->name('assignment.delete');
