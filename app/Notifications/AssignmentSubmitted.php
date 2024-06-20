@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewAssignment extends Notification
+class AssignmentSubmitted extends Notification
 {
     use Queueable;
 
@@ -39,9 +39,9 @@ class NewAssignment extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**
@@ -52,9 +52,9 @@ class NewAssignment extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'from' => $this->assignment->taskmaster->name,
-            'body' => 'New assignment from <span class="font-semibold text-gray-900 dark:text-white">' . $this->assignment->taskmaster->name . '</span>: ' . $this->assignment->subject . ' ' . $this->task->uuid,
-            'action' => route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id]),
+            'from' => $this->task->assignee->name,
+            'body' => 'Assignment submitted by <span class="font-semibold text-gray-900 dark:text-white">' . $this->task->assignee->name . '</span>: ' . $this->assignment->subject . ' ' . $this->task->uuid,
+            'action' => route('taskscore.assignment.show', ['assignment' => $this->assignment->id]),
         ];
     }
 
@@ -65,6 +65,6 @@ class NewAssignment extends Notification
      */
     public function databaseType(object $notifiable): string
     {
-        return 'new-assignment';
+        return 'assignment-submitted';
     }
 }

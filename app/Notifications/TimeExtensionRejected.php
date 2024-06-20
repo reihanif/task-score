@@ -7,18 +7,20 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AssignmentResolved extends Notification
+class TimeExtensionRejected extends Notification
 {
     use Queueable;
 
     private $assignment;
+    private $task;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($assignment)
+    public function __construct($assignment, $task)
     {
         $this->assignment = $assignment;
+        $this->task = $task;
     }
 
     /**
@@ -50,12 +52,9 @@ class AssignmentResolved extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'from' => $this->assignment->assignee->name,
-            'to' => $this->assignment->taskmaster->name,
-            'body' => $this->assignment->subject,
-            'conjunction' => 'by',
-            'route' => 'taskscore.assignment.show',
-            'route_id' => $this->assignment->id
+            'from' => $this->assignment->taskmaster->name,
+            'body' => 'Time extension rejected by <span class="font-semibold text-gray-900 dark:text-white">' . $this->assignment->taskmaster->name . '</span>: ' . $this->assignment->subject . ' ' . $this->task->uuid,
+            'action' => route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id]),
         ];
     }
 
@@ -66,6 +65,6 @@ class AssignmentResolved extends Notification
      */
     public function databaseType(object $notifiable): string
     {
-        return 'assignment-resolved';
+        return 'time-extension-rejected';
     }
 }

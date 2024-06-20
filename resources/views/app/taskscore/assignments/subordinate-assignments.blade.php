@@ -5,11 +5,11 @@
 @section('content')
     <div class="col-span-full flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
-            <h5 class="mr-3 font-semibold dark:text-white">Assignment</h5>
+            <h5 class="mr-3 font-semibold dark:text-white">Subordinate Assignments</h5>
             <x-breadcrumbs class="mt-2"
                 :menus="collect([
                     [
-                        'name' => 'Assignment',
+                        'name' => 'Subordinate Assignments',
                         'route' => null,
                     ],
                 ])" />
@@ -18,15 +18,15 @@
 
     <div
         class="border-1 relative col-span-2 overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
-        <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
+        {{-- <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
             <div>
                 <h5 class="mr-3 font-semibold dark:text-white">Subordinate Assignments</h5>
                 <p class="text-gray-500 dark:text-gray-400">Manage all your existing subordinate assignment or add a new one
                 </p>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="grid gap-4 bg-white pt-4 dark:bg-gray-800 md:grid-cols-2 md:flex-row md:space-y-0">
+        <div class="grid gap-4 bg-white dark:bg-gray-800 md:grid-cols-2 md:flex-row md:space-y-0">
             <div class="inline-flex gap-2">
                 <div class="grow"
                     id="search">
@@ -70,7 +70,7 @@
             </div>
         </div>
         <!-- Create Modal -->
-        @include('app.taskscore.assignments.create')
+        @include('app.taskscore.assignments.modals.create')
 
         <!-- Table -->
         <div>
@@ -123,10 +123,14 @@
                                 {{ $assignment->subject }}
                             </th>
                             <td class="whitespace-nowrap px-3 py-4">
-                                @foreach ($assignment->tasks as $task)
-                                    <li>
+                                @foreach ($assignment->tasks->unique('assignee_id') as $task)
+                                    @if ($loop->count > 1)
+                                        <li>
+                                            {{ $task->assignee->name }}
+                                        </li>
+                                    @else
                                         {{ $task->assignee->name }}
-                                    </li>
+                                    @endif
                                 @endforeach
                             </td>
                             <td class="whitespace-nowrap px-3 py-4">

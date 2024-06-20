@@ -32,6 +32,7 @@
                         <option value="Pembuatan SP3">Pembuatan SP3</option>
                         <option value="Pembuatan Berita Acara">Pembuatan Berita Acara</option>
                         <option value="Pembuatan Sales Order">Pembuatan Sales Order</option>
+                        <option value="Lainnya">Lainnya</option>
                     </x-forms.select>
                 </div>
                 <div class="col-span-2">
@@ -88,7 +89,7 @@
                                             <span class="assignee-label"></span>
                                             <span class="text-red-600 dark:text-red-500">*</span>
                                         </label>
-                                        <select :name="'assignee[' + index + ']'"
+                                        <select :name="'assignees[' + index + ']'"
                                             required>
                                             <option value="">Select assignee</option>
                                             @foreach ($assignees as $assignee)
@@ -269,21 +270,23 @@
                                                         </div>
                                                     </div>
                                                 </template>
-                                                <div class="min-h-24 rounded-b-lg bg-white p-2.5 dark:bg-gray-700">
-                                                    <div class="block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                                                <div
+                                                    class="relative border-b bg-white p-2.5 dark:border-gray-600 dark:bg-gray-700">
+                                                    <div class="min-h-24 block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                                         placeholder="Assignment detail for assignee"
                                                         x-ref="element">
                                                     </div>
-                                                    <input class="hidden"
-                                                        :name="'detail[' + index + ']'"
+                                                    <input class="pointer-events-none absolute top-2 opacity-0"
+                                                        :name="'details[' + index + ']'"
                                                         required
-                                                        x-model="content"
-                                                        pattern="^(?!^<p><\/p>$).*"></input>
+                                                        x-model="content"></input>
                                                 </div>
+                                                <p
+                                                    class="px-1.5 py-0.5 text-right text-xs font-normal text-gray-500 dark:text-gray-400">
+                                                    <span x-text="characters"></span>
+                                                    / 2000
+                                                </p>
                                             </div>
-                                            <p class="mt-1 text-sm text-red-600 dark:text-red-500"
-                                                x-show="!content.match('^(?!^<p><\/p>$).*')">
-                                                Detail cannot be empty</p>
                                         </div>
                                     </div>
                                     <div class="space-y-4"
@@ -348,8 +351,9 @@
                                                                 type="date"
                                                                 value="{{ date('Y-m-d') }}"
                                                                 :id="'date-' + index"
-                                                                :name="'date[' + index + ']'"
+                                                                :name="'dates[' + index + ']'"
                                                                 onclick="showPicker()"
+                                                                onfocus="this.min = new Date().toISOString().split('T')[0]"
                                                                 autocomplete="off"
                                                                 required>
                                                         </div>
@@ -366,7 +370,7 @@
                                                                 class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
                                                                 type="time"
                                                                 :id="'input-time-' + index"
-                                                                :name="'time[' + index + ']'"
+                                                                :name="'times[' + index + ']'"
                                                                 x-data="{ timeValue: addMinutesFromCurrentTime(60) }"
                                                                 x-bind:value="timeValue"
                                                                 onclick="showPicker()"
@@ -378,13 +382,14 @@
                                             </template>
 
                                             <template x-if="selectedOption === 'interval-time'">
-                                                <ul class="timetable col-span-2 grid w-full grid-cols-6 gap-2">
+                                                <ul
+                                                    class="timetable col-span-2 grid w-full grid-cols-3 gap-2 sm:grid-cols-6">
                                                     <li>
                                                         <input class="peer hidden"
                                                             type="radio"
                                                             value="20"
                                                             :id="'10-am' + index"
-                                                            :name="'timetable[' + index + ']'"
+                                                            :name="'timetables[' + index + ']'"
                                                             checked>
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
@@ -397,7 +402,7 @@
                                                             type="radio"
                                                             value="30"
                                                             :id="'10-30-am' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'10-30-am' + index">
@@ -409,7 +414,7 @@
                                                             type="radio"
                                                             value="45"
                                                             :id="'11-am' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'11-am' + index">
@@ -421,7 +426,7 @@
                                                             type="radio"
                                                             value="60"
                                                             :id="'11-30-am' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'11-30-am' + index">
@@ -433,7 +438,7 @@
                                                             type="radio"
                                                             value="120"
                                                             :id="'12-am' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'12-am' + index">
@@ -445,7 +450,7 @@
                                                             type="radio"
                                                             value="180"
                                                             :id="'12-30-pm' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'12-30-pm' + index">
@@ -457,7 +462,7 @@
                                                             type="radio"
                                                             value="240"
                                                             :id="'1-pm' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'1-pm' + index">
@@ -469,7 +474,7 @@
                                                             type="radio"
                                                             value="300"
                                                             :id="'1-30-pm' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'1-30-pm' + index">
@@ -481,7 +486,7 @@
                                                             type="radio"
                                                             value="1440"
                                                             :id="'2-pm' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'2-pm' + index">
@@ -493,7 +498,7 @@
                                                             type="radio"
                                                             value="2880"
                                                             :id="'2-30-pm' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'2-30-pm' + index">
@@ -505,7 +510,7 @@
                                                             type="radio"
                                                             value="4320"
                                                             :id="'3-pm' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'3-pm' + index">
@@ -517,7 +522,7 @@
                                                             type="radio"
                                                             value="5760"
                                                             :id="'3-30-pm' + index"
-                                                            :name="'timetable[' + index + ']'">
+                                                            :name="'timetables[' + index + ']'">
                                                         <label
                                                             class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
                                                             :for="'3-30-pm' + index">
@@ -543,7 +548,6 @@
                                                 d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
                                                 clip-rule="evenodd" />
                                         </svg>
-
                                     </button>
                                 </div>
                             </div>

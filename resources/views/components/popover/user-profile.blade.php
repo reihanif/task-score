@@ -15,7 +15,7 @@
     <div class="p-3">
         <div class="flex items-center">
             <a href="{{ $attributes->get('href') }}">
-                <img class="h-11 w-11 rounded-full"
+                <img class="h-11 w-11 min-h-11 min-w-11 rounded-full"
                     src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=0D8ABC&color=fff&bold=true"
                     alt="{{ $user->name }} avatar" />
             </a>

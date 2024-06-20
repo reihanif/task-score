@@ -93,17 +93,42 @@ class User extends Authenticatable
     /**
      * Get the resolved assignments associated with the user as assignee.
      */
-    // public function resolved_assignments(): HasMany
-    // {
-    //     return $this->hasMany(Assignment::class, 'assigned_to')->where('resolved_at', '!=', null);
-    // }
+    public function resolvedAssignments(): HasMany
+    {
+        return $this->hasMany(Task::class, 'assignee_id')->where('resolved_at', '!=', null)->whereHas('assignment');
+    }
 
     /**
      * Get the unresolved assignments associated with the user as assignee.
      */
-    public function unresolved_assignments(): HasMany
+    public function unresolvedAssignments()
     {
-        return $this->hasMany(Task::class, 'assignee_id')->where('resolved_at', null);
+        return collect([
+            Task::where('resolved_at', null)->whereHas('assignment')->where('assignee_id', $this->id)->doesntHave('submissions')->get(),
+            Task::where('resolved_at', null)->whereHas('assignment')->where('assignee_id', $this->id)->whereHas('latestSubmission', function($query) {
+                return $query->where('is_approve', false);
+            })->get()
+        ])->flatten(1)->sortBy('created_at');
+    }
+
+    /**
+     * Get the pending assignments associated with the user as assignee.
+     */
+    public function pendingAssignments()
+    {
+        return Task::where('resolved_at', null)->where('assignee_id', $this->id)->whereHas('latestSubmission', function($query) {
+            return $query->whereNull('is_approve');
+        })->whereHas('assignment')->get();
+    }
+
+    /**
+     * Get the user subordinates
+     */
+    public function subordinates()
+    {
+        return User::where('id', '!=', $this->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
+            $query->where('path', 'LIKE', '%' . $this->position?->id . '%');
+        })->get()->sortBy('name');
     }
 
     /**
@@ -117,14 +142,24 @@ class User extends Authenticatable
     /**
      * Check if the user is an assignee of specific assignment.
      */
-    public function isAssignee($assignment_id) {
+    public function isAssignee($assignment_id)
+    {
         return Assignment::findOrFail($assignment_id)->tasks->pluck('assignee_id')->contains($this->id);
+    }
+
+    /**
+     * Check if the user is an assignee of specific task.
+     */
+    public function isTaskAssignee($task_id)
+    {
+        return !!Task::where('assignee_id', $this->id)->find($task_id);
     }
 
     /**
      * Check if the user is a taskmaster of specific assignment.
      */
-    public function isTaskmaster($assignment_id) {
+    public function isTaskmaster($assignment_id)
+    {
         return $this->id == Assignment::select('taskmaster_id')->findOrFail($assignment_id)->taskmaster_id;
     }
 }

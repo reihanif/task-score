@@ -1,7 +1,7 @@
 <aside id="sidebar"
     aria-label="Sidebar"
     {{ $attributes }}>
-    <div class="h-full overflow-y-auto bg-white px-3 text-sm pb-4 dark:bg-gray-800">
+    <div class="h-full overflow-y-auto bg-white px-3 pb-4 text-sm dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
 
             <x-sidebar-menu data-menu-name="Dashboard"
@@ -12,10 +12,10 @@
 
 
             @if (in_array(Auth::User()->role, ['superadmin', 'admin', 'user']))
-                @if (Auth::User()->unresolved_assignments->count() > 0)
+                @if (Auth::User()->unresolvedAssignments()->count() > 0)
                     <x-sidebar-menu data-menu-name="My Assignment"
                         data-route-name="taskscore.assignment.my-assignments"
-                        data-badge-content="{{ Auth::User()->unresolved_assignments->count() }}"
+                        data-badge-content="{{ Auth::User()->unresolvedAssignments()->count() }}"
                         data-badge-color="blue">
                         <x-icons.person-fill-check />
                     </x-sidebar-menu>
@@ -27,10 +27,27 @@
                 @endif
 
                 @if (!Auth::User()->position?->subordinates()->isEmpty())
-                    <x-sidebar-menu data-menu-name="Subordinate Assignment"
-                        data-route-name="taskscore.assignment.subordinate-assignments">
-                        <x-icons.clipboard-plus-fill />
-                    </x-sidebar-menu>
+                    <x-sidebar-expanded-menu data-group-name="Subordinate"
+                        data-group-title="Subordinate assignments"
+                        :menu="collect([
+                            [
+                                'data-menu-name' => 'Assignments',
+                                'data-route-name' => 'taskscore.assignment.subordinate-assignments',
+                                'data-menu-title' => 'Subordinate assignment lists',
+                            ],
+                            [
+                                'data-menu-name' => 'Submissions',
+                                'data-route-name' => 'taskscore.assignment.subordinate-submissions',
+                                'data-menu-title' => 'Subordinate assignment submissions',
+                            ],
+                            [
+                                'data-menu-name' => 'Requests',
+                                'data-route-name' => '',
+                                'data-menu-title' => 'Subordinate assignment time extension requests',
+                            ],
+                        ])">
+                        <x-icons.diagram />
+                    </x-sidebar-expanded-menu>
                 @endif
             @endif
         </ul>

@@ -7,12 +7,12 @@
         <div class="col-span-full">
             <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
                 <div class="w-full space-y-3">
-                    <!-- User is Taskmaster of the assignment -->
+                    <!-- Breadcrumbs if User is Taskmaster of the assignment -->
                     @taskmaster
                         <x-breadcrumbs class="mb-2"
                             :menus="collect([
                                 [
-                                    'name' => 'Assignment',
+                                    'name' => 'Subordinate Assignments',
                                     'route' => route('taskscore.assignment.subordinate-assignments'),
                                 ],
                                 [
@@ -21,7 +21,7 @@
                                 ],
                             ])" />
                     @endtaskmaster
-                    <!-- User is Assignee of the assignment -->
+                    <!-- Breadcrumbs if User is Assignee of the assignment -->
                     @assignee
                         <x-breadcrumbs class="mb-2"
                             :menus="collect([
@@ -35,16 +35,12 @@
                                 ],
                             ])" />
                     @endassignee
-                    <h6 class="text-lg font-semibold dark:text-white">{{ $assignment->subject }}</h6>
 
-                    @taskmaster
-                        you are taskmaster
-                    @endtaskmaster
+                    <h6 class="text-lg font-semibold dark:text-white">
+                        {{ $assignee_task?->uuid . ' ' }}{{ $assignment->subject }}
+                    </h6>
 
-                    @assignee
-                        you are assignee
-                    @endassignee
-                    <!-- Button if user is a taskmaster -->
+                    <!-- Show button if user is a taskmaster -->
                     @taskmaster
                         <div class="grid grid-cols-12 gap-4">
                             <div class="col-span-9 inline-flex w-full space-x-1.5">
@@ -68,55 +64,27 @@
                                                     d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            Edit Due
+                                            Edit
                                         </button>
                                     </div>
                                     <!-- Edit Modal -->
                                     <x-modal id="edit-assignment-modal"
-                                        data-title="Edit assignment due">
+                                        data-title="Edit assignment">
                                         <!-- Modal body -->
                                         <form class="p-4 md:p-5"
                                             x-on:submit="loading = ! loading"
-                                            action="{{ route('taskscore.assignment.store') }}"
+                                            action="{{ route('taskscore.assignment.update', $assignment->id) }}"
                                             method="post"
                                             enctype="multipart/form-data">
+                                            @method('put')
                                             @csrf
                                             <div class="mb-5">
                                                 <div class="space-y-4">
-                                                    <div class="space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
-                                                        <x-forms.select id="input-assignee"
-                                                            name="assignee"
-                                                            label="Assignee"
-                                                            state="initial"
-                                                            readonly>
-                                                            <option></option>
-                                                        </x-forms.select>
-                                                        <x-forms.select id="input-category"
-                                                            name="category"
-                                                            label="Category"
-                                                            state="initial"
-                                                            required>
-                                                            <option value="">Select assignment category</option>
-                                                            <option value="Pembuatan Memorandum">Pembuatan Memorandum
-                                                            </option>
-                                                            <option value="Pembuatan Surat">Pembuatan Surat</option>
-                                                            <option value="Membuat bahan presentasi">Membuat bahan
-                                                                presentasi
-                                                            </option>
-                                                            <option value="Menghadiri rapat">Menghadiri rapat</option>
-                                                            <option value="Melakukan perjalanan dinas">Melakukan perjalanan
-                                                                dinas</option>
-                                                            <option value="Pembuatan SP3">Pembuatan SP3</option>
-                                                            <option value="Pembuatan Berita Acara">Pembuatan Berita Acara
-                                                            </option>
-                                                            <option value="Pembuatan Sales Order">Pembuatan Sales Order
-                                                            </option>
-                                                        </x-forms.select>
-                                                    </div>
                                                     <div class="col-span-2">
                                                         <x-forms.input id="input-subject"
                                                             name="subject"
                                                             type="text"
+                                                            value="{{ $assignment->subject }}"
                                                             autocomplete="off"
                                                             label="Subject"
                                                             placeholder="Assignment subject"
@@ -125,268 +93,11 @@
                                                     </div>
                                                     <div class="col-span-2">
                                                         <x-forms.text-editor name="description"
+                                                            value="{{ $assignment->description }}"
                                                             label="Description"
                                                             placeholder="Assignment description and details"
                                                             required>
                                                         </x-forms.text-editor>
-                                                    </div>
-                                                    <div class="col-span-2">
-                                                        <label
-                                                            class="mb-2 inline-flex gap-1 text-sm font-medium text-gray-900 dark:text-white"
-                                                            for="file">Attachment
-                                                            <button
-                                                                class="text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
-                                                                data-tooltip-target="tooltip-default"
-                                                                type="button">
-                                                                <svg class="h-4 w-4"
-                                                                    aria-hidden="true"
-                                                                    fill="currentColor"
-                                                                    viewBox="0 0 20 20"
-                                                                    xmlns="http://www.w3.org/2000/svg">
-                                                                    <path fill-rule="evenodd"
-                                                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                                                        clip-rule="evenodd"></path>
-                                                                </svg>
-                                                            </button>
-
-                                                            <div class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-normal text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
-                                                                id="tooltip-default"
-                                                                role="tooltip">
-                                                                Attach documents that related to this assignment
-                                                                <div class="tooltip-arrow"
-                                                                    data-popper-arrow></div>
-                                                            </div>
-                                                        </label>
-                                                        <input id="file"
-                                                            name="attachments[]"
-                                                            type="file"
-                                                            multiple
-                                                            max-files="2">
-                                                    </div>
-                                                    <div class="space-y-4"
-                                                        x-data="{ selectedOption: '' }">
-                                                        <div>
-                                                            <p
-                                                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                                                                Assignment deadline
-                                                            </p>
-                                                            <ul
-                                                                class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
-                                                                <li
-                                                                    class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
-                                                                    <div class="flex items-center ps-3">
-                                                                        <input
-                                                                            class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                                                            id="horizontal-list-radio-license"
-                                                                            type="radio"
-                                                                            value="interval-time"
-                                                                            x-model="selectedOption"
-                                                                            required>
-                                                                        <label
-                                                                            class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                                                            for="horizontal-list-radio-license">Select by
-                                                                            interval</label>
-                                                                    </div>
-                                                                <li class="w-full dark:border-gray-600">
-                                                                    <div class="flex items-center ps-3">
-                                                                        <input
-                                                                            class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                                                            id="horizontal-list-radio-passport"
-                                                                            type="radio"
-                                                                            value="exact-time"
-                                                                            x-model="selectedOption"
-                                                                            required>
-                                                                        <label
-                                                                            class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                                                            for="horizontal-list-radio-passport">Select
-                                                                            exact
-                                                                            time</label>
-                                                                    </div>
-                                                                </li>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-
-                                                        <div class="sm:grid sm:grid-cols-2"
-                                                            x-show="selectedOption !== ''">
-                                                            <template x-if="selectedOption === 'exact-time'">
-                                                                <div
-                                                                    class="col-span-full space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
-                                                                    <x-forms.input class="cursor-pointer"
-                                                                        id="input-date"
-                                                                        name="date"
-                                                                        format="dd/mm/yy"
-                                                                        type="date"
-                                                                        value="{{ date('Y-m-d') }}"
-                                                                        onclick="showPicker()"
-                                                                        autocomplete="off"
-                                                                        state="initial"
-                                                                        label="Date"
-                                                                        required />
-                                                                    <x-forms.input class="cursor-pointer"
-                                                                        id="input-time"
-                                                                        name="time"
-                                                                        type="time"
-                                                                        x-data="{ timeValue: addMinutesFromCurrentTime(60) }"
-                                                                        x-bind:value="timeValue"
-                                                                        onclick="showPicker()"
-                                                                        state="initial"
-                                                                        label="Time"
-                                                                        required />
-                                                                </div>
-                                                            </template>
-
-                                                            <template x-if="selectedOption === 'interval-time'">
-                                                                <ul class="col-span-2 mb-5 grid w-full grid-cols-6 gap-2"
-                                                                    id="timetable">
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="10-am"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="20"
-                                                                            checked>
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="10-am">
-                                                                            20 Minutes
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="10-30-am"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="30">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="10-30-am">
-                                                                            30 Minutes
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="11-am"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="45">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="11-am">
-                                                                            45 Minutes
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="11-30-am"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="60">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="11-30-am">
-                                                                            1 Hours
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="12-am"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="120">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="12-am">
-                                                                            2 Hours
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="12-30-pm"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="180">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="12-30-pm">
-                                                                            3 Hours
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="1-pm"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="240">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="1-pm">
-                                                                            4 Hours
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="1-30-pm"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="300">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="1-30-pm">
-                                                                            5 Hours
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="2-pm"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="1440">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="2-pm">
-                                                                            1 Days
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="2-30-pm"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="2880">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="2-30-pm">
-                                                                            2 Days
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="3-pm"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="4320">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="3-pm">
-                                                                            3 Days
-                                                                        </label>
-                                                                    </li>
-                                                                    <li>
-                                                                        <input class="peer hidden"
-                                                                            id="3-30-pm"
-                                                                            name="timetable"
-                                                                            type="radio"
-                                                                            value="5760">
-                                                                        <label
-                                                                            class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                            for="3-30-pm">
-                                                                            4 Days
-                                                                        </label>
-                                                                    </li>
-                                                                </ul>
-                                                            </template>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -402,33 +113,98 @@
                                 </div>
 
 
-                                {{-- @if ($assignment->isResolved() && $assignment->isOpen()) --}}
                                 <div class="inline-flex space-x-1.5">
-                                    <!-- Approve Button -->
-                                    <div>
-                                        <button
-                                            class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                            data-modal-show="approve-assignment-modal-{{ $assignment->id }}"
-                                            data-modal-target="approve-assignment-modal-{{ $assignment->id }}"
-                                            type="button">
-                                            <svg class="me-1 h-3.5 w-3.5"
-                                                aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z" />
-                                                <path fill-rule="evenodd"
-                                                    d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            Approve
-                                        </button>
-                                        <x-modals.approve-assignment id="{{ $assignment->id }}"
-                                            name="{{ $assignment->subject }}" />
-                                    </div>
+                                    @if ($assignment->isOpen())
+                                        <!-- Close Button -->
+                                        <div>
+                                            <button
+                                                class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                                data-modal-show="close-assignment-modal-{{ $assignment->id }}"
+                                                data-modal-target="close-assignment-modal-{{ $assignment->id }}"
+                                                type="button">
+                                                <svg class="me-1 h-3.5 w-3.5"
+                                                    aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    width="24"
+                                                    height="24"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path fill-rule="evenodd"
+                                                        d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm7.707-3.707a1 1 0 0 0-1.414 1.414L10.586 12l-2.293 2.293a1 1 0 1 0 1.414 1.414L12 13.414l2.293 2.293a1 1 0 0 0 1.414-1.414L13.414 12l2.293-2.293a1 1 0 0 0-1.414-1.414L12 10.586 9.707 8.293Z"
+                                                        clip-rule="evenodd" />
+                                                </svg>
+
+                                                Close
+                                            </button>
+                                            <x-modals.close-assignment id="{{ $assignment->id }}"
+                                                name="{{ $assignment->subject }}" />
+                                        </div>
+                                    @endif
+
+                                    @if ($assignment->isClosed())
+                                        <!-- Reopen Button -->
+                                        <div>
+                                            <button
+                                                class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                                data-modal-show="reopen-assignment-modal-{{ $assignment->id }}"
+                                                data-modal-target="reopen-assignment-modal-{{ $assignment->id }}"
+                                                type="button">
+                                                Reopen
+                                            </button>
+                                        </div>
+                                        <!-- Reopen assignment modal -->
+                                        <div class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0"
+                                            id="reopen-assignment-modal-{{ $assignment->id }}"
+                                            tabindex="-1">
+                                            <form x-on:submit="loading = ! loading"
+                                                action="{{ route('taskscore.assignment.open', $assignment->id) }}"
+                                                method="post">
+                                                @csrf
+                                                @method('put')
+                                                <div class="relative max-h-full w-full max-w-md p-4">
+                                                    <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+                                                        <button
+                                                            class="absolute end-2.5 top-3 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                            data-modal-hide="reopen-assignment-modal-{{ $assignment->id }}"
+                                                            type="button">
+                                                            <x-icons.close class="h-3 w-3"></x-icons.close>
+                                                            <span class="sr-only">Close modal</span>
+                                                        </button>
+                                                        <div class="p-4 text-center md:p-5">
+                                                            <svg class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200"
+                                                                aria-hidden="true"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                fill="none"
+                                                                viewBox="0 0 20 20">
+                                                                <path stroke="currentColor"
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                            </svg>
+                                                            <h3
+                                                                class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                                                Are you sure you want to
+                                                                set {{ $assignment->name }} status to open?</h3>
+
+                                                            <button
+                                                                class="inline-flex items-center rounded-lg bg-blue-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-blue-800"
+                                                                type="submit">
+                                                                Reopen
+                                                            </button>
+                                                            <button
+                                                                class="ms-3 rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                                                data-modal-hide="reopen-assignment-modal-{{ $assignment->id }}"
+                                                                type="button">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    @endif
 
                                     <!-- Reassign Button -->
-                                    <div>
+                                    {{-- <div>
                                         <button
                                             class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
                                             data-modal-target="reassign-assignment-modal"
@@ -443,326 +219,9 @@
                                             </svg>
                                             Reassign
                                         </button>
-                                        <!-- Reassign Modal -->
-                                        <x-modal id="reassign-assignment-modal"
-                                            data-title="Reassign assignment">
-                                            <!-- Modal body -->
-                                            <form class="p-4 md:p-5"
-                                                x-on:submit="loading = ! loading"
-                                                action="{{ route('taskscore.assignment.reassign', $assignment->id) }}"
-                                                method="post"
-                                                enctype="multipart/form-data">
-                                                @csrf
-                                                {{-- <div class="mb-5">
-                                                        <div class="space-y-4">
-                                                            <div
-                                                                class="space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
-                                                                <x-forms.select id="input-assignee"
-                                                                    name="assignee"
-                                                                    label="Assignee"
-                                                                    state="initial"
-                                                                    readonly>
-                                                                    <option value="{{ $assignment->assigned_to }}"
-                                                                        selected>{{ $assignment->assignee->name }}</option>
-                                                                </x-forms.select>
-                                                                <x-forms.select id="input-category"
-                                                                    name="category"
-                                                                    label="Category"
-                                                                    state="initial"
-                                                                    readonly>
-                                                                    <option value="{{ $assignment->type }}">
-                                                                        {{ $assignment->type }}
-                                                                    </option>
-                                                                </x-forms.select>
-                                                            </div>
-                                                            <div class="col-span-2">
-                                                                <x-forms.input id="input-subject"
-                                                                    name="subject"
-                                                                    type="text"
-                                                                    autocomplete="off"
-                                                                    label="Subject"
-                                                                    placeholder="Assignment subject"
-                                                                    state="initial"></x-forms.input>
-                                                            </div>
-                                                            <div class="col-span-2">
-                                                                <x-forms.text-editor name="description"
-                                                                    label="Description"
-                                                                    placeholder="Assignment description and details"
-                                                                    required>
-                                                                </x-forms.text-editor>
-                                                            </div>
-                                                            <div class="col-span-2">
-                                                                <label
-                                                                    class="mb-2 inline-flex gap-1 text-sm font-medium text-gray-900 dark:text-white"
-                                                                    for="file">Attachment
-                                                                    <button
-                                                                        class="text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
-                                                                        data-tooltip-target="tooltip-default"
-                                                                        type="button">
-                                                                        <svg class="h-4 w-4"
-                                                                            aria-hidden="true"
-                                                                            fill="currentColor"
-                                                                            viewBox="0 0 20 20"
-                                                                            xmlns="http://www.w3.org/2000/svg">
-                                                                            <path fill-rule="evenodd"
-                                                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                                                                clip-rule="evenodd"></path>
-                                                                        </svg>
-                                                                    </button>
-
-                                                                    <div class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-normal text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700"
-                                                                        id="tooltip-default"
-                                                                        role="tooltip">
-                                                                        Attach documents that related to this assignment
-                                                                        <div class="tooltip-arrow"
-                                                                            data-popper-arrow></div>
-                                                                    </div>
-                                                                </label>
-                                                                <input id="file"
-                                                                    name="attachments[]"
-                                                                    type="file"
-                                                                    multiple
-                                                                    max-files="2">
-                                                            </div>
-                                                            <div class="space-y-4"
-                                                                x-data="{ selectedOption: '' }">
-                                                                <div>
-                                                                    <p
-                                                                        class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                                                                        Assignment deadline
-                                                                    </p>
-                                                                    <ul
-                                                                        class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
-                                                                        <li
-                                                                            class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
-                                                                            <div class="flex items-center ps-3">
-                                                                                <input
-                                                                                    class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                                                                    id="horizontal-list-radio-license"
-                                                                                    type="radio"
-                                                                                    value="interval-time"
-                                                                                    x-model="selectedOption"
-                                                                                    required>
-                                                                                <label
-                                                                                    class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                                                                    for="horizontal-list-radio-license">Select
-                                                                                    by interval</label>
-                                                                            </div>
-                                                                        <li class="w-full dark:border-gray-600">
-                                                                            <div class="flex items-center ps-3">
-                                                                                <input
-                                                                                    class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                                                                    id="horizontal-list-radio-passport"
-                                                                                    type="radio"
-                                                                                    value="exact-time"
-                                                                                    x-model="selectedOption"
-                                                                                    required>
-                                                                                <label
-                                                                                    class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                                                                    for="horizontal-list-radio-passport">Select
-                                                                                    exact time</label>
-                                                                            </div>
-                                                                        </li>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-
-                                                                <!-- Select Timetable -->
-                                                                <div class="sm:grid sm:grid-cols-2"
-                                                                    x-show="selectedOption !== ''">
-                                                                    <template x-if="selectedOption === 'exact-time'">
-                                                                        <div
-                                                                            class="col-span-full space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
-                                                                            <x-forms.input class="cursor-pointer"
-                                                                                id="input-date"
-                                                                                name="date"
-                                                                                format="dd/mm/yy"
-                                                                                type="date"
-                                                                                value="{{ date('Y-m-d') }}"
-                                                                                onclick="showPicker()"
-                                                                                autocomplete="off"
-                                                                                state="initial"
-                                                                                label="Date"
-                                                                                required />
-                                                                            <x-forms.input class="cursor-pointer"
-                                                                                id="input-time"
-                                                                                name="time"
-                                                                                type="time"
-                                                                                x-data="{ timeValue: addMinutesFromCurrentTime(60) }"
-                                                                                x-bind:value="timeValue"
-                                                                                onclick="showPicker()"
-                                                                                state="initial"
-                                                                                label="Time"
-                                                                                required />
-                                                                        </div>
-                                                                    </template>
-
-                                                                    <template x-if="selectedOption === 'interval-time'">
-                                                                        <ul class="col-span-2 mb-5 grid w-full grid-cols-6 gap-2"
-                                                                            id="timetable">
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="10-am"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="20"
-                                                                                    checked>
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="10-am">
-                                                                                    20 Minutes
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="10-30-am"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="30">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="10-30-am">
-                                                                                    30 Minutes
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="11-am"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="45">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="11-am">
-                                                                                    45 Minutes
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="11-30-am"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="60">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="11-30-am">
-                                                                                    1 Hours
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="12-am"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="120">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="12-am">
-                                                                                    2 Hours
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="12-30-pm"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="180">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="12-30-pm">
-                                                                                    3 Hours
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="1-pm"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="240">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="1-pm">
-                                                                                    4 Hours
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="1-30-pm"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="300">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="1-30-pm">
-                                                                                    5 Hours
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="2-pm"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="1440">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="2-pm">
-                                                                                    1 Days
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="2-30-pm"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="2880">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="2-30-pm">
-                                                                                    2 Days
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="3-pm"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="4320">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="3-pm">
-                                                                                    3 Days
-                                                                                </label>
-                                                                            </li>
-                                                                            <li>
-                                                                                <input class="peer hidden"
-                                                                                    id="3-30-pm"
-                                                                                    name="timetable"
-                                                                                    type="radio"
-                                                                                    value="5760">
-                                                                                <label
-                                                                                    class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                                                    for="3-30-pm">
-                                                                                    4 Days
-                                                                                </label>
-                                                                            </li>
-                                                                        </ul>
-                                                                    </template>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div> --}}
-                                                <div class="flex place-content-end">
-                                                    <button
-                                                        class="inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                                                        type="submit">
-                                                        Reassign
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </x-modal>
-                                    </div>
+                                    </div> -->
+                                    @include('app.taskscore.assignments.modals.reassign', $assignees) --}}
                                 </div>
-                                {{-- @endif --}}
                             </div>
 
                             <!-- Dropdown Menu -->
@@ -809,15 +268,7 @@
         <div class="col-span-full md:order-2 md:col-span-3">
             <div class="grid">
                 <div
-                    class="border-1 relative space-y-3 rounded-lg border border-gray-200 p-4 text-sm dark:border-gray-700 dark:bg-gray-800">
-                    {{-- @if ($assignment->hasParent()) --}}
-                    <div class="text-gray-500 dark:text-gray-400">
-                        <p class="font-medium text-gray-600 dark:text-gray-300">Related to</p>
-                        <a class="hover:underline"
-                            href="#">related
-                        </a>
-                    </div>
-                    {{-- @endif --}}
+                    class="relative space-y-3 rounded-lg border border-gray-200 p-4 text-sm dark:border-gray-700 dark:bg-gray-800">
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Status</p>
                         <p class="mt-1">
@@ -847,11 +298,16 @@
                     </div>
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Assignee</p>
-                        @foreach ($assignment->tasks as $task)
-                            <li>
+                        @foreach ($assignment->tasks->unique('assignee_id') as $task)
+                            @if ($loop->count > 1)
+                                <li>
+                                    <x-popover.user-profile id="assignee-{{ $task->assignee_id }}"
+                                        :user="$task->assignee" />
+                                </li>
+                            @else
                                 <x-popover.user-profile id="assignee-{{ $task->assignee_id }}"
                                     :user="$task->assignee" />
-                            </li>
+                            @endif
                         @endforeach
                     </div>
                     <div class="text-gray-500 dark:text-gray-400">
@@ -892,15 +348,15 @@
             </div>
         </div>
 
-        <!-- Assignment Description -->
         <div class="col-span-full space-y-4 md:col-span-9">
+            <!-- Assignment Description -->
             <div
-                class="border-1 grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                class="grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                 <div class="space-y-2">
                     <h6 class="text-md mr-3 font-semibold dark:text-white">Descriptions</h6>
                     <!-- Assignment Description Area -->
                     <div>
-                        <div class="h-fit space-y-8">
+                        <div class="h-fit space-y-4">
                             <!-- Assignment Description -->
                             <div class="space-y-2">
                                 <div class="text-sm text-gray-600 dark:text-gray-400">
@@ -911,35 +367,73 @@
                             <!-- Assignment Attachments -->
                             @if (count($assignment->attachments) > 0)
                                 <div class="space-y-2">
-                                    <ul class="divide-y divide-gray-100 rounded-md border border-gray-200 dark:divide-gray-700 dark:border-gray-700"
-                                        role="list">
-                                        @foreach ($assignment->attachments as $attachment)
-                                            <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6"
-                                                title="{{ $attachment->name . '.' . $attachment->extension }}">
-                                                <div class="flex w-0 flex-1 items-center">
-                                                    <svg class="h-5 w-5 flex-shrink-0 text-gray-400"
+                                    @foreach ($assignment->attachments as $attachment)
+                                        <!-- Files -->
+                                        <div class="max-w-96 flex w-full items-center rounded-lg border border-gray-200 p-1 dark:border-gray-600"
+                                            title="{{ $attachment->name . '.' . $attachment->extension }}">
+                                            <div
+                                                class="min-w-8 max-w-8 min-h-8 mr-2 flex h-8 max-h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900">
+                                                <svg class="h-4 w-4 text-blue-600 dark:text-blue-300 lg:h-4 lg:w-4"
+                                                    aria-hidden="true"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path clip-rule="evenodd"
+                                                        fill-rule="evenodd"
+                                                        d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625zM7.5 15a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5A.75.75 0 017.5 15zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H8.25z">
+                                                    </path>
+                                                    <path
+                                                        d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z">
+                                                    </path>
+                                                </svg>
+                                            </div>
+                                            <div class="mr-4 sm:truncate">
+                                                <p class="text-xs font-semibold text-gray-900 dark:text-white sm:truncate">
+                                                    <span>
+                                                        {{ $attachment->name . '.' . $attachment->extension }}
+                                                    </span>
+                                                </p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">
+                                                    <span class="uppercase">
+                                                        {{ $attachment->extension }},
+                                                    </span>
+                                                    <span>
+                                                        {{ FileSize::bytesToHuman($attachment->size) }}
+                                                    </span>
+                                                </p>
+                                            </div>
+                                            <div class="ml-auto flex items-center">
+                                                <a class="rounded p-2 hover:bg-gray-100"
+                                                    href="{{ Storage::url($attachment->path) }}"
+                                                    download="{{ $attachment->name }}">
+                                                    <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
                                                         aria-hidden="true"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor">
-                                                        <path fill-rule="evenodd"
-                                                            d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                                                            clip-rule="evenodd" />
+                                                        fill="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path clip-rule="evenodd"
+                                                            fill-rule="evenodd"
+                                                            d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z">
+                                                        </path>
                                                     </svg>
-                                                    <div class="ml-4 flex min-w-0 flex-1 gap-2">
-                                                        <span
-                                                            class="truncate font-normal">{{ $attachment->name . '.' . $attachment->extension }}</span>
-                                                        <span
-                                                            class="flex-shrink-0 text-gray-400">{{ FileSize::bytesToHuman($attachment->size) }}</span>
-                                                    </div>
-                                                </div>
-                                                <div class="ml-4 flex-shrink-0">
-                                                    <a class="font-medium text-blue-600 hover:text-blue-500"
-                                                        href="{{ Storage::url($attachment->path) }}"
-                                                        download="{{ $attachment->name }}">Download</a>
-                                                </div>
-                                            </li>
-                                        @endforeach
-                                    </ul>
+                                                    <span class="sr-only">Download</span>
+                                                </a>
+                                                <!-- <button class="rounded p-2 hover:bg-gray-100"
+                                                    type="button">
+                                                    <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
+                                                        aria-hidden="true"
+                                                        fill="currentColor"
+                                                        viewBox="0 0 20 20"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z">
+                                                        </path>
+                                                    </svg>
+                                                    <span class="sr-only">Actions</span>
+                                                </button> -->
+                                            </div>
+                                        </div>
+                                    @endforeach
                                 </div>
                             @endif
                         </div>
@@ -947,174 +441,17 @@
                 </div>
             </div>
 
-            @foreach ($assignment->tasks as $task)
-                <div
-                    class="border-1 grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                    <div class="space-y-3">
-                        <dl>
-                            <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Assignee
-                            </dt>
-                            <dd class="inline-flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                                <img class="h-8 w-8 rounded-full"
-                                    src="https://ui-avatars.com/api/?name={{ urlencode($task->assignee->name) }}&background=0D8ABC&color=fff&bold=true"
-                                    alt="{{ $task->assignee->name }} avatar" />
-                                <span>
-                                    <div class="font-semibold text-gray-500 dark:text-gray-300">
-                                        {{ $task->assignee->name }}
-                                    </div>
-                                    <div>
-                                        {{ $task->assignee->position?->name }}
-                                    </div>
-                                </span>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Detail
-                                Assignment</dt>
-                            <dd class="text-sm text-gray-600 dark:text-gray-400">
-                                {{ $task->description }}
-                            </dd>
-                        </dl>
-                        <div class="grid space-y-2 md:grid-cols-3 md:space-y-0">
-                            <dl class="space-y-1 md:col-span-2 md:space-y-0">
-                                <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Due</dt>
-                                <dd class="text-sm text-gray-600 dark:text-gray-400">
-                                    {{ $task->due->format('d F Y H:i') . ' ' . '(' . $task->due->diffForHumans() . ')' }}
-                                </dd>
-                            </dl>
-                            <dl class="space-y-1 md:space-y-0">
-                                <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Score</dt>
-                                <dd class="text-sm text-gray-600 dark:text-gray-400">
-                                    <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                                        <div class="{{ $task->score() > 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none"
-                                            style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
-                                            {{ $task->score() }}%
-                                        </div>
-                                    </div>
-                                </dd>
-                            </dl>
-                        </div>
-                        @assignee
-                            @if (!$task->isResolved())
-                                <div class="flex items-center justify-end space-x-2">
-                                    <button
-                                        class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                        data-modal-target="resolve-assignment-modal"
-                                        data-modal-show="resolve-assignment-modal"
-                                        type="button">
-                                        <svg class="me-1 h-3.5 w-3.5"
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path fill-rule="evenodd"
-                                                d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a1 1 0 0 0-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.707 8.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        Resolve
-                                    </button>
-                                    <button
-                                        class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                        data-modal-target="resolve-assignment-modal"
-                                        data-modal-show="resolve-assignment-modal"
-                                        type="button">
-                                        <svg class="me-1 h-3.5 w-3.5"
-                                            aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path fill-rule="evenodd"
-                                                d="M9 2a1 1 0 0 0-1 1H6a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-2a1 1 0 0 0-1-1H9Zm1 2h4v2h1a1 1 0 1 1 0 2H9a1 1 0 0 1 0-2h1V4Zm5.707 8.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                        Resolve
-                                    </button>
-                                </div>
-                            @endif
-                        @endassignee
-                    </div>
-                </div>
-            @endforeach
+            <!-- Assignment tasks as taskmaster -->
+            @taskmaster
+                @include('app.taskscore.assignments.partials.show-taskmaster', $assignment)
+            @endtaskmaster
 
-
-            <!-- Assignment Resolution Area -->
-            {{-- @if ($assignment->isResolved())
-                    <div class="space-y-2">
-                        <h6 class="text-md mr-3 font-semibold dark:text-white">Resolution</h6>
-                        <div>
-                            <div class="h-fit space-y-4">
-                                <!-- Assignment Resolution -->
-                                <div class="space-y-2">
-                                    <div class="text-sm text-gray-600 dark:text-gray-400">
-                                        {{ Str::of($assignment->resolution)->toHtmlString }}
-                                    </div>
-                                </div>
-
-
-                                <!-- Assignment Resolution Files -->
-                                @if (count($assignment->files) > 0)
-                                    <div class="space-y-2">
-                                        <ul class="divide-y divide-gray-100 rounded-md border border-gray-200 dark:divide-gray-700 dark:border-gray-700"
-                                            role="list">
-                                            @foreach ($assignment->files as $file)
-                                                <li class="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6"
-                                                    title="{{ $file->name . '.' . $file->extension }}">
-                                                    <div class="flex w-0 flex-1 items-center">
-                                                        <svg class="h-5 w-5 flex-shrink-0 text-gray-400"
-                                                            aria-hidden="true"
-                                                            viewBox="0 0 20 20"
-                                                            fill="currentColor">
-                                                            <path fill-rule="evenodd"
-                                                                d="M15.621 4.379a3 3 0 00-4.242 0l-7 7a3 3 0 004.241 4.243h.001l.497-.5a.75.75 0 011.064 1.057l-.498.501-.002.002a4.5 4.5 0 01-6.364-6.364l7-7a4.5 4.5 0 016.368 6.36l-3.455 3.553A2.625 2.625 0 119.52 9.52l3.45-3.451a.75.75 0 111.061 1.06l-3.45 3.451a1.125 1.125 0 001.587 1.595l3.454-3.553a3 3 0 000-4.242z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                        <div class="ml-4 flex min-w-0 flex-1 gap-2">
-                                                            <span
-                                                                class="truncate font-normal">{{ $file->name . '.' . $file->extension }}</span>
-                                                            <span
-                                                                class="flex-shrink-0 text-gray-400">{{ FileSize::bytesToHuman($file->size) }}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="ml-4 flex-shrink-0">
-                                                        <a class="font-medium text-blue-600 hover:text-blue-500"
-                                                            href="{{ Storage::url($file->path) }}"
-                                                            download="{{ $file->name }}">Download</a>
-                                                    </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
-                                <!-- End of Assignment Resolution Files -->
-                            </div>
-                        </div>
-                    </div>
-                @endif --}}
-
-            <!-- Related Assignment Area -->
-            {{-- @if ($assignment->hasChilds())
-                    <div class="space-y-2">
-                        <h6 class="text-md mr-3 font-semibold dark:text-white">Reassignments</h6>
-
-                        @foreach ($assignment->childs as $child)
-                            <div
-                                class="border-1 h-auto rounded-lg border border-gray-200 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                                <div class="h-fit space-y-1 p-4 text-sm text-gray-500 dark:text-gray-400">
-                                    <a class="font-normal text-gray-800 hover:text-blue-600 hover:underline dark:text-gray-300"
-                                        href="{{ route('taskscore.assignment.show', $child->id) }}">
-                                        {{ $child->subject }}
-                                    </a>
-                                    <p>
-                                        Created at : {{ $child->created_at->format('d F Y H:i') }}
-                                    </p>
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @endif --}}
-            <!-- End of Related Assignment Area -->
-            {{-- </div>
-        </div> --}}
-            <!-- End of Assignment Description and Resolution -->
+            <!-- Assignment tasks as assignee -->
+            @assignee
+                @include('app.taskscore.assignments.partials.show-assignee', [
+                    'assignment' => $assignment,
+                    'assignee_task' => $assignee_task,
+                ])
+            @endassignee
         </div>
     @endsection

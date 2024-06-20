@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('submissions', function (Blueprint $table) {
+        Schema::create('time_extensions', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('task_id')->references('id')->on('tasks')->onDelete('cascade');
-            $table->text('detail');
+            $table->foreignUuid('task_id')->constrained('tasks');
+            $table->text('body');
             $table->boolean('is_approve')->nullable();
-            $table->text('approval_detail')->nullable();
             $table->datetime('approved_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('submissions');
+        Schema::dropIfExists('time_extensions');
     }
 };

@@ -6,7 +6,7 @@
     <h6 class="text-xl font-semibold text-gray-800 dark:text-white">Dashboard</h6>
 
     <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-6">
+        <div class="col-span-full">
             <div class="overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="inline-flex items-center space-x-4">
                     <img class="h-12 rounded-full"
@@ -40,12 +40,12 @@
             </div>
         </div>
 
-        <div class="col-span-6">
+        {{-- <div class="col-span-6">
             <div class="h-full rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
             </div>
-        </div>
+        </div> --}}
 
-        <div class="col-span-8">
+        {{-- <div class="col-span-full">
             <div
                 class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
                 <div class="mb-4 flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
@@ -115,9 +115,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="col-span-4">
+        {{-- <div class="col-span-4">
             <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="mb-4 flex justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
                     <div class="flex items-center">
@@ -237,9 +237,9 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
-        <div class="col-span-4">
+        {{-- <div class="col-span-4">
             <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Total Assignments</h3>
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">100</p>
@@ -256,7 +256,7 @@
                 <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Resolved Assignments</h3>
                 <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">70</p>
             </div>
-        </div>
+        </div> --}}
     </div>
 
 @endsection

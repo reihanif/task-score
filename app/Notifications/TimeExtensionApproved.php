@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewAssignment extends Notification
+class TimeExtensionApproved extends Notification
 {
     use Queueable;
 
@@ -53,7 +53,7 @@ class NewAssignment extends Notification
     {
         return [
             'from' => $this->assignment->taskmaster->name,
-            'body' => 'New assignment from <span class="font-semibold text-gray-900 dark:text-white">' . $this->assignment->taskmaster->name . '</span>: ' . $this->assignment->subject . ' ' . $this->task->uuid,
+            'body' => 'Time extension approved by <span class="font-semibold text-gray-900 dark:text-white">' . $this->assignment->taskmaster->name . '</span>: ' . $this->assignment->subject . ' ' . $this->task->uuid,
             'action' => route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id]),
         ];
     }
@@ -65,6 +65,6 @@ class NewAssignment extends Notification
      */
     public function databaseType(object $notifiable): string
     {
-        return 'new-assignment';
+        return 'time-extension-approved';
     }
 }

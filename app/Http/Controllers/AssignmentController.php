@@ -7,10 +7,11 @@ use App\Models\File;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Assignment;
+use App\Models\Submission;
 use Illuminate\Http\Request;
 use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
-use App\Notifications\AssignmentResolved;
+use App\Notifications\AssignmentSubmitted;
 use Illuminate\Support\Facades\Notification;
 
 class AssignmentController extends Controller
@@ -22,19 +23,10 @@ class AssignmentController extends Controller
      */
     public function myAssignment()
     {
-        // $unresolved_assignments = Assignment::where('assignee_id', Auth::User()->id)->where('resolved_at', null)->orderBy('created_at')->get();
-        // $resolved_assignments = Assignment::where('assignee_id', Auth::User()->id)->where('resolved_at', '!=', null)->orderBy('created_at')->get();
-
-        $unresolved_assignments = Task::whereHas('assignment', function ($query) {
-            $query->where('closed_at', null);
-        })->where('assignee_id', Auth::User()->id)->get();
-        $resolved_assignments = Task::whereHas('assignment', function ($query) {
-            $query->whereNot('closed_at', null);
-        })->where('assignee_id', Auth::User()->id)->get();
-
         return view('app.taskscore.assignments.my-assignments', [
-            'unresolved_assignments' => $unresolved_assignments,
-            'resolved_assignments' => $resolved_assignments,
+            'unresolved_assignments' => Auth::User()->unresolvedAssignments(),
+            'pending_assignments' => Auth::User()->pendingAssignments(),
+            'resolved_assignments' => Auth::User()->resolvedAssignments,
         ]);
     }
 
@@ -59,9 +51,7 @@ class AssignmentController extends Controller
      */
     public function subordinateAssignment()
     {
-        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
-            $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
-        })->get()->sortBy('name');
+        $assignees = Auth::User()->subordinates();
 
         $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at')->get();
 
@@ -79,27 +69,17 @@ class AssignmentController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->timetable) {
-            $request['due'] = Carbon::now()->addMinutes($request->timetable);
-        } elseif ($request->date && $request->time) {
-            $request['due'] = Carbon::parse("$request->date $request->time");
-        }
-
         $request->validate([
-            'assignee' => 'required',
             'category' => 'required',
             'subject' => 'required|unique:assignments,subject',
             'description' => 'required',
-            'due' => 'required'
         ]);
 
         $assignment = new Assignment();
         $assignment->taskmaster_id = Auth::User()->id;
-        $assignment->assigned_to = $request->assignee;
         $assignment->type = $request->category;
         $assignment->subject = $request->subject;
         $assignment->description = $request->description;
-        $assignment->due = $request->due;
         $assignment->save();
 
         if ($request->hasFile('attachments')) {
@@ -122,10 +102,29 @@ class AssignmentController extends Controller
                 $file->save();
             }
         }
-        $assignees = User::where('id', $assignment->assigned_to)->get();
-        Notification::send($assignees, new NewAssignment($assignment));
 
-        return redirect()->back()->with('success', 'Assignment sent to ' . $assignment->assignee);
+        foreach ($request->assignees as $key => $assignee) {
+            if (array_key_exists($key, $request->timetables)) {
+                $due = Carbon::now()->addMinutes($request->timetables[$key]);
+            } elseif (array_key_exists($key, $request->dates) && array_key_exists($key, $request->times)) {
+                $date = $request->dates[$key];
+                $time = $request->times[$key];
+                $due = Carbon::parse("$date $time");
+            }
+
+            $task = new Task();
+            $task->uuid = $task->generateUniqueId();
+            $task->assignee_id = $assignee;
+            $task->assignment_id = $assignment->id;
+            $task->description = $request->details[$key];
+            $task->due = $due;
+            $task->save();
+        }
+
+        $assignees = User::whereIn('id', $request->assignees)->get();
+        Notification::send($assignees, new NewAssignment($assignment, $task));
+
+        return redirect()->back()->with('success', 'Assignment created successfully');
     }
 
     /**
@@ -134,12 +133,24 @@ class AssignmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
+            $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
+        })->get()->sortBy('name');
+
+        $task = null;
+
+        if ($request->task) {
+            $task = Task::findOrFail($request->task);
+        }
+
         $assignment = Assignment::findOrFail($id);
 
         return view('app.taskscore.assignments.show', [
-            'assignment' => $assignment
+            'assignment' => $assignment,
+            'assignee_task' => $task,
+            'assignees' => $assignees
         ]);
     }
 
@@ -163,7 +174,17 @@ class AssignmentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'subject' => 'required|unique:assignments,subject,'. $id,
+            'description' => 'required',
+        ]);
+
+        $assignment = Assignment::findOrFail($id);
+        $assignment->subject = $request->subject;
+        $assignment->description = $request->description;
+        $assignment->save();
+
+        return redirect()->back()->with('success', 'Assignment updated successfully');
     }
 
     /**
@@ -179,10 +200,13 @@ class AssignmentController extends Controller
             'resolution' => 'required'
         ]);
 
-        $assignment = Assignment::findOrFail($id);
-        $assignment->timestamps = false;
-        $assignment->resolution = $request->resolution;
-        $assignment->resolved_at = Carbon::now()->toDateTimeString();
+        $task = Task::findOrFail($id);
+        $assignment = Assignment::findOrFail($task->assignment_id);
+
+        $submission = new Submission();
+        $submission->task_id = $id;
+        $submission->detail = $request->resolution;
+        $submission->save();
 
         if ($request->hasFile('attachments')) {
             foreach ($request->file('attachments') as $attachment) {
@@ -198,28 +222,26 @@ class AssignmentController extends Controller
                 $file->path = $path;
                 $file->extension = $extension;
                 $file->size = $attachment->getSize();
-                $file->type = 'resolution';
-                $file->fileable_id = $assignment->id;
-                $file->fileable_type = Assignment::class;
+                $file->type = 'submisison';
+                $file->fileable_id = $submission->id;
+                $file->fileable_type = Submission::class;
                 $file->save();
             }
         }
 
-        $assignment->save();
-
         $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-        Notification::send($taskmasters, new AssignmentResolved($assignment));
+        Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
 
         return redirect()->back()->with('success', $assignment->name . 'has been resolved');
     }
 
     /**
-     * Approve the specified assignment.
+     * Close the specified assignment.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function approve($id)
+    public function close($id)
     {
         $assignment = Assignment::findOrFail($id);
         $assignment->timestamps = false;
@@ -227,23 +249,24 @@ class AssignmentController extends Controller
         $assignment->closed_at = Carbon::now()->toDateTimeString();
         $assignment->save();
 
-        if ($assignment->hasSiblings()) {
-            $siblings = Assignment::whereNot('id', $id)->where('parent_id', $assignment->parent_id)->get();
-            foreach ($siblings as $sibling) {
-                $sibling->status = 'closed';
-                $sibling->closed_at = Carbon::now()->toDateTimeString();
-                $sibling->save();
-            }
-        }
+        return redirect()->back()->with('success', $assignment->name . 'has been closed');
+    }
 
-        if ($assignment->hasParent()) {
-            $parent = $assignment->parent;
-            $parent->status = 'closed';
-            $parent->closed_at = Carbon::now()->toDateTimeString();
-            $parent->save();
-        }
+    /**
+     * Open the specified assignment.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function open($id)
+    {
+        $assignment = Assignment::findOrFail($id);
+        $assignment->timestamps = false;
+        $assignment->status = 'open';
+        $assignment->closed_at = null;
+        $assignment->save();
 
-        return redirect()->back()->with('success', $assignment->name . 'has been approved');
+        return redirect()->back()->with('success', $assignment->name . 'has been opened');
     }
 
     /**
@@ -325,7 +348,7 @@ class AssignmentController extends Controller
         $assignment->timestamps = false;
         $assignment->delete();
 
-        return redirect()->route('taskscore.assignment.create')->with('success', $assignment->name . 'has been deleted');
+        return redirect()->route('taskscore.assignment.subordinate-assignments')->with('success', $assignment->name . 'has been deleted');
     }
 
     /**
