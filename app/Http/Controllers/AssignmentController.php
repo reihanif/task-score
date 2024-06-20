@@ -102,6 +102,8 @@ class AssignmentController extends Controller
                 $file->save();
             }
         }
+        $assignees = User::where('id', $assignment->assigned_to)->get();
+        Notification::send($assignees, new NewAssignment($assignment));
 
         foreach ($request->assignees as $key => $assignee) {
             if (array_key_exists($key, $request->timetables)) {
@@ -231,6 +233,9 @@ class AssignmentController extends Controller
 
         $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
         Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
+
+        $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
+        Notification::send($taskmasters, new AssignmentResolved($assignment));
 
         return redirect()->back()->with('success', $assignment->name . 'has been resolved');
     }

@@ -524,17 +524,17 @@ if (document.querySelector("#pending-assignments-table") !== null) {
                     text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
                 },
             },
-        },
-        oLanguage: {
-            sEmptyTable:
-                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
-                '<div class="mb-8">No data found</div>',
-        },
-        language: {
-            infoEmpty:
-                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-        },
-    });
+            oLanguage: {
+                sEmptyTable:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No data found</div>',
+            },
+            language: {
+                infoEmpty:
+                    '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+            },
+        }
+    );
     document
         .getElementById("table-search-pending-assignments")
         .addEventListener("keyup", function () {
