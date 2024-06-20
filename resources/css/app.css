@@ -20,7 +20,7 @@
 }
 
 .tree {
-    width: 3000px;
+    width: 6000px;
 }
 
 .tree ul {
@@ -258,7 +258,7 @@ table {
 }
 
 .dt-layout-row.dt-layout-table {
-    @apply block overflow-x-auto;
+    @apply block overflow-x-auto overflow-y-hidden z-0;
 }
 
 .dt-container {

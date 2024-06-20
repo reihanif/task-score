@@ -7,7 +7,7 @@
     </p>
 @endif
 <div class="mb-4"
-    x-data="editor('')">
+    x-data="editor('{{ $attributes->get('value') ? Str::of($attributes->get('value'))->toHtmlString : '' }}')">
     <div class="h-fit w-full rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700">
         <template x-if="isLoaded()">
             <div class="flex items-center justify-between border-b px-3 py-2 dark:border-gray-600">
@@ -18,7 +18,10 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleBold()"
-                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('bold', updatedAt) }">
+                            :class="{
+                                'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('bold',
+                                    updatedAt)
+                            }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -35,7 +38,10 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleItalic()"
-                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('italic', updatedAt) }">
+                            :class="{
+                                'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('italic',
+                                    updatedAt)
+                            }">
                             <svg class="h-4 w-4"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
@@ -56,7 +62,10 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleUnderline()"
-                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('underline', updatedAt) }">
+                            :class="{
+                                'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('underline',
+                                    updatedAt)
+                            }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -73,7 +82,10 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleStrike()"
-                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('strike', updatedAt) }">
+                            :class="{
+                                'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('strike',
+                                    updatedAt)
+                            }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -89,7 +101,10 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleBulletList()"
-                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('bulletList', updatedAt) }">
+                            :class="{
+                                'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('bulletList',
+                                    updatedAt)
+                            }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -103,7 +118,10 @@
                             class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                             type="button"
                             x-on:click="toggleOrderedList()"
-                            :class="{ 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('orderedList', updatedAt) }">
+                            :class="{
+                                'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive('orderedList',
+                                    updatedAt)
+                            }">
                             <svg class="h-4 w-4"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -151,17 +169,18 @@
                 </div>
             </div>
         </template>
-        <div class="min-h-24 rounded-b-lg bg-white p-2.5 dark:bg-gray-700">
-            <div class="block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+        <div class="relative border-b dark:border-gray-600 bg-white p-2.5 dark:bg-gray-700">
+            <div class="min-h-24 block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 placeholder="{{ $attributes->get('placeholder') }}"
                 x-ref="element">
             </div>
-            <input class="hidden"
+            <input class="absolute pointer-events-none top-2 opacity-0"
                 {{ $attributes }}
-                x-model="content"
-                pattern="^(?!^<p><\/p>$).*"></input>
+                x-model="content">
         </div>
+        <p class="py-0.5 px-1.5 text-xs text-right font-normal text-gray-500 dark:text-gray-400">
+            <span x-text="characters"></span>
+            / 2000
+        </p>
     </div>
-    <p class="mt-1 text-sm text-red-600 dark:text-red-500"
-        x-show="!content.match('^(?!^<p><\/p>$).*')">{{ $attributes->get('label') ?? 'This field' }} cannot be empty</p>
 </div>

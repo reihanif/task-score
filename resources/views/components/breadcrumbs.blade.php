@@ -34,7 +34,7 @@
                                     stroke-width="2"
                                     d="m1 9 4-4-4-4" />
                             </svg>
-                            <a class="max-w-40 ms-1 truncate text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white md:ms-2"
+                            <a class="max-w-48 ms-1 truncate text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white md:ms-2"
                                 href="{{ $menu['route'] }}"
                                 title="{{ $menu['name'] }}">
                                 {{ $menu['name'] }}

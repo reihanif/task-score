@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('assignments', function (Blueprint $table) {
-            $table->text('resolution')->after('due')->nullable();
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->datetime('resolved_at')->nullable()->after('due');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('assignments', function (Blueprint $table) {
-            $table->dropColumn('resolution');
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->dropColumn('resolved_at');
         });
     }
 };

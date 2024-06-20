@@ -12,13 +12,15 @@ class NewAssignment extends Notification
     use Queueable;
 
     private $assignment;
+    private $task;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($assignment)
+    public function __construct($assignment, $task)
     {
         $this->assignment = $assignment;
+        $this->task = $task;
     }
 
     /**
@@ -51,11 +53,8 @@ class NewAssignment extends Notification
     {
         return [
             'from' => $this->assignment->taskmaster->name,
-            'to' => $this->assignment->assignee->name,
-            'body' => $this->assignment->subject,
-            'conjunction' => 'from',
-            'route' => 'taskscore.assignment.show',
-            'route_id' => $this->assignment->id
+            'body' => 'New assignment from <span class="font-semibold text-gray-900 dark:text-white">' . $this->assignment->taskmaster->name . '</span>: ' . $this->assignment->subject . ' ' . $this->task->uuid,
+            'action' => route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id]),
         ];
     }
 

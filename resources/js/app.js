@@ -41,6 +41,8 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import BulletList from "@tiptap/extension-bullet-list";
 import History from "@tiptap/extension-history";
 import Placeholder from "@tiptap/extension-placeholder";
+import CharacterCount from "@tiptap/extension-character-count";
+import HardBreak from "@tiptap/extension-hard-break";
 
 document.addEventListener("alpine:init", () => {
     Alpine.data("editor", (initialContent) => {
@@ -49,6 +51,8 @@ document.addEventListener("alpine:init", () => {
         return {
             content: initialContent,
             updatedAt: Date.now(), // force Alpine to rerender on selection change
+            characters: 0,
+            words: 0,
             isLoaded() {
                 return editor;
             },
@@ -86,7 +90,11 @@ document.addEventListener("alpine:init", () => {
                     element: this.$refs.element,
                     extensions: [
                         Document,
-                        Paragraph,
+                        Paragraph.configure({
+                            HTMLAttributes: {
+                              class: 'min-h-[1rem]'
+                            }
+                        }),
                         Text,
                         Strike,
                         Italic,
@@ -112,14 +120,23 @@ document.addEventListener("alpine:init", () => {
                             placeholder:
                                 this.$refs.element.getAttribute("placeholder"),
                         }),
+                        CharacterCount.configure({
+                            limit: 2000,
+                        }),
+                        HardBreak,
                     ],
                     content: initialContent,
                     onCreate({ editor }) {
                         _this.updatedAt = Date.now();
+                        _this.characters =
+                            editor.storage.characterCount.characters();
                     },
                     onUpdate({ editor }) {
                         _this.updatedAt = Date.now();
-                        _this.content = editor.getHTML(); // Update Alpine.js content
+                        _this.content = editor.isEmpty ? "" : editor.getHTML(); // Update Alpine.js content
+                        _this.characters =
+                            editor.storage.characterCount.characters();
+                        _this.words = editor.storage.characterCount.words();
                     },
                     onSelectionUpdate({ editor }) {
                         _this.updatedAt = Date.now();
@@ -129,11 +146,6 @@ document.addEventListener("alpine:init", () => {
         };
     });
 });
-
-window.Alpine = Alpine;
-
-Alpine.plugin(collapse);
-Alpine.start();
 
 /*
 Flowbite Datepicker
@@ -193,36 +205,50 @@ Tom Select Js
 TomSelect.define("remove_button", TomSelect_remove_button);
 TomSelect.define("caret_position", TomSelect_caret_position);
 
-document.querySelectorAll("select").forEach((el) => {
-    if (!el.hasAttribute("normal-select")) {
-        if (el.hasAttribute("multiple")) {
-            if (el.hasAttribute("readonly")) {
-                new TomSelect(el, {}).lock();
-            } else {
-                new TomSelect(el, {
-                    plugins: ["remove_button", "caret_position"],
-                    create: false,
-                    sortField: {
-                        field: "text",
-                        direction: "asc",
-                    },
-                });
-            }
-        } else {
-            if (el.hasAttribute("readonly")) {
-                new TomSelect(el, {}).lock();
-            } else {
-                new TomSelect(el, {
-                    create: false,
-                    sortField: {
-                        field: "text",
-                        direction: "asc",
-                    },
-                });
+// Store TomSelect instances
+let tomSelectInstances = [];
+
+// Function to initialize TomSelect for all select elements
+function initializeTomSelects() {
+    // Destroy existing TomSelect instances
+    // tomSelectInstances.forEach((instance) => instance.destroy());
+    // tomSelectInstances = [];
+
+    document.querySelectorAll("select").forEach((el) => {
+        if (!el.hasAttribute("normal-select")) {
+            if (!el.classList.contains("dt-input")) {
+                if (!el.classList.contains("tomselected")) {
+                    if (el.hasAttribute("multiple")) {
+                        if (el.hasAttribute("readonly")) {
+                            new TomSelect(el, {}).lock();
+                        } else {
+                            new TomSelect(el, {
+                                plugins: ["remove_button", "caret_position"],
+                                create: false,
+                                sortField: {
+                                    field: "text",
+                                    direction: "asc",
+                                },
+                            });
+                        }
+                    } else {
+                        if (el.hasAttribute("readonly")) {
+                            new TomSelect(el, {}).lock();
+                        } else {
+                            new TomSelect(el, {
+                                create: false,
+                                sortField: {
+                                    field: "text",
+                                    direction: "asc",
+                                },
+                            });
+                        }
+                    }
+                }
             }
         }
-    }
-});
+    });
+}
 
 /*
 Filepond
@@ -315,6 +341,31 @@ labels.forEach((label) => {
 /*
 Datatables
 */
+
+// Notifications Table
+if (document.querySelector("#notifications-table") !== null) {
+    let notificationsTable = new DataTable("#notifications-table", {
+        order: [[2, 'desc']],
+        responsive: true,
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page _MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+        },
+    });
+    document
+        .getElementById("table-search-notifications")
+        .addEventListener("keyup", function () {
+            notificationsTable.columns(0).search(this.value).draw();
+        });
+}
 
 // Positions Table
 if (document.querySelector("#positions-table") !== null) {
@@ -458,6 +509,39 @@ if (document.querySelector("#unresolved-assignments-table") !== null) {
         });
 }
 
+// Pending Assignments Table
+if (document.querySelector("#pending-assignments-table") !== null) {
+    let pendingAssignmentsTable = new DataTable("#pending-assignments-table", {
+        responsive: true,
+        layout: {
+            topStart: {},
+            topEnd: {},
+            bottomStart: {
+                pageLength: {
+                    text: "Rows per page_MENU_",
+                },
+                info: {
+                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                },
+            },
+            oLanguage: {
+                sEmptyTable:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No data found</div>',
+            },
+            language: {
+                infoEmpty:
+                    '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+            },
+        }
+    );
+    document
+        .getElementById("table-search-pending-assignments")
+        .addEventListener("keyup", function () {
+            pendingAssignmentsTable.columns(1).search(this.value).draw();
+        });
+}
+
 // Resolved Assignments Table
 if (document.querySelector("#resolved-assignments-table") !== null) {
     let resolvedAssignmentsTable = new DataTable(
@@ -537,3 +621,57 @@ if (document.querySelector("#subordinate-assignments-table") !== null) {
                 .draw();
         });
 }
+
+// Subordinate Submissions Table
+if (document.querySelector("#subordinate-submissions-table") !== null) {
+    let subordinateAssignmentsTable = new DataTable(
+        "#subordinate-submissions-table",
+        {
+            order: [[3, 'desc']],
+            responsive: true,
+            layout: {
+                topStart: {},
+                topEnd: {},
+                bottomStart: {
+                    pageLength: {
+                        text: "Rows per page_MENU_",
+                    },
+                    info: {
+                        text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                    },
+                },
+            },
+            oLanguage: {
+                sEmptyTable:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No data found</div>',
+            },
+            language: {
+                infoEmpty:
+                    '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+            },
+        }
+    );
+    document
+        .getElementById("table-search-subordinate-submissions")
+        .addEventListener("keyup", function () {
+            subordinateAssignmentsTable.columns(1).search(this.value).draw();
+        });
+    document
+        .getElementById("submissions-resolution-filter")
+        .addEventListener("change", function () {
+            subordinateAssignmentsTable
+                .columns(4)
+                .search(this.value, false, false, false)
+                .draw();
+        });
+}
+
+window.TomSelect = TomSelect;
+window.initializeTomSelects = initializeTomSelects;
+window.onload = initializeTomSelects();
+
+window.Alpine = Alpine;
+
+Alpine.plugin(collapse);
+Alpine.start();

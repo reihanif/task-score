@@ -51,7 +51,7 @@
     </div>
 
     <!-- Check route to hide sidebar -->
-    @if (request()->route()->named(['homepage', '*.index', 'account.*', 'taskscore.assignment.subordinate-assignments', 'taskscore.assignment.my-assignments']))
+    @if (request()->route()->named(['homepage', '*.index', 'account.*', 'taskscore.assignment.subordinate-assignments', 'taskscore.assignment.my-assignments', 'taskscore.assignment.subordinate-submissions']))
         <x-navbar></x-navbar>
         <x-sidebar
             class="fixed left-0 top-0 z-[31] h-screen w-64 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 sm:translate-x-0"></x-sidebar>
@@ -112,9 +112,6 @@
             }
 
         });
-    </script>
-    <script>
-
     </script>
 </body>
 
