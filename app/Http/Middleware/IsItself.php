@@ -15,7 +15,7 @@ class IsItself
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->user()->id == $request->route('user')) {
+        if($request->user()->id !== $request->route('user')) {
             return redirect()->route('homepage')->withErrors('You don\'t have permission for the page');
         }
 

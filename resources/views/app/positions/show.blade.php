@@ -79,13 +79,27 @@
                     </div>
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="mb-1 font-medium text-gray-600 dark:text-white">Direct Subordinates :</p>
-                        @if ($position->subordinates->isEmpty())
+                        @if ($position->direct_subordinates->isEmpty())
+                            <p>
+                                No direct subordinates
+                            </p>
+                        @else
+                            <ul class="max-w-md list-outside pl-6 list-disc space-y-1 text-gray-500 dark:text-gray-400">
+                                @foreach ($position->direct_subordinates as $direct_subordinate)
+                                    <li>{{ $direct_subordinate->name }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                    <div class="text-gray-500 dark:text-gray-400">
+                        <p class="mb-1 font-medium text-gray-600 dark:text-white">All Subordinates :</p>
+                        @if ($position->subordinates()->isEmpty())
                             <p>
                                 No subordinates
                             </p>
                         @else
-                            <ul class="max-w-md list-inside list-disc space-y-1 text-gray-500 dark:text-gray-400">
-                                @foreach ($position->subordinates as $subordinate)
+                            <ul class="max-w-md list-outside pl-6 list-disc space-y-1 text-gray-500 dark:text-gray-400">
+                                @foreach ($position->subordinates() as $subordinate)
                                     <li>{{ $subordinate->name }}</li>
                                 @endforeach
                             </ul>

@@ -10,56 +10,13 @@
     </div>
     <div class="tree text-gray-900 dark:text-white">
         <ul>
-            @foreach ($positions as $key => $position)
+            @foreach ($positions as $position)
                 @if ($position->level == 0)
                     <li>
                         <a href="#">
                             {{ $position->name }}
                         </a>
-                        @if (!$position->subordinates->isEmpty())
-                            <ul>
-                                @foreach ($position->subordinates as $subordinate1)
-                                    <li>
-                                        <a href="#">
-                                            {{ $subordinate1->name }}
-                                        </a>
-                                        @if (!$subordinate1->subordinates->isEmpty())
-                                            <ul>
-                                                @foreach ($subordinate1->subordinates as $subordinate2)
-                                                    <li>
-                                                        <a href="#">
-                                                            {{ $subordinate2->name }}
-                                                        </a>
-                                                        @if (!$subordinate2->subordinates->isEmpty())
-                                                            <ul>
-                                                                @foreach ($subordinate2->subordinates as $subordinate3)
-                                                                    <li>
-                                                                        <a href="#">
-                                                                            {{ $subordinate3->name }}
-                                                                        </a>
-                                                                        @if (!$subordinate3->subordinates->isEmpty())
-                                                                            <ul>
-                                                                                @foreach ($subordinate3->subordinates as $subordinate4)
-                                                                                    <li>
-                                                                                        <a href="#">
-                                                                                            {{ $subordinate4->name }}
-                                                                                        </a>
-                                                                                    </li>
-                                                                                @endforeach
-                                                                            </ul>
-                                                                        @endif
-                                                                    </li>
-                                                                @endforeach
-                                                            </ul>
-                                                        @endif
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        @endif
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @endif
+                        @include('app.positions.subhierarchy', ['subordinates' => $position->direct_subordinates])
                     </li>
                 @endif
             @endforeach

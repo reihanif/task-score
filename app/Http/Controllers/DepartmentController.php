@@ -17,7 +17,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::orderBy('name', 'asc')->paginate(10);
+        $departments = Department::orderBy('name', 'asc')->get();
         $positions = Position::orderBy('level')->get();
 
         return view('app.departments.index', [
