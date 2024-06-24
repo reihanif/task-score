@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\User;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Position extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
 
     /**
      * Get the users for the position.
@@ -31,19 +30,11 @@ class Position extends Model
     }
 
     /**
-     * Get the direct subordinates of the positions.
-     */
-    public function direct_subordinates(): HasMany
-    {
-        return $this->hasMany(Position::class, 'parent_id', 'id');
-    }
-
-    /**
      * Get the subordinates of the positions.
      */
-    public function subordinates()
+    public function subordinates(): HasMany
     {
-        return $this->where('path', 'LIKE', '%' . $this->id . '%')->get();
+        return $this->hasMany(Position::class, 'parent_id', 'id');
     }
 
     /**

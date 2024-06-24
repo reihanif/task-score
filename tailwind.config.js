@@ -10,9 +10,5 @@ module.exports = {
     theme: {
         extend: {},
     },
-    plugins: [
-        require('flowbite/plugin')({
-            charts: true,
-        }),
-      ]
+    plugins: [require("flowbite/plugin")],
 };

@@ -13,7 +13,7 @@
         </div>
 
         <div
-            class="flex-column mt-4 flex flex-wrap items-end justify-between space-y-4 bg-white dark:bg-gray-800 md:flex-row md:space-y-0">
+            class="flex-column flex flex-wrap items-end justify-between space-y-4 bg-white py-4 dark:bg-gray-800 md:flex-row md:space-y-0">
             <div id="search">
                 <label class="sr-only"
                     for="table-search-users">Search</label>
@@ -23,7 +23,7 @@
                     </div>
                     <input
                         class="block w-auto rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        id="table-search-departments"
+                        id="table-search-users"
                         type="text"
                         placeholder="Search for department">
                 </div>
@@ -34,32 +34,30 @@
                 </x-modals.create-department>
             @endif
         </div>
-
-        <div>
-            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
-                id="departments-table">
+        <div class="overflow-x-auto">
+            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
+                        <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
                             No
-                        </x-table-head>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
                             Nama
-                        </x-table-head>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
                             Created at
-                        </x-table-head>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
                             scope="col">
                             Last Updated
-                        </x-table-head>
+                        </th>
                         @if (Auth::User()->role == 'superadmin')
-                            <x-table-head class="px-3 py-3"
-                                data-dt-order="disable"
-                                scope="col" />
+                            <th class="px-6 py-3"
+                                scope="col">
+                            </th>
                         @endif
                     </tr>
                 </thead>
@@ -67,18 +65,18 @@
                     @foreach ($departments as $key => $department)
                         <tr class="cursor-pointer border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
                             data-href="{{ route('departments.show', $department->id) }}">
-                            <th class="whitespace-nowrap px-3 py-4 font-medium text-gray-900 dark:text-white"
+                            <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
-                                {{ $loop->iteration }}
+                                {{ ($departments->currentpage() - 1) * $departments->perpage() + $key + 1 }}
                             </th>
-                            <th class="whitespace-nowrap px-3 py-4 font-medium text-gray-900 dark:text-white"
+                            <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
                                 {{ $department->name }}
                             </th>
-                            <td class="whitespace-nowrap px-3 py-4">
+                            <td class="whitespace-nowrap px-6 py-4">
                                 {{ $department->created_at->format('d F Y, H:i') }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4">
+                            <td class="whitespace-nowrap px-6 py-4">
                                 {{ $department->updated_at->diffForHumans() }}
                             </td>
                             @if (Auth::User()->role == 'superadmin')
@@ -128,6 +126,9 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <div class="mt-4">
+            {{ $departments->links() }}
         </div>
     </div>
 @endsection

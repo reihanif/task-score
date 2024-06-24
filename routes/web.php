@@ -1,17 +1,13 @@
 <?php
 
+use App\Http\Controllers\AccountController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RelationController;
 use App\Http\Controllers\HierarchyController;
-use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\SubmissionController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\TimeExtensionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,9 +33,6 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::view('/homepage', 'app.taskscore.index')->name('homepage');
 
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
-    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
-
     Route::group(['middleware' => 'itself'], function () {
         Route::get('/account/{user}/settings', [AccountController::class, 'settings'])->name('account.settings');
     });
@@ -50,28 +43,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/account/{user}/permissions-update', [AccountController::class, 'updatePermissions'])->name('account.update-permissions');
     });
 
-    // Route::group(['as' => 'taskscore.', 'prefix' => 'task-score'], function () {
-    Route::group(['as' => 'taskscore.'], function () {
-            Route::get('/my-assignments', [AssignmentController::class, 'myAssignment'])->name('assignment.my-assignments');
-            Route::get('/subordinate-assignments', [AssignmentController::class, 'subordinateAssignment'])->name('assignment.subordinate-assignments');
-            Route::get('/subordinate-submissions', [SubmissionController::class, 'index'])->name('assignment.subordinate-submissions');
-            Route::post('/store-assignment', [AssignmentController::class, 'store'])->name('assignment.store');
-            Route::put('/{assignment}/update-assignment', [AssignmentController::class, 'update'])->name('assignment.update');
-            Route::get('/assignment/{assignment}', [AssignmentController::class, 'show'])->name('assignment.show');
-            Route::delete('/assignment/{assignment}/delete', [AssignmentController::class, 'delete'])->name('assignment.delete');
-            Route::post('/{assignment}/resolve', [AssignmentController::class, 'resolve'])->name('assignment.resolve');
-            Route::put('/{assignment}/close', [AssignmentController::class, 'close'])->name('assignment.close');
-            Route::put('/{assignment}/open', [AssignmentController::class, 'open'])->name('assignment.open');
-            Route::put('/{assignment}/submission-approval', [SubmissionController::class, 'approve'])->name('assignment.approve-submission');
-            Route::put('/{assignment}/submission-rejection', [SubmissionController::class, 'reject'])->name('assignment.reject-submission');
-            Route::post('/{assignment}/reassign', [AssignmentController::class, 'reassign'])->name('assignment.reassign');
-            Route::post('/{assignment}/time-extension-request', [TimeExtensionController::class, 'store'])->name('assignment.time-extension-request');
-            Route::put('/{assignment}/time-extension-reject', [TimeExtensionController::class, 'reject'])->name('assignment.time-extension-reject');
-            Route::put('/{assignment}/time-extension-approve', [TimeExtensionController::class, 'approve'])->name('assignment.time-extension-approve');
+    Route::name('taskscore.', ['prefix' => 'task-score'])->group(function () {
     });
 
     Route::group(['middleware' => 'permission:manage_user'], function () {
-        // Route::get('/account/{user}/settings', [AccountController::class, 'settings'])->name('account.settings');
+        Route::get('/account/{user}/settings', [AccountController::class, 'settings'])->name('account.settings');
         Route::put('/account/{user}/update', [AccountController::class, 'updateAccount'])->name('account.update');
         Route::put('/account/{user}/change-password', [AccountController::class, 'changePassword'])->name('account.change-password');
 

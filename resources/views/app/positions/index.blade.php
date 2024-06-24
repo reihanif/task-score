@@ -13,7 +13,7 @@
         </div>
 
         <div
-            class="flex-column flex flex-wrap items-end justify-between space-y-4 bg-white pt-4 dark:bg-gray-800 md:flex-row md:space-y-0">
+            class="flex-column flex flex-wrap items-end justify-between space-y-4 bg-white py-4 dark:bg-gray-800 md:flex-row md:space-y-0">
             <div id="search">
                 <label class="sr-only"
                     for="table-search-users">Search</label>
@@ -23,9 +23,8 @@
                     </div>
                     <input
                         class="block w-auto rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        id="table-search-positions"
+                        id="table-search-users"
                         type="text"
-                        autocomplete="off"
                         placeholder="Search for position">
                 </div>
             </div>
@@ -36,36 +35,34 @@
                 </x-modals.create-position>
             @endif
         </div>
-        <div>
-            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
-                id="positions-table">
+        <div class="overflow-x-auto">
+            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
-                        scope="col">
+                        <th class="whitespace-nowrap px-6 py-3"
+                            scope="col">
                             No
-                        </x-table-head>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
-                        scope="col">
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
+                            scope="col">
                             Nama
-                        </x-table-head>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
-                        scope="col">
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
+                            scope="col">
                             Total Departments
-                        </x-table-head>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
-                        scope="col">
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
+                            scope="col">
                             Created at
-                        </x-table-head>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
-                        scope="col">
+                        </th>
+                        <th class="whitespace-nowrap px-6 py-3"
+                            scope="col">
                             Last Updated
-                        </x-table-head>
-
+                        </th>
                         @if (Auth::User()->role == 'superadmin')
-                            <x-table-head class="px-3 py-3"
-                                data-dt-order="disable"
-                                scope="col"/>
+                            <th class="px-6 py-3"
+                                scope="col">
+                            </th>
                         @endif
                     </tr>
                 </thead>
@@ -73,22 +70,21 @@
                     @foreach ($positions as $key => $position)
                         <tr class="cursor-pointer border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600"
                             data-href="{{ route('positions.show', $position->id) }}">
-                            <th class="whitespace-nowrap px-3 py-4 font-medium text-gray-900 dark:text-white"
+                            <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
-                                {{ $loop->iteration }}
-                                {{-- {{ ($positions->currentpage() - 1) * $positions->perpage() + $key + 1 }} --}}
+                                {{ ($positions->currentpage() - 1) * $positions->perpage() + $key + 1 }}
                             </th>
-                            <th class="whitespace-nowrap px-3 py-4 font-medium text-gray-900 dark:text-white"
+                            <th class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
                                 scope="row">
                                 {{ $position->name }}
                             </th>
-                            <td class="px-3 py-4 text-center">
+                            <td class="px-6 py-4 text-center">
                                 {{ $position->departments->count() }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4">
+                            <td class="whitespace-nowrap px-6 py-4">
                                 {{ $position->created_at->format('d F Y, H:i') }}
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4">
+                            <td class="whitespace-nowrap px-6 py-4">
                                 {{ $position->updated_at->format('d F Y, H:i') }}
                             </td>
                             @if (Auth::User()->role == 'superadmin')
@@ -140,6 +136,9 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <div class="mt-4">
+            {{ $positions->links() }}
         </div>
     </div>
 @endsection

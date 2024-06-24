@@ -19,10 +19,9 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => '9bd58171-49e6-48ef-87ee-af18521e1dca',
             'name' => 'Administrator',
             'username' => 'administrator',
-            'password' => Hash::make('Ptgn_123'),
+            'password' => Hash::make('Ptgn@@123'),
             'role' => 'superadmin',
             'provider' => 'local'
         ];

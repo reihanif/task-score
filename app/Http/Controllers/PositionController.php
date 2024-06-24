@@ -14,7 +14,7 @@ class PositionController extends Controller
      */
     public function index()
     {
-        $positions = Position::orderBy('level', 'asc')->get();
+        $positions = Position::orderBy('level', 'asc')->paginate(10);
         $superiors = Position::orderBy('level', 'asc')->get();
 
         return view('app.positions.index', [
@@ -60,7 +60,7 @@ class PositionController extends Controller
     public function show(string $id)
     {
         $position = Position::findOrFail($id);
-        $positions = Position::orderBy('level', 'asc');
+        $positions = Position::orderBy('name', 'asc');
         $departments = Department::all();
 
         return view('app.positions.show', compact('position', 'positions', 'departments'));

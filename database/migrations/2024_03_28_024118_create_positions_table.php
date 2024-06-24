@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('positions', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('parent_id')->nullable()->references('id')->on('positions')->onDelete('cascade');
+            $table->id();
+            $table->foreignId('parent_id')->nullable()->references('id')->on('positions')->onDelete('cascade');
             $table->string('name');
-            $table->text('path')->nullable();
+            $table->string('path')->nullable();
             $table->integer('level')->default(0);
             $table->timestamps();
         });

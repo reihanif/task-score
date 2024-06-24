@@ -20,12 +20,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('name', 'asc')->get();
-        $positions = Position::orderBy('level', 'asc')->get();
+        $users = User::orderBy('name', 'asc')->paginate(10);
 
         return view('app.users.index', [
-            'users' => $users,
-            'positions' => $positions
+            'users' => $users
         ]);
     }
 
