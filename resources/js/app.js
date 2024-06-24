@@ -92,8 +92,8 @@ document.addEventListener("alpine:init", () => {
                         Document,
                         Paragraph.configure({
                             HTMLAttributes: {
-                              class: 'min-h-[1rem]'
-                            }
+                                class: "min-h-[1rem]",
+                            },
                         }),
                         Text,
                         Strike,
@@ -345,7 +345,7 @@ Datatables
 // Notifications Table
 if (document.querySelector("#notifications-table") !== null) {
     let notificationsTable = new DataTable("#notifications-table", {
-        order: [[2, 'desc']],
+        order: [[2, "desc"]],
         responsive: true,
         layout: {
             topStart: {},
@@ -533,8 +533,8 @@ if (document.querySelector("#pending-assignments-table") !== null) {
                 infoEmpty:
                     '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
             },
-        }
-    );
+        },
+    });
     document
         .getElementById("table-search-pending-assignments")
         .addEventListener("keyup", function () {
@@ -627,7 +627,7 @@ if (document.querySelector("#subordinate-submissions-table") !== null) {
     let subordinateAssignmentsTable = new DataTable(
         "#subordinate-submissions-table",
         {
-            order: [[3, 'desc']],
+            order: [[3, "desc"]],
             responsive: true,
             layout: {
                 topStart: {},
