@@ -7,7 +7,7 @@
         content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible"
         content="ie=edge">
-    <title>{{ env('APP_NAME') }} - @yield('title')</title>
+    <title>{{ config('app.name') }} - @yield('title')</title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
