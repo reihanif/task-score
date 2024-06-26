@@ -34,10 +34,10 @@ class AuthController extends Controller
         ]);
         $username = $credentials['username'];
 
-        $ldap_rdn = env('LDAP_DOMAIN') . '\\' . $username;
+        $ldap_rdn = config('ldap.domain') . '\\' . $username;
         $password = $credentials['password'];
         // connect to ldap server
-        $ldap_connect = ldap_connect(env('LDAP_HOST')) or die("Could not connect to LDAP server.");
+        $ldap_connect = ldap_connect(config('ldap.host')) or die("Could not connect to LDAP server.");
         ldap_set_option($ldap_connect, LDAP_OPT_PROTOCOL_VERSION, 3);
 
         // successfully connect to ldap server
