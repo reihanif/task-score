@@ -6,7 +6,7 @@
 
             <x-sidebar-menu data-menu-name="Dashboard"
                 data-route-name="homepage"
-                data-menu-title="">
+                data-menu-title="Homepage">
                 <x-icons.chart-pie />
             </x-sidebar-menu>
 
@@ -26,29 +26,19 @@
                     </x-sidebar-menu>
                 @endif
 
-                @if (!Auth::User()->position?->subordinates()->isEmpty())
-                    <x-sidebar-expanded-menu data-group-name="Subordinate"
-                        data-group-title="Subordinate assignments"
-                        :menu="collect([
-                            [
-                                'data-menu-name' => 'Assignments',
-                                'data-route-name' => 'taskscore.assignment.subordinate-assignments',
-                                'data-menu-title' => 'Subordinate assignment lists',
-                            ],
-                            [
-                                'data-menu-name' => 'Submissions',
-                                'data-route-name' => 'taskscore.assignment.subordinate-submissions',
-                                'data-menu-title' => 'Subordinate assignment submissions',
-                            ],
-                            [
-                                'data-menu-name' => 'Requests',
-                                'data-route-name' => '',
-                                'data-menu-title' => 'Subordinate assignment time extension requests',
-                            ],
-                        ])">
-                        <x-icons.diagram />
-                    </x-sidebar-expanded-menu>
-                @endif
+                <x-sidebar-menu data-menu-name="Subordinate"
+                    data-route-name="taskscore.assignment.subordinate-assignments"
+                    data-menu-title="Subordinate assignments">
+                    <x-icons.diagram />
+                </x-sidebar-menu>
+
+                <x-sidebar-menu data-menu-name="Tasklist"
+                    data-route-name="taskscore.assignment.subordinate-submissions"
+                    data-menu-title="My Tasklist"
+                    data-badge-content="2"
+                    data-badge-color="red">
+                    <x-icons.file-lines />
+                </x-sidebar-menu>
             @endif
         </ul>
 
