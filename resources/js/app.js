@@ -409,7 +409,7 @@ if (document.querySelector("#users-table") !== null) {
         },
         oLanguage: {
             sEmptyTable:
-                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="http://10.251.236.38/staging/public/assets/illustrations/no-data-animate.svg"></object>' +
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
                 '<div class="mb-8">No data found</div>',
         },
         language: {
@@ -458,7 +458,7 @@ if (document.querySelector("#departments-table") !== null) {
         },
         oLanguage: {
             sEmptyTable:
-                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="http://10.251.236.38/staging/public/assets/illustrations/no-data-animate.svg"></object>' +
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
                 '<div class="mb-8">No data found</div>',
         },
         language: {
@@ -493,7 +493,7 @@ if (document.querySelector("#unresolved-assignments-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="http://10.251.236.38/staging/public/assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
@@ -526,7 +526,7 @@ if (document.querySelector("#pending-assignments-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="http://10.251.236.38/staging/public/assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
@@ -562,7 +562,7 @@ if (document.querySelector("#resolved-assignments-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="http://10.251.236.38/staging/public/assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
@@ -598,7 +598,7 @@ if (document.querySelector("#subordinate-assignments-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="http://10.251.236.38/staging/public/assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
@@ -643,7 +643,7 @@ if (document.querySelector("#subordinate-submissions-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="http://10.251.236.38/staging/public/assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
