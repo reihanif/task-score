@@ -29,13 +29,13 @@ use App\Http\Controllers\TimeExtensionController;
 // });
 
 Route::group(['middleware' => 'guest'], function () {
-    Route::get('/', [AuthController::class, 'index'])->name('auth.index');
+    Route::get('/login', [AuthController::class, 'index'])->name('auth.index');
     Route::post('/', [AuthController::class, 'login'])->name('auth.login');
 });
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-    Route::view('/homepage', 'app.taskscore.index')->name('homepage');
+    Route::view('/', 'app.taskscore.index')->name('homepage');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
