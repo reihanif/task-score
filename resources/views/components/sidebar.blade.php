@@ -32,13 +32,13 @@
                     <x-icons.diagram />
                 </x-sidebar-menu>
 
-                <x-sidebar-menu data-menu-name="Tasklist"
+                {{-- <x-sidebar-menu data-menu-name="Tasklist"
                     data-route-name="taskscore.assignment.tasklists"
                     data-menu-title="My Tasklist"
                     data-badge-content="2"
                     data-badge-color="red">
                     <x-icons.file-lines />
-                </x-sidebar-menu>
+                </x-sidebar-menu> --}}
             @endif
         </ul>
 
