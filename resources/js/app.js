@@ -409,7 +409,9 @@ if (document.querySelector("#users-table") !== null) {
         },
         oLanguage: {
             sEmptyTable:
-                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                window.assetUrl +
+                'assets/illustrations/no-data-animate.svg"></object>' +
                 '<div class="mb-8">No data found</div>',
         },
         language: {
@@ -458,7 +460,9 @@ if (document.querySelector("#departments-table") !== null) {
         },
         oLanguage: {
             sEmptyTable:
-                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                window.assetUrl +
+                'assets/illustrations/no-data-animate.svg"></object>' +
                 '<div class="mb-8">No data found</div>',
         },
         language: {
@@ -493,7 +497,9 @@ if (document.querySelector("#unresolved-assignments-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
@@ -524,15 +530,17 @@ if (document.querySelector("#pending-assignments-table") !== null) {
                     text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
                 },
             },
-            oLanguage: {
-                sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
-                    '<div class="mb-8">No data found</div>',
-            },
-            language: {
-                infoEmpty:
-                    '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-            },
+        },
+        oLanguage: {
+            sEmptyTable:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                window.assetUrl +
+                'assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No data found</div>',
+        },
+        language: {
+            infoEmpty:
+                '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
         },
     });
     document
@@ -562,7 +570,9 @@ if (document.querySelector("#resolved-assignments-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
@@ -598,7 +608,9 @@ if (document.querySelector("#subordinate-assignments-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
@@ -643,7 +655,9 @@ if (document.querySelector("#subordinate-submissions-table") !== null) {
             },
             oLanguage: {
                 sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' + window.assetUrl + 'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
                     '<div class="mb-8">No data found</div>',
             },
             language: {
@@ -659,6 +673,53 @@ if (document.querySelector("#subordinate-submissions-table") !== null) {
         });
     document
         .getElementById("submissions-resolution-filter")
+        .addEventListener("change", function () {
+            subordinateAssignmentsTable
+                .columns(4)
+                .search(this.value, false, false, false)
+                .draw();
+        });
+}
+
+// Subordinate Time Extensions Table
+if (document.querySelector("#subordinate-time-extensions-table") !== null) {
+    let subordinateAssignmentsTable = new DataTable(
+        "#subordinate-time-extensions-table",
+        {
+            order: [[3, "desc"]],
+            responsive: true,
+            layout: {
+                topStart: {},
+                topEnd: {},
+                bottomStart: {
+                    pageLength: {
+                        text: "Rows per page_MENU_",
+                    },
+                    info: {
+                        text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                    },
+                },
+            },
+            oLanguage: {
+                sEmptyTable:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No data found</div>',
+            },
+            language: {
+                infoEmpty:
+                    '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+            },
+        }
+    );
+    document
+        .getElementById("table-search-subordinate-time-extensions")
+        .addEventListener("keyup", function () {
+            subordinateAssignmentsTable.columns(1).search(this.value).draw();
+        });
+    document
+        .getElementById("time-extensions-resolution-filter")
         .addEventListener("change", function () {
             subordinateAssignmentsTable
                 .columns(4)

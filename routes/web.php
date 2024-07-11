@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RelationController;
+use App\Http\Controllers\TasklistController;
 use App\Http\Controllers\HierarchyController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DepartmentController;
@@ -54,7 +55,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['as' => 'taskscore.'], function () {
             Route::get('/my-assignments', [AssignmentController::class, 'myAssignment'])->name('assignment.my-assignments');
             Route::get('/subordinate-assignments', [AssignmentController::class, 'subordinateAssignment'])->name('assignment.subordinate-assignments');
-            Route::get('/subordinate-submissions', [SubmissionController::class, 'index'])->name('assignment.subordinate-submissions');
+            Route::get('/tasklists', [TasklistController::class, 'index'])->name('assignment.tasklists');
             Route::post('/store-assignment', [AssignmentController::class, 'store'])->name('assignment.store');
             Route::put('/{assignment}/update-assignment', [AssignmentController::class, 'update'])->name('assignment.update');
             Route::get('/assignment/{assignment}', [AssignmentController::class, 'show'])->name('assignment.show');
