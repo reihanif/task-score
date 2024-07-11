@@ -33,7 +33,7 @@
                 </x-sidebar-menu>
 
                 <x-sidebar-menu data-menu-name="Tasklist"
-                    data-route-name="taskscore.assignment.subordinate-submissions"
+                    data-route-name="taskscore.assignment.tasklists"
                     data-menu-title="My Tasklist"
                     data-badge-content="2"
                     data-badge-color="red">

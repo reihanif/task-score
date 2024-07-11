@@ -11,6 +11,7 @@ use App\Models\Submission;
 use Illuminate\Http\Request;
 use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\AssignmentResolved;
 use App\Notifications\AssignmentSubmitted;
 use Illuminate\Support\Facades\Notification;
 
@@ -102,8 +103,6 @@ class AssignmentController extends Controller
                 $file->save();
             }
         }
-        $assignees = User::where('id', $assignment->assigned_to)->get();
-        Notification::send($assignees, new NewAssignment($assignment));
 
         foreach ($request->assignees as $key => $assignee) {
             if (array_key_exists($key, $request->timetables)) {
