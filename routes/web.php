@@ -41,9 +41,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
 
-    Route::group(['middleware' => 'itself'], function () {
-        Route::get('/account/{user}/settings', [AccountController::class, 'settings'])->name('account.settings');
-    });
+    // Route::group(['middleware' => 'itself'], function () {
+    //     Route::get('/account/{user}/settings', [AccountController::class, 'settings'])->name('account.settings');
+    // });
 
     Route::group(['middleware' => 'role:superadmin'], function () {
         Route::get('/account/{user}/settings', [AccountController::class, 'settings'])->name('account.settings');
@@ -65,7 +65,6 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('/{assignment}/open', [AssignmentController::class, 'open'])->name('assignment.open');
             Route::put('/{assignment}/submission-approval', [SubmissionController::class, 'approve'])->name('assignment.approve-submission');
             Route::put('/{assignment}/submission-rejection', [SubmissionController::class, 'reject'])->name('assignment.reject-submission');
-            Route::post('/{assignment}/reassign', [AssignmentController::class, 'reassign'])->name('assignment.reassign');
             Route::post('/{assignment}/time-extension-request', [TimeExtensionController::class, 'store'])->name('assignment.time-extension-request');
             Route::put('/{assignment}/time-extension-reject', [TimeExtensionController::class, 'reject'])->name('assignment.time-extension-reject');
             Route::put('/{assignment}/time-extension-approve', [TimeExtensionController::class, 'approve'])->name('assignment.time-extension-approve');

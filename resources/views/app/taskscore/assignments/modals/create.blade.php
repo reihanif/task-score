@@ -618,6 +618,7 @@
                     if (elements.length > 1) {
                         element.querySelector(".assignee-label").textContent = `Assignee ${index + 1}`;
                         element.querySelector(".detail-label").textContent = `Detail`;
+
                         element.querySelector(".due-label").textContent = `Assignment due`;
                         element.querySelector(".interval label").htmlFor = `select-interval-${index + 1}`;
                         element.querySelector(".interval input").id = `select-interval-${index + 1}`;
@@ -626,6 +627,7 @@
                     } else {
                         element.querySelector(".assignee-label").textContent = `Assignee `;
                         element.querySelector(".detail-label").textContent = `Detail `;
+
                         element.querySelector(".due-label").textContent = `Assignment due`;
                         element.querySelector(".interval label").htmlFor = `select-interval`;
                         element.querySelector(".interval input").id = `select-interval`;

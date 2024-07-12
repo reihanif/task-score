@@ -18,13 +18,6 @@
 
     <div
         class="border-1 relative col-span-2 overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
-        {{-- <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
-            <div>
-                <h5 class="mr-3 font-semibold dark:text-white">Subordinate Assignments</h5>
-                <p class="text-gray-500 dark:text-gray-400">Manage all your existing subordinate assignment or add a new one
-                </p>
-            </div>
-        </div> --}}
 
         <div class="grid gap-4 bg-white dark:bg-gray-800 md:grid-cols-2 md:flex-row md:space-y-0">
             <div class="inline-flex gap-2">

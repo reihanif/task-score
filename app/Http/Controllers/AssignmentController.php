@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Models\Assignment;
 use App\Models\Submission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentResolved;
@@ -76,54 +78,72 @@ class AssignmentController extends Controller
             'description' => 'required',
         ]);
 
-        $assignment = new Assignment();
-        $assignment->taskmaster_id = Auth::User()->id;
-        $assignment->type = $request->category;
-        $assignment->subject = $request->subject;
-        $assignment->description = $request->description;
-        $assignment->save();
+        DB::beginTransaction();
 
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $attachment) {
-                $client_original_name = $attachment->getClientOriginalName();
-                $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
-                $extension = $attachment->getClientOriginalExtension();
-                $unique_filename = $filename . '_' . time() . '.' . $extension;
+        try {
+            $assignment = new Assignment();
+            $assignment->taskmaster_id = Auth::User()->id;
+            $assignment->type = $request->category;
+            $assignment->subject = $request->subject;
+            $assignment->description = $request->description;
+            $assignment->save();
 
-                $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $attachment) {
+                    $client_original_name = $attachment->getClientOriginalName();
+                    $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
+                    $extension = $attachment->getClientOriginalExtension();
+                    $unique_filename = $filename . '_' . time() . '.' . $extension;
 
-                $file = new File();
-                $file->name = $filename;
-                $file->path = $path;
-                $file->extension = $extension;
-                $file->size = $attachment->getSize();
-                $file->type = 'attachment';
-                $file->fileable_id = $assignment->id;
-                $file->fileable_type = Assignment::class;
-                $file->save();
-            }
-        }
+                    $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
 
-        foreach ($request->assignees as $key => $assignee) {
-            if (array_key_exists($key, $request->timetables)) {
-                $due = Carbon::now()->addMinutes($request->timetables[$key]);
-            } elseif (array_key_exists($key, $request->dates) && array_key_exists($key, $request->times)) {
-                $date = $request->dates[$key];
-                $time = $request->times[$key];
-                $due = Carbon::parse("$date $time");
+                    $file = new File();
+                    $file->name = $filename;
+                    $file->path = $path;
+                    $file->extension = $extension;
+                    $file->size = $attachment->getSize();
+                    $file->type = 'attachment';
+                    $file->fileable_id = $assignment->id;
+                    $file->fileable_type = Assignment::class;
+                    $file->save();
+                }
             }
 
-            $task = new Task();
-            $task->uuid = $task->generateUniqueId();
-            $task->assignee_id = $assignee;
-            $task->assignment_id = $assignment->id;
-            $task->description = $request->details[$key];
-            $task->due = $due;
-            $task->save();
-        }
+            $tasks = new Collection;
 
-        $assignees = User::whereIn('id', $request->assignees)->get();
-        Notification::send($assignees, new NewAssignment($assignment, $task));
+            foreach ($request->assignees as $key => $assignee) {
+                if (array_key_exists($key, $request->timetables)) {
+                    $due = Carbon::now()->addMinutes($request->timetables[$key]);
+                } elseif (array_key_exists($key, $request->dates) && array_key_exists($key, $request->times)) {
+                    $date = $request->dates[$key];
+                    $time = $request->times[$key];
+                    $due = Carbon::parse("$date $time");
+                }
+
+                $task = new Task();
+                $task->uuid = $task->generateUniqueId();
+                $task->assignee_id = $assignee;
+                $task->assignment_id = $assignment->id;
+                $task->description = $request->details[$key];
+                $task->due = $due;
+                $task->save();
+
+                $tasks->push($task);
+            }
+
+            // Send notifications
+            foreach ($tasks as $task) {
+                $assignees = User::where('id', $task->assignee_id)->get();
+                Notification::send($assignees, new NewAssignment($assignment, $task));
+            }
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->with('errors', 'Create assignment failed');
+        }
 
         return redirect()->back()->with('success', 'Assignment created successfully');
     }
@@ -176,14 +196,25 @@ class AssignmentController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'subject' => 'required|unique:assignments,subject,'. $id,
+            'subject' => 'required|unique:assignments,subject,' . $id,
             'description' => 'required',
         ]);
 
-        $assignment = Assignment::findOrFail($id);
-        $assignment->subject = $request->subject;
-        $assignment->description = $request->description;
-        $assignment->save();
+        DB::beginTransaction();
+
+        try {
+            $assignment = Assignment::findOrFail($id);
+            $assignment->subject = $request->subject;
+            $assignment->description = $request->description;
+            $assignment->save();
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->with('errors', 'Update assignment failed');
+        }
 
         return redirect()->back()->with('success', 'Assignment updated successfully');
     }
@@ -201,40 +232,48 @@ class AssignmentController extends Controller
             'resolution' => 'required'
         ]);
 
-        $task = Task::findOrFail($id);
-        $assignment = Assignment::findOrFail($task->assignment_id);
+        DB::beginTransaction();
 
-        $submission = new Submission();
-        $submission->task_id = $id;
-        $submission->detail = $request->resolution;
-        $submission->save();
+        try {
+            $task = Task::findOrFail($id);
+            $assignment = Assignment::findOrFail($task->assignment_id);
 
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $attachment) {
-                $client_original_name = $attachment->getClientOriginalName();
-                $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
-                $extension = $attachment->getClientOriginalExtension();
-                $unique_filename = $filename . '_' . time() . '.' . $extension;
+            $submission = new Submission();
+            $submission->task_id = $id;
+            $submission->detail = $request->resolution;
+            $submission->save();
 
-                $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $attachment) {
+                    $client_original_name = $attachment->getClientOriginalName();
+                    $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
+                    $extension = $attachment->getClientOriginalExtension();
+                    $unique_filename = $filename . '_' . time() . '.' . $extension;
 
-                $file = new File();
-                $file->name = $filename;
-                $file->path = $path;
-                $file->extension = $extension;
-                $file->size = $attachment->getSize();
-                $file->type = 'submisison';
-                $file->fileable_id = $submission->id;
-                $file->fileable_type = Submission::class;
-                $file->save();
+                    $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
+
+                    $file = new File();
+                    $file->name = $filename;
+                    $file->path = $path;
+                    $file->extension = $extension;
+                    $file->size = $attachment->getSize();
+                    $file->type = 'submisison';
+                    $file->fileable_id = $submission->id;
+                    $file->fileable_type = Submission::class;
+                    $file->save();
+                }
             }
+
+            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
+            Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->withErrors('Resolve assignment failed');
         }
-
-        $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-        Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
-
-        $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-        Notification::send($taskmasters, new AssignmentResolved($assignment));
 
         return redirect()->back()->with('success', $assignment->name . 'has been resolved');
     }
@@ -247,11 +286,16 @@ class AssignmentController extends Controller
      */
     public function close($id)
     {
-        $assignment = Assignment::findOrFail($id);
-        $assignment->timestamps = false;
-        $assignment->status = 'closed';
-        $assignment->closed_at = Carbon::now()->toDateTimeString();
-        $assignment->save();
+        try {
+            $assignment = Assignment::findOrFail($id);
+            $assignment->timestamps = false;
+            $assignment->status = 'closed';
+            $assignment->closed_at = Carbon::now()->toDateTimeString();
+            $assignment->save();
+        } catch (\Exception $e) {
+            // Handle the error appropriately
+            return redirect()->back()->withErrors('Close assignment failed');
+        }
 
         return redirect()->back()->with('success', $assignment->name . 'has been closed');
     }
@@ -264,80 +308,18 @@ class AssignmentController extends Controller
      */
     public function open($id)
     {
-        $assignment = Assignment::findOrFail($id);
-        $assignment->timestamps = false;
-        $assignment->status = 'open';
-        $assignment->closed_at = null;
-        $assignment->save();
+        try {
+            $assignment = Assignment::findOrFail($id);
+            $assignment->timestamps = false;
+            $assignment->status = 'open';
+            $assignment->closed_at = null;
+            $assignment->save();
+        } catch (\Exception $e) {
+            // Handle the error appropriately
+            return redirect()->back()->withErrors('Open assignment failed');
+        }
 
         return redirect()->back()->with('success', $assignment->name . 'has been opened');
-    }
-
-    /**
-     * Reassign a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function reassign(Request $request, $id)
-    {
-        $current_assignment = Assignment::findOrFail($id);
-        if ($current_assignment->hasParent()) {
-            $request['parent_id'] = $current_assignment->parent_id;
-        } else {
-            $request['parent_id'] = $id;
-        }
-
-        if ($request->timetable) {
-            $request['due'] = Carbon::now()->addMinutes($request->timetable);
-        } elseif ($request->date && $request->time) {
-            $request['due'] = Carbon::parse("$request->date $request->time");
-        }
-
-        $request->validate([
-            'parent_id' => 'required',
-            'assignee' => 'required',
-            'category' => 'required',
-            'subject' => 'required|unique:assignments,subject',
-            'description' => 'required',
-            'due' => 'required'
-        ]);
-
-        $current_assignment->status = 'reassigned';
-        $current_assignment->save();
-
-        $assignment = new Assignment();
-        $assignment->taskmaster_id = Auth::User()->id;
-        $assignment->assigned_to = $request->assignee;
-        $assignment->parent_id = $request->parent_id;
-        $assignment->type = $request->category;
-        $assignment->subject = $request->subject;
-        $assignment->description = $request->description;
-        $assignment->due = $request->due;
-        $assignment->save();
-
-        if ($request->hasFile('attachments')) {
-            foreach ($request->file('attachments') as $attachment) {
-                $client_original_name = $attachment->getClientOriginalName();
-                $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
-                $extension = $attachment->getClientOriginalExtension();
-                $unique_filename = $filename . '_' . time() . '.' . $extension;
-
-                $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
-
-                $file = new File();
-                $file->name = $filename;
-                $file->path = $path;
-                $file->extension = $extension;
-                $file->size = $attachment->getSize();
-                $file->type = 'attachment';
-                $file->fileable_id = $assignment->id;
-                $file->fileable_type = Assignment::class;
-                $file->save();
-            }
-        }
-
-        return redirect()->back()->with('success', 'Assignment sent to ' . $assignment->assignee);
     }
 
     /**
@@ -348,11 +330,16 @@ class AssignmentController extends Controller
      */
     public function delete($id)
     {
-        $assignment = Assignment::findOrFail($id);
-        $assignment->timestamps = false;
-        $assignment->delete();
+        try {
+            $assignment = Assignment::findOrFail($id);
+            $assignment->timestamps = false;
+            $assignment->delete();
+        } catch (\Exception $e) {
+            // Handle the error appropriately
+            return redirect()->back()->withErrors('Delete assignment failed');
+        }
 
-        return redirect()->route('taskscore.assignment.subordinate-assignments')->with('success', $assignment->name . 'has been deleted');
+        return redirect()->route('taskscore.assignment.subordinate-assignments')->with('success', $assignment->subject . ' has been deleted');
     }
 
     /**
