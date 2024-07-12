@@ -57,10 +57,12 @@
         <x-toasts state="success" id="alert">
             {{ Session::get('success') }}
         </x-toasts>
-    @elseif (Session::has('error'))
-        <x-toasts state="error" id="alert">
-            {{ Session::get('error') }}
-        </x-toasts>
+    @elseif (Session::has('errors'))
+        @foreach ($errors->all() as $key => $error)
+            <x-toasts state="error" id="alert-{{ $key }}">
+                {{ $error }}
+            </x-toasts>
+        @endforeach
     @endif
 
     <!-- Check route to hide sidebar -->

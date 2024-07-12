@@ -49,7 +49,7 @@ class AuthController extends Controller
                 ldap_bind($ldap_connect, $ldap_rdn, $password);
                 $exception = false;
             } catch (\Exception $exception) {
-                session()->flash('error', __($exception->getMessage()));
+                session()->flash('error', 'Incorrect username or password');
             }
 
             // successfully binding to ldap server

@@ -415,6 +415,11 @@ if (document.querySelector("#users-table") !== null) {
                 '<div class="mb-8">No data found</div>',
         },
         language: {
+            zeroRecords:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                window.assetUrl +
+                'assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No matching records found</div>',
             infoEmpty:
                 '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
         },
@@ -466,6 +471,11 @@ if (document.querySelector("#departments-table") !== null) {
                 '<div class="mb-8">No data found</div>',
         },
         language: {
+            zeroRecords:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                window.assetUrl +
+                'assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No matching records found</div>',
             infoEmpty:
                 '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
         },
@@ -503,6 +513,11 @@ if (document.querySelector("#unresolved-assignments-table") !== null) {
                     '<div class="mb-8">No data found</div>',
             },
             language: {
+                zeroRecords:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No matching records found</div>',
                 infoEmpty:
                     '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
             },
@@ -539,6 +554,11 @@ if (document.querySelector("#pending-assignments-table") !== null) {
                 '<div class="mb-8">No data found</div>',
         },
         language: {
+            zeroRecords:
+                '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                window.assetUrl +
+                'assets/illustrations/no-data-animate.svg"></object>' +
+                '<div class="mb-8">No matching records found</div>',
             infoEmpty:
                 '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
         },
@@ -576,6 +596,11 @@ if (document.querySelector("#resolved-assignments-table") !== null) {
                     '<div class="mb-8">No data found</div>',
             },
             language: {
+                zeroRecords:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No matching records found</div>',
                 infoEmpty:
                     '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
             },
@@ -614,6 +639,16 @@ if (document.querySelector("#subordinate-assignments-table") !== null) {
                     '<div class="mb-8">No data found</div>',
             },
             language: {
+                zeroRecords:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No matching records found</div>',
+                zeroRecords:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No matching records found</div>',
                 infoEmpty:
                     '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
             },
@@ -661,6 +696,11 @@ if (document.querySelector("#subordinate-submissions-table") !== null) {
                     '<div class="mb-8">No data found</div>',
             },
             language: {
+                zeroRecords:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No matching records found</div>',
                 infoEmpty:
                     '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
             },
@@ -708,6 +748,11 @@ if (document.querySelector("#subordinate-time-extensions-table") !== null) {
                     '<div class="mb-8">No data found</div>',
             },
             language: {
+                zeroRecords:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No matching records found</div>',
                 infoEmpty:
                     '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
             },
