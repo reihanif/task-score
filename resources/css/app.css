@@ -143,6 +143,10 @@ right connector from last child*/
     @apply bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white;
 }
 
+.ts-sm .ts-control {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 rounded-lg block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:text-white;
+}
+
 .focus .ts-control {
     @apply ring-1 ring-blue-500 border-blue-500 dark:ring-blue-500 dark:border-blue-500;
 }

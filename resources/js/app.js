@@ -613,62 +613,6 @@ if (document.querySelector("#resolved-assignments-table") !== null) {
         });
 }
 
-// Subordinate Assignments Table
-if (document.querySelector("#subordinate-assignments-table") !== null) {
-    let subordinateAssignmentsTable = new DataTable(
-        "#subordinate-assignments-table",
-        {
-            responsive: true,
-            layout: {
-                topStart: {},
-                topEnd: {},
-                bottomStart: {
-                    pageLength: {
-                        text: "Rows per page_MENU_",
-                    },
-                    info: {
-                        text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                    },
-                },
-            },
-            oLanguage: {
-                sEmptyTable:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                    window.assetUrl +
-                    'assets/illustrations/no-data-animate.svg"></object>' +
-                    '<div class="mb-8">No data found</div>',
-            },
-            language: {
-                zeroRecords:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                    window.assetUrl +
-                    'assets/illustrations/no-data-animate.svg"></object>' +
-                    '<div class="mb-8">No matching records found</div>',
-                zeroRecords:
-                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                    window.assetUrl +
-                    'assets/illustrations/no-data-animate.svg"></object>' +
-                    '<div class="mb-8">No matching records found</div>',
-                infoEmpty:
-                    '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-            },
-        }
-    );
-    document
-        .getElementById("table-search-subordinate-assignments")
-        .addEventListener("keyup", function () {
-            subordinateAssignmentsTable.columns(1).search(this.value).draw();
-        });
-    document
-        .getElementById("assignments-resolution-filter")
-        .addEventListener("change", function () {
-            subordinateAssignmentsTable
-                .columns(4)
-                .search(this.value, false, false, false)
-                .draw();
-        });
-}
-
 // Subordinate Submissions Table
 if (document.querySelector("#subordinate-submissions-table") !== null) {
     let subordinateAssignmentsTable = new DataTable(
