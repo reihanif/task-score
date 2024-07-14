@@ -14,10 +14,9 @@
                                 }"
                                 @click.prevent="tab = '{{ $tab['route'] }}'">
                                 {{ $tab['name'] }}
-                                <span
-                                    class="ms-1 inline-flex h-3 items-center justify-center rounded-full bg-blue-100 px-2 py-3 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                                <x-tabs-badge data-state="{{ $tab['badge-color'] ?? 'blue' }}">
                                     {{ $tab['badge'] }}
-                                </span>
+                                </x-tabs-badge>
                             </a>
                         @else
                             <a class="active inline-block rounded-t-lg border-blue-600 p-3.5 text-blue-600 hover:border-b-2 hover:text-gray-600 dark:border-blue-500 dark:text-blue-500"

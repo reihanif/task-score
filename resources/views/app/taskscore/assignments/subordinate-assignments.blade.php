@@ -17,7 +17,7 @@
     </div>
 
     <div class="col-span-full grid grid-cols-12 gap-4">
-        <div class="order-2 col-span-3">
+        <div class="col-span-full sm:order-2 sm:col-span-3">
             <div
                  class="border-1 relative grid space-y-4 overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
@@ -26,8 +26,8 @@
                         <p class="text-gray-500 dark:text-gray-400">Your subordinates list</p>
                     </div>
                 </div>
-                <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-                    @foreach ($assignees as $assignee)
+                <ul class="max-w-md divide-y divide-gray-200 dark:day-700">
+                    @forelse ($assignees as $assignee)ivide-gr
                         <li class="py-3 first:pt-0 last:pb-0 sm:py-4">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <div class="flex-shrink-0">
@@ -51,13 +51,22 @@
                                 </div> --}}
                             </div>
                         </li>
-                    @endforeach
+                    @empty
+                        <li class="py-3 first:pt-0 last:pb-0 sm:py-4">
+                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate text-sm text-gray-900 dark:text-white">
+                                        You don't have subordinate
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                    @endforelse
                 </ul>
             </div>
         </div>
 
-        <div
-             class="border-1 relative col-span-9 overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
+        <div class="border-1 relative col-span-full overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800 sm:col-span-9">
             <div class="mb-4 flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
                 <div>
                     <h5 class="mr-3 font-semibold dark:text-white">Subordinate Assignments</h5>

@@ -28,6 +28,8 @@
                 [
                     'name' => 'Pending',
                     'route' => 'pending',
+                    'badge' => $pending_assignments->count(),
+                    'badge-color' => 'yellow',
                 ],
                 [
                     'name' => 'Resolved',

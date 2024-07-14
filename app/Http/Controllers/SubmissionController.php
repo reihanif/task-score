@@ -64,6 +64,8 @@ class SubmissionController extends Controller
             'detail' => 'required'
         ]);
 
+        DB::beginTransaction();
+
         try {
             $submission = Submission::findOrFail($id);
             $submission->timestamps = false;
@@ -74,7 +76,11 @@ class SubmissionController extends Controller
 
             $assignees = User::where('id', $submission->task->assignee_id)->get();
             Notification::send($assignees, new AssignmentRejected($submission->task->assignment, $submission->task));
+
+            // Execute database insertations
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollback();
             // Handle the error appropriately
             return redirect()->back()->withErrors('Failed to reject submission');
         }
@@ -89,8 +95,8 @@ class SubmissionController extends Controller
      */
     public function index()
     {
-        $submissions = Submission::latest()->whereHas('task', function($query) {
-            return $query->whereHas('assignment', function($query) {
+        $submissions = Submission::latest()->whereHas('task', function ($query) {
+            return $query->whereHas('assignment', function ($query) {
                 return $query->where('taskmaster_id', Auth::User()->id);
             });
         })->get();
