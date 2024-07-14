@@ -281,7 +281,7 @@ class AssignmentController extends Controller
             return redirect()->back()->withErrors('Resolve assignment failed');
         }
 
-        return redirect()->back()->with('success', $assignment->name . 'has been resolved');
+        return redirect()->back()->with('success', $assignment->subject . 'has been resolved');
     }
 
     /**
@@ -303,7 +303,7 @@ class AssignmentController extends Controller
             return redirect()->back()->withErrors('Close assignment failed');
         }
 
-        return redirect()->back()->with('success', $assignment->name . 'has been closed');
+        return redirect()->back()->with('success', $assignment->subject . 'has been closed');
     }
 
     /**
@@ -325,7 +325,7 @@ class AssignmentController extends Controller
             return redirect()->back()->withErrors('Open assignment failed');
         }
 
-        return redirect()->back()->with('success', $assignment->name . 'has been opened');
+        return redirect()->back()->with('success', $assignment->subject . 'has been opened');
     }
 
     /**
