@@ -12,14 +12,14 @@
         class="flex-column flex flex-wrap items-end justify-between space-y-4 bg-white pt-4 dark:bg-gray-800 md:flex-row md:space-y-0">
         <div id="search">
             <label class="sr-only"
-                for="table-search-unresolved-assignments">Search</label>
+                for="filter-search">Search</label>
             <div class="relative">
                 <div class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                     <x-icons.search class="h-4 w-4 text-gray-500 dark:text-gray-400"></x-icons.search>
                 </div>
                 <input
                     class="block w-auto rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                    id="table-search-unresolved-assignments"
+                    id="filter-search"
                     type="text"
                     placeholder="Search for assignment">
             </div>
@@ -27,7 +27,7 @@
     </div>
     <div>
         <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
-            id="unresolved-assignments-table">
+            id="table">
             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <x-table-head class="whitespace-nowrap px-3 py-3"
@@ -79,3 +79,48 @@
         </table>
     </div>
 </div>
+
+<script>
+// Unresolved Assignments Table
+document.addEventListener("DOMContentLoaded", function() {
+        let table = new DataTable(
+        "#table",
+        {
+            responsive: true,
+            layout: {
+                topStart: {},
+                topEnd: {},
+                bottomStart: {
+                    pageLength: {
+                        text: "Rows per page_MENU_",
+                    },
+                    info: {
+                        text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                    },
+                },
+            },
+            oLanguage: {
+                sEmptyTable:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No data found</div>',
+            },
+            language: {
+                zeroRecords:
+                    '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                    window.assetUrl +
+                    'assets/illustrations/no-data-animate.svg"></object>' +
+                    '<div class="mb-8">No matching records found</div>',
+                infoEmpty:
+                    '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+            },
+        }
+    );
+    document
+        .getElementById("filter-search")
+        .addEventListener("keyup", function () {
+            table.columns(1).search(this.value).draw();
+        });
+})
+</script>

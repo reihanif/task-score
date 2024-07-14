@@ -57,10 +57,16 @@ class AssignmentController extends Controller
         $assignees = Auth::User()->subordinates();
 
         $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at')->get();
+        $types = $assignments->map(function ($assignment) {
+            return collect($assignment->toArray())
+                ->only(['type'])
+                ->all();
+        })->flatten()->unique();
 
         return view('app.taskscore.assignments.subordinate-assignments', [
             'assignees' => $assignees,
-            'assignments' => $assignments
+            'assignments' => $assignments,
+            'types' => $types
         ]);
     }
 
