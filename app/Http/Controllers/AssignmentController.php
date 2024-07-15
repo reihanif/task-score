@@ -118,12 +118,18 @@ class AssignmentController extends Controller
             $tasks = new Collection;
 
             foreach ($request->assignees as $key => $assignee) {
-                if (array_key_exists($key, $request->timetables)) {
-                    $due = Carbon::now()->addMinutes($request->timetables[$key]);
-                } elseif (array_key_exists($key, $request->dates) && array_key_exists($key, $request->times)) {
-                    $date = $request->dates[$key];
-                    $time = $request->times[$key];
-                    $due = Carbon::parse("$date $time");
+                // if (array_key_exists($key, $request->timetables)) {
+                //     $due = Carbon::now()->addMinutes($request->timetables[$key]);
+                // } elseif (array_key_exists($key, $request->dates) && array_key_exists($key, $request->times)) {
+                //     $date = $request->dates[$key];
+                //     $time = $request->times[$key];
+                //     $due = Carbon::parse("$date $time");
+                // }
+
+                if ($request->due_type == 'category') {
+                    $due = Carbon::createFromFormat('d/m/Y H:i',  $request->duedate);
+                } elseif ($request->due_type == 'difficulty') {
+                    $due = Carbon::now()->addDays($request->difficulty);
                 }
 
                 $task = new Task();

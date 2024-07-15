@@ -272,19 +272,22 @@ FilePond.registerPlugin(
 
 // Select the file input and use create() to turn it into a pond
 document.querySelectorAll("input[type='file']").forEach((filepondEl) => {
+    let maxFiles = filepondEl.getAttribute("max-files") ? parseInt(filepondEl.getAttribute("max-files")) : 2; // Default max files to 2 if attribute is null or invalid
+    let maxSizes = filepondEl.getAttribute("max-size") ? filepondEl.getAttribute("max-size") : '25 MB'; // Default max files to 2 if attribute is null or invalid
     FilePond.create(filepondEl, {
         labelIdle: `<div class="flex flex-col cursor-pointer items-center justify-center pt-5 pb-6">
         <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
         </svg>
         <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-        <p class="text-xs text-gray-500 dark:text-gray-400">pdf, docx, xlsx, pptx, png, jpg, zip (max. 25 MB)</p>
+        <p class="mb-1 text-xs text-gray-500 dark:text-gray-400">pdf, docx, xlsx, pptx, png, jpg, zip</p>
+        <p class="text-xs text-gray-500 dark:text-gray-400">1 - `+ maxFiles +` files (max. `+ maxSizes +` of each)</p>
         </div>`,
         credits: false,
     }).setOptions({
         storeAsFile: true,
-        maxFiles: filepondEl.getAttribute("max-files"),
-        maxFileSize: "25MB",
+        maxFiles: maxFiles,
+        maxFileSize: maxSizes,
         // use mime type
         acceptedFileTypes: [
             "application/pdf",

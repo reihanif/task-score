@@ -45,7 +45,6 @@
                         name="attachments[]"
                         type="file"
                         multiple
-                        max-files="2"
                         required>
                 </div>
             </div>

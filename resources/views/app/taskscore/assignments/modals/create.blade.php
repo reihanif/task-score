@@ -8,7 +8,8 @@
           enctype="multipart/form-data">
         @csrf
         <div class="mb-5">
-            <div class="space-y-4">
+            <div class="space-y-4"
+                 x-data="dueDateByCategory()">
                 <div class="space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
                     <x-forms.input id="input-subject"
                                    name="subject"
@@ -23,6 +24,7 @@
                                     name="category"
                                     label="Category"
                                     state="initial"
+                                    x-model="category"
                                     required>
                         <option value="">Select assignment category</option>
                         @if (old('category') == 'Pembuatan Memorandum')
@@ -83,9 +85,9 @@
                 </div>
                 <div class="col-span-2">
                     <x-forms.text-editor name="description"
+                                         value="{{ old('description') }}"
                                          label="Description"
                                          placeholder="Assignment description"
-                                         value="{{ old('description') }}"
                                          required>
                     </x-forms.text-editor>
                 </div>
@@ -116,9 +118,121 @@
                     </label>
                     <input id="file"
                            name="attachments[]"
-                           type="file"
-                           multiple
-                           max-files="2">
+                           type="file" max-files="5">
+                </div>
+                <div class="space-y-4"
+                     x-data="{ selectedOption: 'category' }">
+                    <div>
+                        <p class="due-label mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+                            Assignment due
+                        </p>
+                        <ul
+                            class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
+                            <li class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
+                                <div class="interval flex items-center ps-3">
+                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
+                                           id="due-category"
+                                           name="due_type"
+                                           type="radio"
+                                           value="category"
+                                           x-model="selectedOption"
+                                           required>
+                                    <label class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                           for="due-category">
+                                        Due by category
+                                    </label>
+                                </div>
+                            <li class="w-full dark:border-gray-600">
+                                <div class="exact-time flex items-center ps-3">
+                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
+                                           id="due-difficulty"
+                                           name="due_type"
+                                           type="radio"
+                                           value="difficulty"
+                                           x-model="selectedOption"
+                                           required>
+                                    <label class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                           for="due-difficulty">
+                                        Due by difficulty
+                                    </label>
+                                </div>
+                            </li>
+                            </li>
+                        </ul>
+                    </div>
+                    <template x-if="selectedOption == 'category'">
+                        <div>
+                            <input class="hidden"
+                                   name="duedate"
+                                   type="text"
+                                   x-model="dueDate"
+                                   required>
+                            <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
+                                   id="due-date"
+                                   for="due-date"
+                                   type="text"
+                                   x-model="assignmentDue"
+                                   placeholder="Assignment due date"
+                                   readonly>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                                Assignment due date is automatically generated based on the category.
+                            </p>
+                        </div>
+                    </template>
+                    <template x-if="selectedOption == 'difficulty'">
+                        <div class="space-y-2">
+                            <div class="flex">
+                                <div class="flex h-5 items-center">
+                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="basic"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="1"
+                                           required>
+                                </div>
+                                <label class="ms-2 text-sm"
+                                       for="basic">
+                                    <p class="font-medium text-gray-900 dark:text-gray-300">Basic</p>
+                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                       id="basic-text">Assignment due will set in 1 days from now</p>
+                                </label>
+                            </div>
+
+                            <div class="flex">
+                                <div class="flex h-5 items-center">
+                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="intermediate"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="2"
+                                           required>
+                                </div>
+                                <label class="ms-2 text-sm"
+                                       for="intermediate">
+                                    <p class="font-medium text-gray-900 dark:text-gray-300">Intermediate</p>
+                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                       id="intermediate-text">Assignment due will set in 2 days from now</p>
+                                </label>
+                            </div>
+
+                            <div class="flex">
+                                <div class="flex h-5 items-center">
+                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="advanced"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="3"
+                                           required>
+                                </div>
+                                <label class="ms-2 text-sm"
+                                       for="advanced">
+                                    <p class="font-medium text-gray-900 dark:text-gray-300">Advanced</p>
+                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                       id="advanced-text">Assignment due will set in 3 days from now</p>
+                                </label>
+                            </div>
+                        </div>
+                    </template>
                 </div>
 
                 <div class="space-y-2"
@@ -149,8 +263,7 @@
                                             <span class="detail-label"></span>
                                             <span class="text-red-600 dark:text-red-500">*</span>
                                         </p>
-                                        <div class="mb-4"
-                                             x-data="editor('')">
+                                        <div x-data="editor('')">
                                             <div
                                                  class="h-fit w-full rounded-lg border border-gray-200 bg-gray-50 dark:border-gray-600 dark:bg-gray-700">
                                                 <template x-if="isLoaded()">
@@ -328,7 +441,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="space-y-4"
+                                    {{-- <div class="space-y-4"
                                          x-data="{ selectedOption: '' }">
                                         <div>
                                             <p
@@ -368,6 +481,8 @@
                                                 </li>
                                             </ul>
                                         </div>
+
+
 
                                         <div class="sm:grid sm:grid-cols-2"
                                              x-show="selectedOption !== ''">
@@ -553,7 +668,7 @@
                                                 </ul>
                                             </template>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
                                 <div x-show="elementsCount > 1">
                                     <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
@@ -604,6 +719,67 @@
         return `${hours}:${minutes}`;
     }
 
+    function dueDateByCategory() {
+        return {
+            category: '',
+            assignmentDue: '',
+            dueDate: '',
+            init() {
+                this.$watch('category', (value) => {
+                    const due = new Date();
+                    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+                        'Saturday'
+                    ];
+                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                        'August', 'September', 'October', 'November', 'December'
+                    ];
+
+                    if (value !== '') {
+                        if (value === 'Pembuatan Memorandum') {
+                            due.setDate(due.getDate() + 5); // Set the due 1 days from now
+                        } else {
+                            due.setDate(due.getDate() + 2); // Set the due 2 days from now
+                        }
+
+                        // Specific dates to exclude (e.g., ['2024-07-15', '2024-08-15'])
+                        const excludedDates = [].map(dateStr => new Date(dateStr));
+
+                        // Check if the due date falls on a weekend (Saturday or Sunday)
+                        while (due.getDay() === 0 || due.getDay() === 6 || excludedDates.some(excludedDate =>
+                                due.toDateString() === excludedDate.toDateString())) {
+                            due.setDate(due.getDate() + 1); // Move to the next day
+                        }
+
+                        // Check if due date falls after any of the excluded dates, then add 1 day
+                        excludedDates.forEach(excludedDate => {
+                            if (due > excludedDate) {
+                                due.setDate(due.getDate() + 1); // Add 1 day
+                            }
+                        });
+
+                        const dayName = dayNames[due.getDay()];
+                        const day = String(due.getDate()).padStart(2, '0');
+
+                        const month = String(due.getMonth() + 1).padStart(2, '0');
+                        const monthName = monthNames[due.getMonth()];
+
+                        const year = due.getFullYear();
+
+                        const hours = String(due.getHours()).padStart(2, '0');
+                        const minutes = String(due.getMinutes()).padStart(2, '0');
+                        const seconds = String(due.getSeconds()).padStart(2, '0');
+
+                        this.assignmentDue = `${dayName}, ${day} ${monthName} ${year} at ${hours}:${minutes}`;
+                        this.dueDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+                    } else {
+                        this.assignmentDue = '';
+                        this.dueDate = '';
+                    }
+                });
+            }
+        }
+    }
+
     function appendAssigneeField() {
         return {
             elementsCount: 0, // Track the number of elements
@@ -637,20 +813,20 @@
                         element.querySelector(".assignee-label").textContent = `Assignee ${index + 1}`;
                         element.querySelector(".detail-label").textContent = `Detail`;
 
-                        element.querySelector(".due-label").textContent = `Assignment due`;
-                        element.querySelector(".interval label").htmlFor = `select-interval-${index + 1}`;
-                        element.querySelector(".interval input").id = `select-interval-${index + 1}`;
-                        element.querySelector(".exact-time label").htmlFor = `select-exact-time-${index + 1}`;
-                        element.querySelector(".exact-time input").id = `select-exact-time-${index + 1}`;
+                        // element.querySelector(".due-label").textContent = `Assignment due`;
+                        // element.querySelector(".interval label").htmlFor = `select-interval-${index + 1}`;
+                        // element.querySelector(".interval input").id = `select-interval-${index + 1}`;
+                        // element.querySelector(".exact-time label").htmlFor = `select-exact-time-${index + 1}`;
+                        // element.querySelector(".exact-time input").id = `select-exact-time-${index + 1}`;
                     } else {
                         element.querySelector(".assignee-label").textContent = `Assignee `;
                         element.querySelector(".detail-label").textContent = `Detail `;
 
-                        element.querySelector(".due-label").textContent = `Assignment due`;
-                        element.querySelector(".interval label").htmlFor = `select-interval`;
-                        element.querySelector(".interval input").id = `select-interval`;
-                        element.querySelector(".exact-time label").htmlFor = `select-exact-time`;
-                        element.querySelector(".exact-time input").id = `select-exact-time`;
+                        // element.querySelector(".due-label").textContent = `Assignment due`;
+                        // element.querySelector(".interval label").htmlFor = `select-interval`;
+                        // element.querySelector(".interval input").id = `select-interval`;
+                        // element.querySelector(".exact-time label").htmlFor = `select-exact-time`;
+                        // element.querySelector(".exact-time input").id = `select-exact-time`;
                     }
                 });
             },
