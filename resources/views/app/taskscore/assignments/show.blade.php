@@ -39,6 +39,9 @@
                     <h6 class="text-lg font-semibold dark:text-white">
                         {{ $assignee_task?->uuid . ' ' }}{{ $assignment->subject }}
                     </h6>
+                    test
+
+                    {{ env('ASSET_URL') ?? '' }}
 
                     <!-- Show button if user is a taskmaster -->
                     @taskmaster
@@ -404,7 +407,7 @@
                                             </div>
                                             <div class="ml-auto flex items-center">
                                                 <a class="rounded p-2 hover:bg-gray-100"
-                                                    href="{{ Storage::url($attachment->path) }}"
+                                                    href="{{ substr(config('app.asset_url'), 0, -1) . Storage::url($attachment->path) }}"
                                                     download="{{ $attachment->name }}">
                                                     <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
                                                         aria-hidden="true"
