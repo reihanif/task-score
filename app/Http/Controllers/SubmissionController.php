@@ -85,7 +85,6 @@ class SubmissionController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
             // Handle the error appropriately
             return redirect()->back()->withErrors('Failed to reject submission');
         }
