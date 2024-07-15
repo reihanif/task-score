@@ -137,7 +137,7 @@
                                            value="category"
                                            x-model="selectedOption"
                                            required>
-                                    <label class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    <label class="cursor-pointer ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
                                            for="due-category">
                                         Due by category
                                     </label>
@@ -151,7 +151,7 @@
                                            value="difficulty"
                                            x-model="selectedOption"
                                            required>
-                                    <label class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                    <label class="cursor-pointer ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
                                            for="due-difficulty">
                                         Due by difficulty
                                     </label>
@@ -190,7 +190,7 @@
                                            value="1"
                                            required>
                                 </div>
-                                <label class="ms-2 text-sm"
+                                <label class="cursor-pointer ms-2 text-sm"
                                        for="basic">
                                     <p class="font-medium text-gray-900 dark:text-gray-300">Basic</p>
                                     <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
@@ -207,7 +207,7 @@
                                            value="2"
                                            required>
                                 </div>
-                                <label class="ms-2 text-sm"
+                                <label class="cursor-pointer ms-2 text-sm"
                                        for="intermediate">
                                     <p class="font-medium text-gray-900 dark:text-gray-300">Intermediate</p>
                                     <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
@@ -224,7 +224,7 @@
                                            value="3"
                                            required>
                                 </div>
-                                <label class="ms-2 text-sm"
+                                <label class="cursor-pointer ms-2 text-sm"
                                        for="advanced">
                                     <p class="font-medium text-gray-900 dark:text-gray-300">Advanced</p>
                                     <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
