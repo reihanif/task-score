@@ -39,9 +39,6 @@
                     <h6 class="text-lg font-semibold dark:text-white">
                         {{ $assignee_task?->uuid . ' ' }}{{ $assignment->subject }}
                     </h6>
-                    test
-
-                    {{ env('ASSET_URL') ?? '' }}
 
                     <!-- Show button if user is a taskmaster -->
                     @taskmaster
