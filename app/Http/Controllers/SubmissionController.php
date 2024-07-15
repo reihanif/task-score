@@ -38,8 +38,12 @@ class SubmissionController extends Controller
             $task->resolved_at = $submission->created_at;
             $task->save();
 
-            $assignees = User::where('id', $task->assignee_id)->get();
-            Notification::send($assignees, new AssignmentApproved($task->assignment, $task));
+            try {
+                $assignees = User::where('id', $task->assignee_id)->get();
+                Notification::send($assignees, new AssignmentApproved($task->assignment, $task));
+            } catch (\Exception $e) {
+                return redirect()->back()->withErrors($e->getMessage());
+            }
 
             // Execute database insertations
             DB::commit();

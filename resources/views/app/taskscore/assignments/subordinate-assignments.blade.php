@@ -26,8 +26,8 @@
                         <p class="text-gray-500 dark:text-gray-400">Your subordinates list</p>
                     </div>
                 </div>
-                <ul class="max-w-md divide-y divide-gray-200 dark:day-700">
-                    @forelse ($assignees as $assignee)ivide-gr
+                <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                    @forelse ($assignees as $assignee)
                         <li class="py-3 first:pt-0 last:pb-0 sm:py-4">
                             <div class="flex items-center space-x-4 rtl:space-x-reverse">
                                 <div class="flex-shrink-0">
@@ -66,7 +66,8 @@
             </div>
         </div>
 
-        <div class="border-1 relative col-span-full overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800 sm:col-span-9">
+        <div
+             class="border-1 relative col-span-full overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800 sm:col-span-9">
             <div class="mb-4 flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
                 <div>
                     <h5 class="mr-3 font-semibold dark:text-white">Subordinate Assignments</h5>
