@@ -6,7 +6,7 @@
     <h6 class="text-xl font-semibold text-gray-800 dark:text-white">Dashboard</h6>
 
     <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-full">
+        <div class="col-span-8 space-y-4">
             <div class="overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="inline-flex items-center space-x-4">
                     <img class="h-12 rounded-full"
@@ -38,86 +38,8 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        {{-- <div class="col-span-6">
-            <div class="h-full rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
-            </div>
-        </div> --}}
-
-        {{-- <div class="col-span-full">
-            <div
-                class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
-                <div class="mb-4 flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
-                    <div>
-                        <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Total</h3>
-                        <span
-                            class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">Assignments</span>
-                    </div>
-                    <a class="inline-flex items-center rounded-lg p-2 text-xs font-medium uppercase text-blue-700 hover:bg-gray-100 dark:text-blue-500 dark:hover:bg-gray-700 sm:text-sm"
-                        href="#">
-                        Details
-                        <svg class="ml-1 h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M9 5l7 7-7 7"></path>
-                        </svg>
-                    </a>
-                </div>
-                <!-- Donut Chart -->
-                <div class="py-6"
-                    id="donut-chart"
-                    style="min-height: 378.7px;"></div>
-                <!-- Card Footer -->
-                <div class="flex items-center justify-between pt-4 sm:pt-6 lg:justify-evenly">
-                    <div>
-                        <svg class="mb-1 h-8 w-8 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24">
-                            <path stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M18.5 4h-13m13 16h-13M8 20v-3.333a2 2 0 0 1 .4-1.2L10 12.6a1 1 0 0 0 0-1.2L8.4 8.533a2 2 0 0 1-.4-1.2V4h8v3.333a2 2 0 0 1-.4 1.2L13.957 11.4a1 1 0 0 0 0 1.2l1.643 2.867a2 2 0 0 1 .4 1.2V20H8Z" />
-                        </svg>
-
-                        <h3 class="text-gray-500 dark:text-gray-400">Unresolved</h3>
-                        <h4 class="text-xl font-bold dark:text-white">
-                            25
-                        </h4>
-                    </div>
-                    <div>
-                        <svg class="mb-1 h-8 w-8 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24">
-                            <path stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="m8.032 12 1.984 1.984 4.96-4.96m4.55 5.272.893-.893a1.984 1.984 0 0 0 0-2.806l-.893-.893a1.984 1.984 0 0 1-.581-1.403V7.04a1.984 1.984 0 0 0-1.984-1.984h-1.262a1.983 1.983 0 0 1-1.403-.581l-.893-.893a1.984 1.984 0 0 0-2.806 0l-.893.893a1.984 1.984 0 0 1-1.403.581H7.04A1.984 1.984 0 0 0 5.055 7.04v1.262c0 .527-.209 1.031-.581 1.403l-.893.893a1.984 1.984 0 0 0 0 2.806l.893.893c.372.372.581.876.581 1.403v1.262a1.984 1.984 0 0 0 1.984 1.984h1.262c.527 0 1.031.209 1.403.581l.893.893a1.984 1.984 0 0 0 2.806 0l.893-.893a1.985 1.985 0 0 1 1.403-.581h1.262a1.984 1.984 0 0 0 1.984-1.984V15.7c0-.527.209-1.031.581-1.403Z" />
-                        </svg>
-
-                        <h3 class="text-gray-500 dark:text-gray-400">Resolved</h3>
-                        <h4 class="text-xl font-bold dark:text-white">
-                            230
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
-        {{-- <div class="col-span-4">
+            <!-- Bar Charts -->
             <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="mb-4 flex justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
                     <div class="flex items-center">
@@ -135,42 +57,25 @@
                             </svg>
                         </div>
                         <div>
-                            <h5 class="pb-1 text-2xl font-bold leading-none text-gray-900 dark:text-white">3.4k</h5>
-                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Leads generated per week</p>
+                            <h5 class="pb-1 text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ $total_assignment_last_week }}</h5>
+                            <p class="text-sm font-normal text-gray-500 dark:text-gray-400">Assignment in last 7 days</p>
                         </div>
-                    </div>
-                    <div>
-                        <span
-                            class="inline-flex items-center rounded-md bg-green-100 px-2.5 py-1 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-300">
-                            <svg class="me-1.5 h-2.5 w-2.5"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 10 14">
-                                <path stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M5 13V1m0 0L1 5m4-4 4 4" />
-                            </svg>
-                            42.5%
-                        </span>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2">
                     <dl class="flex items-center">
-                        <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Money spent:</dt>
-                        <dd class="text-sm font-semibold text-gray-900 dark:text-white">$3,232</dd>
+                        <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Overal score:</dt>
+                        <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $total_score ?? 0 }}%</dd>
                     </dl>
                     <dl class="flex items-center justify-end">
-                        <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Conversion rate:</dt>
-                        <dd class="text-sm font-semibold text-gray-900 dark:text-white">1.2%</dd>
+                        <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Score last 7 days:</dt>
+                        <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $score_last_week ?? 0 }}%</dd>
                     </dl>
                 </div>
 
                 <div id="column-chart"></div>
-                <div class="grid grid-cols-1 items-center justify-between border-t border-gray-200 dark:border-gray-700">
+                {{-- <div class="grid grid-cols-1 items-center justify-between border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center justify-between pt-5">
                         <!-- Button -->
                         <button
@@ -235,28 +140,86 @@
                             </svg>
                         </a>
                     </div>
-                </div>
+                </div> --}}
+            </div>
+        </div>
+
+        {{-- <div class="col-span-6">
+            <div class="h-full rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
             </div>
         </div> --}}
 
-        {{-- <div class="col-span-4">
-            <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
-                <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Total Assignments</h3>
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">100</p>
+        <div class="col-span-4">
+            <div
+                class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+                <div class="mb-4 flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
+                    <div>
+                        <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Total</h3>
+                        <span
+                            class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">Assignments</span>
+                    </div>
+                    {{-- <a class="inline-flex items-center rounded-lg p-2 text-xs font-medium uppercase text-blue-700 hover:bg-gray-100 dark:text-blue-500 dark:hover:bg-gray-700 sm:text-sm"
+                        href="#">
+                        Details
+                        <svg class="ml-1 h-4 w-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a> --}}
+                </div>
+                <!-- Donut Chart -->
+                <div class="py-6"
+                    id="donut-chart"
+                    style="min-height: 378.7px;"></div>
+                <!-- Card Footer -->
+                <div class="flex items-center justify-between pt-4 sm:pt-6 lg:justify-evenly">
+                    <div>
+                        <svg class="mb-1 h-8 w-8 text-gray-500 dark:text-gray-400"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M18.5 4h-13m13 16h-13M8 20v-3.333a2 2 0 0 1 .4-1.2L10 12.6a1 1 0 0 0 0-1.2L8.4 8.533a2 2 0 0 1-.4-1.2V4h8v3.333a2 2 0 0 1-.4 1.2L13.957 11.4a1 1 0 0 0 0 1.2l1.643 2.867a2 2 0 0 1 .4 1.2V20H8Z" />
+                        </svg>
+
+                        <h3 class="text-gray-500 dark:text-gray-400">Unresolved</h3>
+                        <h4 class="text-xl font-bold dark:text-white">
+                            {{ $unresolved_assignments }}
+                        </h4>
+                    </div>
+                    <div>
+                        <svg class="mb-1 h-8 w-8 text-gray-500 dark:text-gray-400"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke="currentColor"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="m8.032 12 1.984 1.984 4.96-4.96m4.55 5.272.893-.893a1.984 1.984 0 0 0 0-2.806l-.893-.893a1.984 1.984 0 0 1-.581-1.403V7.04a1.984 1.984 0 0 0-1.984-1.984h-1.262a1.983 1.983 0 0 1-1.403-.581l-.893-.893a1.984 1.984 0 0 0-2.806 0l-.893.893a1.984 1.984 0 0 1-1.403.581H7.04A1.984 1.984 0 0 0 5.055 7.04v1.262c0 .527-.209 1.031-.581 1.403l-.893.893a1.984 1.984 0 0 0 0 2.806l.893.893c.372.372.581.876.581 1.403v1.262a1.984 1.984 0 0 0 1.984 1.984h1.262c.527 0 1.031.209 1.403.581l.893.893a1.984 1.984 0 0 0 2.806 0l.893-.893a1.985 1.985 0 0 1 1.403-.581h1.262a1.984 1.984 0 0 0 1.984-1.984V15.7c0-.527.209-1.031.581-1.403Z" />
+                        </svg>
+
+                        <h3 class="text-gray-500 dark:text-gray-400">Resolved</h3>
+                        <h4 class="text-xl font-bold dark:text-white">
+                            {{ $resolved_assignments }}
+                        </h4>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-span-4">
-            <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
-                <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Unresolved Assignments</h3>
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">30</p>
-            </div>
-        </div>
-        <div class="col-span-4">
-            <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
-                <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Resolved Assignments</h3>
-                <p class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">70</p>
-            </div>
-        </div> --}}
     </div>
 
 @endsection
@@ -266,70 +229,9 @@
         const options2 = {
             colors: ["#1A56DB", "#FDBA8C"],
             series: [{
-                    name: "Organic",
+                    name: "Assignment",
                     color: "#1A56DB",
-                    data: [{
-                            x: "Mon",
-                            y: 231
-                        },
-                        {
-                            x: "Tue",
-                            y: 122
-                        },
-                        {
-                            x: "Wed",
-                            y: 63
-                        },
-                        {
-                            x: "Thu",
-                            y: 421
-                        },
-                        {
-                            x: "Fri",
-                            y: 122
-                        },
-                        {
-                            x: "Sat",
-                            y: 323
-                        },
-                        {
-                            x: "Sun",
-                            y: 111
-                        },
-                    ],
-                },
-                {
-                    name: "Social media",
-                    color: "#FDBA8C",
-                    data: [{
-                            x: "Mon",
-                            y: 232
-                        },
-                        {
-                            x: "Tue",
-                            y: 113
-                        },
-                        {
-                            x: "Wed",
-                            y: 341
-                        },
-                        {
-                            x: "Thu",
-                            y: 224
-                        },
-                        {
-                            x: "Fri",
-                            y: 522
-                        },
-                        {
-                            x: "Sat",
-                            y: 411
-                        },
-                        {
-                            x: "Sun",
-                            y: 243
-                        },
-                    ],
+                    data: {!! json_encode($assignment_last_week, JSON_PRETTY_PRINT) !!},
                 },
             ],
             chart: {
@@ -414,8 +316,8 @@
 
         const getChartOptions = () => {
             return {
-                series: [230, 25],
-                colors: ["#16BDCA", "#FDBA8C"],
+                series: [{!! $resolved_assignments !!}, {!! $pending_assignments !!}, {!! $unresolved_assignments !!}],
+                colors: ["#1C64F2", "#FDBA8C", "#E74694"],
                 chart: {
                     height: 320,
                     width: "100%",
@@ -465,7 +367,7 @@
                         top: -2,
                     },
                 },
-                labels: ["Resolved", "Unresolved"],
+                labels: ["Resolved", "Pending", "Unresolved"],
                 dataLabels: {
                     enabled: false,
                 },

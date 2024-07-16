@@ -9,6 +9,7 @@ use App\Http\Controllers\RelationController;
 use App\Http\Controllers\TasklistController;
 use App\Http\Controllers\HierarchyController;
 use App\Http\Controllers\AssignmentController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\NotificationController;
@@ -36,7 +37,7 @@ Route::group(['middleware' => 'guest'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
-    Route::view('/', 'app.taskscore.index')->name('homepage');
+    Route::get('/', [DashboardController::class, 'index'])->name('homepage');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
