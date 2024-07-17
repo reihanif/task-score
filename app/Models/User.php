@@ -126,9 +126,15 @@ class User extends Authenticatable
      */
     public function subordinates()
     {
-        return User::where('id', '!=', $this->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
-            $query->where('path', 'LIKE', '%' . $this->position?->id . '%');
-        })->get()->sortBy('name');
+        if($this->position()->exists()) {
+            return User::where('id', '!=', $this->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
+                $query->where('path', 'LIKE', '%' . $this->position?->id . '%');
+            })->get()->sortBy('name');
+        } elseif($this->role == 'superadmin') {
+            return User::all()->except($this->id);
+        } else {
+            return [];
+        }
     }
 
     /**
