@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -60,38 +61,60 @@ class AuthController extends Controller
                 $ldap_search = ldap_search($ldap_connect, $ldap_base_dn, $ldap_filter);
                 $ldap_results = ldap_get_entries($ldap_connect, $ldap_search);
 
-                $user = User::firstOrCreate(
-                    ['username' => $username],
-                    [
-                        'name' => $ldap_results[0]['displayname'][0],
-                        'email' => $ldap_results[0]['mail'][0],
-                        'email_verified_at' => Carbon::now()->toDateTimeString(),
-                        'provider' => 'ldap'
-                    ]
-                );
-                Permission::firstOrCreate(['user_id' => $user->id]);
-                Auth::login($user);
+                DB::beginTransaction();
+
+                try {
+                    $user = User::firstOrCreate(
+                        ['username' => $username],
+                        [
+                            'name' => $ldap_results[0]['displayname'][0],
+                            'email' => $ldap_results[0]['mail'][0],
+                            'email_verified_at' => Carbon::now()->toDateTimeString(),
+                            'provider' => 'ldap'
+                        ]
+                    );
+                    Permission::firstOrCreate(['user_id' => $user->id]);
+                    Auth::login($user);
+
+                    // Execute database insertations
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollback();
+                    // Handle the error appropriately
+                    return redirect()->back()->with('errors', 'Login failed due to server errors');
+                }
             } else {
                 Auth::attempt($credentials);
                 $user = Auth::user();
             }
         }
 
-        if(!Auth::check()) {
-            // Authentication failed
-            return redirect()->route('auth.index')->withErrors('The provided credentials do not match our records.')->onlyInput('username');
-        } else {
-            // Authentication success
+        if (Auth::check()) {
+            // If authentication success
             // Update user login details without updated_at timestamps
-            $user->timestamps = false;
-            $user->update([
-                'login_attempts' => $user->login_attempts + 1,
-                'last_login_at' => Carbon::now()->toDateTimeString(),
-                'last_login_ip' => $request->getClientIp()
-            ]);
+            DB::beginTransaction();
+
+            try {
+                $user->timestamps = false;
+                $user->update([
+                    'login_attempts' => $user->login_attempts + 1,
+                    'last_login_at' => Carbon::now()->toDateTimeString(),
+                    'last_login_ip' => $request->getClientIp()
+                ]);
+
+                // Execute database insertations
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollback();
+                // Handle the error appropriately
+                return redirect()->back()->with('errors', 'Update assignment failed');
+            }
 
             return redirect()->route('homepage')->with('success', 'Welcome ' . $user->name);
         }
+
+        // Authentication failed
+        return redirect()->route('auth.index')->withErrors('Username or password invalid')->onlyInput('username');
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Models\Position;
 use App\Models\Department;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PositionController extends Controller
 {
@@ -40,16 +41,26 @@ class PositionController extends Controller
             'name' => 'required|unique:positions,name'
         ]);
 
+        DB::beginTransaction();
 
-        $position = new Position();
-        $position->name = $request->name;
-        if (!is_null($request->superior)) {
-            $position->parent_id = $request->superior;
-            $superior = Position::select('level', 'path')->where('id', $request->superior);
-            $position->level = $superior->pluck('level')[0] + 1;
-            $position->path = $superior->pluck('path')[0] . $request->superior . '\\';
+        try {
+            $position = new Position();
+            $position->name = $request->name;
+            if (!is_null($request->superior)) {
+                $position->parent_id = $request->superior;
+                $superior = Position::select('level', 'path')->where('id', $request->superior);
+                $position->level = $superior->pluck('level')[0] + 1;
+                $position->path = $superior->pluck('path')[0] . $request->superior . '\\';
+            }
+            $position->save();
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->with('errors', 'Create position failed');
         }
-        $position->save();
 
         return redirect()->back()->with('success', 'Position ' . $position->name . ' added successfully!');
     }
@@ -83,26 +94,37 @@ class PositionController extends Controller
             'name' => 'required|unique:positions,name,' . $id . ',id'
         ]);
 
-        $position = Position::findOrFail($id);
-        $position_current_level = $position->level;
+        DB::beginTransaction();
 
-        $position->name = $request->name;
-        if (!is_null($request->superior)) {
-            $position->parent_id = $request->superior;
-            $superior = Position::select('level', 'path')->where('id', $request->superior);
-            $position->level = $superior->pluck('level')[0] + 1;
-            $position->path = $superior->pluck('path')[0] . $request->superior . '\\';
-        }
+        try {
+            $position = Position::findOrFail($id);
+            $position_current_level = $position->level;
 
-        $childs = Position::where('path', 'LIKE', '%' . $id . '%')->get();
-        foreach ($childs as $child) {
-            $path_to_parent = $id . Str::after($child->path, $id);
-            $child_level_gap = $child->level - $position_current_level;
-            $child->level = $position->level + $child_level_gap;
-            $child->path = $position->path . $path_to_parent;
-            $child->save();
+            $position->name = $request->name;
+            if (!is_null($request->superior)) {
+                $position->parent_id = $request->superior;
+                $superior = Position::select('level', 'path')->where('id', $request->superior);
+                $position->level = $superior->pluck('level')[0] + 1;
+                $position->path = $superior->pluck('path')[0] . $request->superior . '\\';
+            }
+
+            $childs = Position::where('path', 'LIKE', '%' . $id . '%')->get();
+            foreach ($childs as $child) {
+                $path_to_parent = $id . Str::after($child->path, $id);
+                $child_level_gap = $child->level - $position_current_level;
+                $child->level = $position->level + $child_level_gap;
+                $child->path = $position->path . $path_to_parent;
+                $child->save();
+            }
+            $position->save();
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->with('errors', 'Update position failed');
         }
-        $position->save();
 
         return redirect()->back()->with('success', 'Position ' . $position->name . ' updated successfully!');
     }

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Position;
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
@@ -48,9 +49,20 @@ class DepartmentController extends Controller
             'name' => 'required|unique:departments,name'
         ]);
 
-        $department = new Department();
-        $department->name = $request->name;
-        $department->save();
+        DB::beginTransaction();
+
+        try {
+            $department = new Department();
+            $department->name = $request->name;
+            $department->save();
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->with('errors', 'Create department failed');
+        }
 
         return redirect()->back()->with('success', 'Department ' . $department->name . ' added successfully!');
     }
@@ -100,26 +112,37 @@ class DepartmentController extends Controller
             'name' => 'required|unique:departments,name,' . $id . ',id'
         ]);
 
-        $department = Department::findOrFail($id);
-        $department->name = $request->name;
-        $department->save();
+        DB::beginTransaction();
 
-        $current_positions = $department->positions->pluck('id')->toArray();
-        if ($request->positions) {
-            $submitted_positions = $request->positions;
-        } else {
-            $submitted_positions = [];
-        }
-        foreach ($current_positions as $current_position) {
-            if (!in_array($current_position, $submitted_positions)) {
-                $department->positions()->detach($current_position);
-            }
-        }
+        try {
+            $department = Department::findOrFail($id);
+            $department->name = $request->name;
+            $department->save();
 
-        foreach ($submitted_positions as $position) {
-            if (!in_array($position, $current_positions)) {
-                $department->positions()->attach($position, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => Auth::User()->id]);
+            $current_positions = $department->positions->pluck('id')->toArray();
+            if ($request->positions) {
+                $submitted_positions = $request->positions;
+            } else {
+                $submitted_positions = [];
             }
+            foreach ($current_positions as $current_position) {
+                if (!in_array($current_position, $submitted_positions)) {
+                    $department->positions()->detach($current_position);
+                }
+            }
+
+            foreach ($submitted_positions as $position) {
+                if (!in_array($position, $current_positions)) {
+                    $department->positions()->attach($position, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => Auth::User()->id]);
+                }
+            }
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->with('errors', 'Department update failed');
         }
 
 
@@ -134,9 +157,19 @@ class DepartmentController extends Controller
      */
     public function destroy($id)
     {
-        $department = Department::findOrFail($id);
+        DB::beginTransaction();
 
-        $department->delete();
+        try {
+            $department = Department::findOrFail($id);
+
+            $department->delete();
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->with('errors', 'Delete department failed');
+        }
 
         return redirect()->back()->with('warning', 'Department ' . $department->name . ' has been deleted!');
     }
