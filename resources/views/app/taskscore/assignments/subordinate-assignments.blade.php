@@ -42,8 +42,8 @@
                                         {{ $assignee->name }}
                                     </p>
                                     <p class="truncate text-sm text-gray-500 dark:text-gray-400"
-                                       title="{{ $assignee->position->name }}">
-                                        {{ $assignee->position->name }}
+                                       title="{{ $assignee->position?->name }}">
+                                        {{ $assignee->position?->name }}
                                     </p>
                                 </div>
                                 {{-- <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
