@@ -40,6 +40,7 @@
                         {{ $assignee_task?->uuid . ' ' }}{{ $assignment->subject }}
                     </h6>
 
+
                     <!-- Show button if user is a taskmaster -->
                     @taskmaster
                         <div class="grid grid-cols-12 gap-4">
