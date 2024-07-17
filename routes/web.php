@@ -32,7 +32,7 @@ use App\Http\Controllers\TimeExtensionController;
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/login', [AuthController::class, 'index'])->name('auth.index');
-    Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
+    Route::post('/', [AuthController::class, 'login'])->name('auth.login');
 });
 
 Route::group(['middleware' => 'auth'], function () {
