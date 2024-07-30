@@ -110,7 +110,7 @@ class AuthController extends Controller
                 return redirect()->back()->with('errors', 'Update assignment failed');
             }
 
-            return redirect()->route('homepage')->with('success', 'Welcome ' . $user->name);
+            return redirect()->intended('homepage')->with('success', 'Welcome ' . $user->name);
         }
 
         // Authentication failed
