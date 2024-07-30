@@ -15,6 +15,7 @@ use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentResolved;
 use App\Notifications\AssignmentSubmitted;
+use App\Notifications\NewAssignmentTaskmaster;
 use Illuminate\Support\Facades\Notification;
 
 class AssignmentController extends Controller
@@ -26,10 +27,11 @@ class AssignmentController extends Controller
      */
     public function myAssignment()
     {
+        $user = Auth::User();
         return view('app.taskscore.assignments.my-assignments', [
-            'unresolved_assignments' => Auth::User()->unresolvedAssignments(),
-            'pending_assignments' => Auth::User()->pendingAssignments(),
-            'resolved_assignments' => Auth::User()->resolvedAssignments,
+            'unresolved_assignments' => $user->unresolvedAssignments(),
+            'pending_assignments' => $user->pendingAssignments(),
+            'resolved_assignments' => $user->resolvedAssignments,
         ]);
     }
 
@@ -118,14 +120,6 @@ class AssignmentController extends Controller
             $tasks = new Collection;
 
             foreach ($request->assignees as $key => $assignee) {
-                // if (array_key_exists($key, $request->timetables)) {
-                //     $due = Carbon::now()->addMinutes($request->timetables[$key]);
-                // } elseif (array_key_exists($key, $request->dates) && array_key_exists($key, $request->times)) {
-                //     $date = $request->dates[$key];
-                //     $time = $request->times[$key];
-                //     $due = Carbon::parse("$date $time");
-                // }
-
                 if ($request->due_type == 'category') {
                     $due = Carbon::createFromFormat('d/m/Y H:i',  $request->duedate);
                 } elseif ($request->due_type == 'difficulty') {
@@ -146,7 +140,9 @@ class AssignmentController extends Controller
             // Send notifications
             foreach ($tasks as $task) {
                 $assignees = User::where('id', $task->assignee_id)->get();
+                $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
                 Notification::send($assignees, new NewAssignment($assignment, $task));
+                Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $task));
             }
 
             // Execute database insertations
@@ -174,11 +170,16 @@ class AssignmentController extends Controller
 
         $task = null;
 
+
         if ($request->task) {
             $task = Task::findOrFail($request->task);
         }
 
         $assignment = Assignment::findOrFail($id);
+
+        if (Auth::User()->isAssignee($id) && is_null($task)) {
+            abort(404);
+        }
 
         return view('app.taskscore.assignments.show', [
             'assignment' => $assignment,
