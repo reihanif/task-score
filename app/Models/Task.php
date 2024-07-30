@@ -20,7 +20,8 @@ class Task extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'due' => 'datetime'
+        'due' => 'datetime',
+        'resolved_at' => 'datetime'
     ];
 
     /**
