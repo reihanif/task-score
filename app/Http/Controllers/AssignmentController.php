@@ -15,6 +15,7 @@ use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentResolved;
 use App\Notifications\AssignmentSubmitted;
+use App\Notifications\AssignmentSubmittedAssignee;
 use App\Notifications\NewAssignmentTaskmaster;
 use Illuminate\Support\Facades\Notification;
 
@@ -279,6 +280,7 @@ class AssignmentController extends Controller
 
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
             Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
+            Notification::send($task->assignee, new AssignmentSubmittedAssignee($assignment, $task));
 
             // Execute database insertations
             DB::commit();
