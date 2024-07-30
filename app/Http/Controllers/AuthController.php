@@ -81,7 +81,7 @@ class AuthController extends Controller
                 } catch (\Exception $e) {
                     DB::rollback();
                     // Handle the error appropriately
-                    return redirect()->back()->with('errors', 'Login failed due to server errors');
+                    return redirect()->back()->withErrors('Login failed due to server errors');
                 }
             } else {
                 Auth::attempt($credentials);
@@ -110,7 +110,7 @@ class AuthController extends Controller
                 return redirect()->back()->with('errors', 'Update assignment failed');
             }
 
-            return redirect()->intended('homepage')->with('success', 'Welcome ' . $user->name);
+            return redirect()->intended('/')->with('success', 'Welcome ' . $user->name);
         }
 
         // Authentication failed
