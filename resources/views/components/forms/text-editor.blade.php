@@ -169,7 +169,7 @@
                 </div>
             </div>
         </template>
-        <div class="relative border-b dark:border-gray-600 bg-white p-2.5 dark:bg-gray-700">
+        <div x-on:click="$el.querySelector('[contenteditable]').focus()" class="relative cursor-text border-b dark:border-gray-600 bg-white p-2.5 dark:bg-gray-700">
             <div class="min-h-24 block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 placeholder="{{ $attributes->get('placeholder') }}"
                 x-ref="element">
