@@ -40,7 +40,7 @@ class NewAssignmentTaskmaster extends Notification
     {
         return (new MailMessage)
             ->subject('PTGN Notification')
-            ->greeting('New Assignment')
+            ->greeting('Create Assignment')
             ->line('New assignment has created for ' . $this->task->assignee->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid)
             ->action('Open Assignment', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id])));
     }
