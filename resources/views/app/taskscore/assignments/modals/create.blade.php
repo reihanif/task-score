@@ -27,53 +27,53 @@
                                     x-model="category"
                                     required>
                         <option value="">Select assignment category</option>
-                        @if (old('category') == 'Pembuatan Memorandum')
-                            <option value="Pembuatan Memorandum"
-                                    selected>Pembuatan Memorandum</option>
+                        @if (old('category') == 'Memorandum')
+                            <option value="Memorandum"
+                                    selected>Memorandum</option>
                         @else
-                            <option value="Pembuatan Memorandum">Pembuatan Memorandum</option>
+                            <option value="Memorandum">Memorandum</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Surat')
-                            <option value="Pembuatan Surat"
-                                    selected>Pembuatan Surat</option>
+                        @if (old('category') == 'Surat')
+                            <option value="Surat"
+                                    selected>Surat</option>
                         @else
-                            <option value="Pembuatan Surat">Pembuatan Surat</option>
+                            <option value="Surat">Surat</option>
                         @endif
-                        @if (old('category') == 'Membuat bahan presentasi')
-                            <option value="Membuat bahan presentasi"
-                                    selected>Membuat bahan presentasi</option>
+                        @if (old('category') == 'Presentasi')
+                            <option value="Presentasi"
+                                    selected>bahan presentasi</option>
                         @else
-                            <option value="Membuat bahan presentasi">Membuat bahan presentasi</option>
+                            <option value="Presentasi">Membuat bahan presentasi</option>
                         @endif
-                        @if (old('category') == 'Menghadiri rapat')
-                            <option value="Menghadiri rapat"
+                        @if (old('category') == 'Rapat')
+                            <option value="Rapat"
                                     selected>Menghadiri rapat</option>
                         @else
-                            <option value="Menghadiri rapat">Menghadiri rapat</option>
+                            <option value="Rapat">Menghadiri rapat</option>
                         @endif
-                        @if (old('category') == 'Melakukan perjalanan dinas')
-                            <option value="Melakukan perjalanan dinas"
-                                    selected>Melakukan perjalanan dinas</option>
+                        @if (old('category') == 'Perjalanan dinas')
+                            <option value="Perjalanan dinas"
+                                    selected>perjalanan dinas</option>
                         @else
-                            <option value="Melakukan perjalanan dinas">Melakukan perjalanan dinas</option>
+                            <option value="Perjalanan dinas">Melakukan perjalanan dinas</option>
                         @endif
-                        @if (old('category') == 'Pembuatan SP3')
-                            <option value="Pembuatan SP3"
-                                    selected>Pembuatan SP3</option>
+                        @if (old('category') == 'SP3')
+                            <option value="SP3"
+                                    selected>SP3</option>
                         @else
-                            <option value="Pembuatan SP3">Pembuatan SP3</option>
+                            <option value="SP3">Pembuatan SP3</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Berita Acara')
-                            <option value="Pembuatan Berita Acara"
+                        @if (old('category') == 'Berita Acara')
+                            <option value="Berita Acara"
                                     selected>Pembuatan Berita Acara</option>
                         @else
-                            <option value="Pembuatan Berita Acara">Pembuatan Berita Acara</option>
+                            <option value="Berita Acara">Pembuatan Berita Acara</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Sales Order')
-                            <option value="Pembuatan Sales Order"
-                                    selected>Pembuatan Sales Order</option>
+                        @if (old('category') == 'Sales Order')
+                            <option value="Sales Order"
+                                    selected>Sales Order</option>
                         @else
-                            <option value="Pembuatan Sales Order">Pembuatan Sales Order</option>
+                            <option value="Sales Order">Pembuatan Sales Order</option>
                         @endif
                         @if (old('category') == 'Lainnya')
                             <option value="Lainnya"
@@ -120,66 +120,11 @@
                            name="attachments[]"
                            type="file" max-files="5">
                 </div>
-                <div class="space-y-4"
-                     x-data="{ selectedOption: 'category' }">
-                    <div>
-                        <p class="due-label mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                            Assignment due
+                <div class="space-y-2">
+                        <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
+                            Assignment difficulty level
+                            <span class="text-red-600 dark:text-red-500">*</span>
                         </p>
-                        <ul
-                            class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
-                            <li class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
-                                <div class="interval flex items-center ps-3">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                           id="due-category"
-                                           name="due_type"
-                                           type="radio"
-                                           value="category"
-                                           x-model="selectedOption"
-                                           required>
-                                    <label class="cursor-pointer ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                           for="due-category">
-                                        Due by category
-                                    </label>
-                                </div>
-                            <li class="w-full dark:border-gray-600">
-                                <div class="exact-time flex items-center ps-3">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                           id="due-difficulty"
-                                           name="due_type"
-                                           type="radio"
-                                           value="difficulty"
-                                           x-model="selectedOption"
-                                           required>
-                                    <label class="cursor-pointer ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                           for="due-difficulty">
-                                        Due by difficulty
-                                    </label>
-                                </div>
-                            </li>
-                            </li>
-                        </ul>
-                    </div>
-                    <template x-if="selectedOption == 'category'">
-                        <div>
-                            <input class="hidden"
-                                   name="duedate"
-                                   type="text"
-                                   x-model="dueDate"
-                                   required>
-                            <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                                   id="due-date"
-                                   for="due-date"
-                                   type="text"
-                                   x-model="assignmentDue"
-                                   placeholder="Assignment due date"
-                                   readonly>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                Assignment due date is automatically generated based on the category.
-                            </p>
-                        </div>
-                    </template>
-                    <template x-if="selectedOption == 'difficulty'">
                         <div class="space-y-2">
                             <div class="flex">
                                 <div class="flex h-5 items-center">
@@ -187,7 +132,7 @@
                                            id="basic"
                                            name="difficulty"
                                            type="radio"
-                                           value="1"
+                                           value="basic"
                                            required>
                                 </div>
                                 <label class="cursor-pointer ms-2 text-sm"
@@ -204,7 +149,7 @@
                                            id="intermediate"
                                            name="difficulty"
                                            type="radio"
-                                           value="2"
+                                           value="intermediate"
                                            required>
                                 </div>
                                 <label class="cursor-pointer ms-2 text-sm"
@@ -221,7 +166,7 @@
                                            id="advanced"
                                            name="difficulty"
                                            type="radio"
-                                           value="3"
+                                           value="advanced"
                                            required>
                                 </div>
                                 <label class="cursor-pointer ms-2 text-sm"
@@ -232,7 +177,6 @@
                                 </label>
                             </div>
                         </div>
-                    </template>
                 </div>
 
                 <div class="space-y-2"
@@ -441,234 +385,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {{-- <div class="space-y-4"
-                                         x-data="{ selectedOption: '' }">
-                                        <div>
-                                            <p
-                                               class="due-label mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                                                Assignment due
-                                            </p>
-                                            <ul
-                                                class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
-                                                <li
-                                                    class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
-                                                    <div class="interval flex items-center ps-3">
-                                                        <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                                               type="radio"
-                                                               value="interval-time"
-                                                               :name="'due[' + index + ']'"
-                                                               x-model="selectedOption"
-                                                               required>
-                                                        <label
-                                                               class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                                            Select by interval
-                                                        </label>
-                                                    </div>
-                                                <li class="w-full dark:border-gray-600">
-                                                    <div class="exact-time flex items-center ps-3">
-                                                        <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                                               type="radio"
-                                                               value="exact-time"
-                                                               :name="'due[' + index + ']'"
-                                                               x-model="selectedOption"
-                                                               required>
-                                                        <label
-                                                               class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300">
-                                                            Select exact time
-                                                        </label>
-                                                    </div>
-                                                </li>
-                                                </li>
-                                            </ul>
-                                        </div>
-
-
-
-                                        <div class="sm:grid sm:grid-cols-2"
-                                             x-show="selectedOption !== ''">
-                                            <template x-if="selectedOption === 'exact-time'">
-                                                <div
-                                                     class="col-span-full space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
-                                                    <div>
-                                                        <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                                                               :for="'date-' + index">
-                                                            Date
-                                                            <span class="text-red-600 dark:text-red-500">*</span>
-                                                        </label>
-                                                        <div>
-                                                            <input class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                                                                   format="dd/mm/yy"
-                                                                   type="date"
-                                                                   value="{{ date('Y-m-d') }}"
-                                                                   :id="'date-' + index"
-                                                                   :name="'dates[' + index + ']'"
-                                                                   onclick="showPicker()"
-                                                                   onfocus="this.min = new Date().toISOString().split('T')[0]"
-                                                                   autocomplete="off"
-                                                                   required>
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                                                               :for="'input-time-' + index">
-                                                            Time
-                                                            <span class="text-red-600 dark:text-red-500">*</span>
-                                                        </label>
-                                                        <div>
-                                                            <input class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                                                                   type="time"
-                                                                   :id="'input-time-' + index"
-                                                                   :name="'times[' + index + ']'"
-                                                                   x-data="{ timeValue: addMinutesFromCurrentTime(60) }"
-                                                                   x-bind:value="timeValue"
-                                                                   onclick="showPicker()"
-                                                                   autocomplete="off"
-                                                                   required>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </template>
-
-                                            <template x-if="selectedOption === 'interval-time'">
-                                                <ul
-                                                    class="timetable col-span-2 grid w-full grid-cols-3 gap-2 sm:grid-cols-6">
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="20"
-                                                               :id="'10-am' + index"
-                                                               :name="'timetables[' + index + ']'"
-                                                               checked>
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'10-am' + index">
-                                                            20 Minutes
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="30"
-                                                               :id="'10-30-am' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'10-30-am' + index">
-                                                            30 Minutes
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="45"
-                                                               :id="'11-am' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'11-am' + index">
-                                                            45 Minutes
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="60"
-                                                               :id="'11-30-am' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'11-30-am' + index">
-                                                            1 Hours
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="120"
-                                                               :id="'12-am' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'12-am' + index">
-                                                            2 Hours
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="180"
-                                                               :id="'12-30-pm' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'12-30-pm' + index">
-                                                            3 Hours
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="240"
-                                                               :id="'1-pm' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'1-pm' + index">
-                                                            4 Hours
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="300"
-                                                               :id="'1-30-pm' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'1-30-pm' + index">
-                                                            5 Hours
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="1440"
-                                                               :id="'2-pm' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'2-pm' + index">
-                                                            1 Days
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="2880"
-                                                               :id="'2-30-pm' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'2-30-pm' + index">
-                                                            2 Days
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="4320"
-                                                               :id="'3-pm' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'3-pm' + index">
-                                                            3 Days
-                                                        </label>
-                                                    </li>
-                                                    <li>
-                                                        <input class="peer hidden"
-                                                               type="radio"
-                                                               value="5760"
-                                                               :id="'3-30-pm' + index"
-                                                               :name="'timetables[' + index + ']'">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               :for="'3-30-pm' + index">
-                                                            4 Days
-                                                        </label>
-                                                    </li>
-                                                </ul>
-                                            </template>
-                                        </div>
-                                    </div> --}}
                                 </div>
                                 <div x-show="elementsCount > 1">
                                     <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"

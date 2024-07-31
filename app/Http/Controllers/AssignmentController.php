@@ -121,10 +121,12 @@ class AssignmentController extends Controller
             $tasks = new Collection;
 
             foreach ($request->assignees as $key => $assignee) {
-                if ($request->due_type == 'category') {
-                    $due = Carbon::createFromFormat('d/m/Y H:i',  $request->duedate);
-                } elseif ($request->due_type == 'difficulty') {
-                    $due = Carbon::now()->addDays($request->difficulty);
+                if ($request->difficulty == 'basic') {
+                    $due = Carbon::now()->addDays(1);
+                } else if ($request->difficulty == 'intermediate') {
+                    $due = Carbon::now()->addDays(2);
+                } else if ($request->difficulty == 'advanced') {
+                    $due = Carbon::now()->addDays(3);
                 }
 
                 $task = new Task();
@@ -132,6 +134,7 @@ class AssignmentController extends Controller
                 $task->assignee_id = $assignee;
                 $task->assignment_id = $assignment->id;
                 $task->description = $request->details[$key];
+                $task->difficulty = $request->difficulty;
                 $task->due = $due;
                 $task->save();
 
