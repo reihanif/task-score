@@ -10,7 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentApproved;
+use App\Notifications\AssignmentApprovedTaskmaster;
 use App\Notifications\AssignmentRejected;
+use App\Notifications\AssignmentRejectedTaskmaster;
 use Illuminate\Support\Facades\Notification;
 
 class SubmissionController extends Controller
@@ -41,6 +43,9 @@ class SubmissionController extends Controller
             try {
                 $assignees = User::where('id', $task->assignee_id)->get();
                 Notification::send($assignees, new AssignmentApproved($task->assignment, $task));
+
+                $taskmasters = User::where('id', $task->assignment->taskmaster_id)->get();
+                Notification::send($taskmasters, new AssignmentApprovedTaskmaster($task->assignment, $task));
             } catch (\Exception $e) {
                 return redirect()->back()->withErrors($e->getMessage());
             }
@@ -81,6 +86,8 @@ class SubmissionController extends Controller
             $assignees = User::where('id', $submission->task->assignee_id)->get();
             Notification::send($assignees, new AssignmentRejected($submission->task->assignment, $submission->task));
 
+            $taskmasters = User::where('id', $submission->task->assignment->taskmaster_id)->get();
+            Notification::send($taskmasters, new AssignmentRejectedTaskmaster($submission->task->assignment, $submission->task));
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
