@@ -27,53 +27,53 @@
                                     x-model="category"
                                     required>
                         <option value="">Select assignment category</option>
-                        @if (old('category') == 'Pembuatan Memorandum')
-                            <option value="Pembuatan Memorandum"
-                                    selected>Pembuatan Memorandum</option>
+                        @if (old('category') == 'Memorandum')
+                            <option value="Memorandum"
+                                    selected>Memorandum</option>
                         @else
-                            <option value="Pembuatan Memorandum">Pembuatan Memorandum</option>
+                            <option value="Memorandum">Memorandum</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Surat')
-                            <option value="Pembuatan Surat"
-                                    selected>Pembuatan Surat</option>
+                        @if (old('category') == 'Surat')
+                            <option value="Surat"
+                                    selected>Surat</option>
                         @else
-                            <option value="Pembuatan Surat">Pembuatan Surat</option>
+                            <option value="Surat">Surat</option>
                         @endif
-                        @if (old('category') == 'Membuat bahan presentasi')
-                            <option value="Membuat bahan presentasi"
-                                    selected>Membuat bahan presentasi</option>
+                        @if (old('category') == 'Presentasi')
+                            <option value="Presentasi"
+                                    selected>bahan presentasi</option>
                         @else
-                            <option value="Membuat bahan presentasi">Membuat bahan presentasi</option>
+                            <option value="Presentasi">Membuat bahan presentasi</option>
                         @endif
-                        @if (old('category') == 'Menghadiri rapat')
-                            <option value="Menghadiri rapat"
+                        @if (old('category') == 'Rapat')
+                            <option value="Rapat"
                                     selected>Menghadiri rapat</option>
                         @else
-                            <option value="Menghadiri rapat">Menghadiri rapat</option>
+                            <option value="Rapat">Menghadiri rapat</option>
                         @endif
-                        @if (old('category') == 'Melakukan perjalanan dinas')
-                            <option value="Melakukan perjalanan dinas"
-                                    selected>Melakukan perjalanan dinas</option>
+                        @if (old('category') == 'Perjalanan dinas')
+                            <option value="Perjalanan dinas"
+                                    selected>perjalanan dinas</option>
                         @else
-                            <option value="Melakukan perjalanan dinas">Melakukan perjalanan dinas</option>
+                            <option value="Perjalanan dinas">Melakukan perjalanan dinas</option>
                         @endif
-                        @if (old('category') == 'Pembuatan SP3')
-                            <option value="Pembuatan SP3"
-                                    selected>Pembuatan SP3</option>
+                        @if (old('category') == 'SP3')
+                            <option value="SP3"
+                                    selected>SP3</option>
                         @else
-                            <option value="Pembuatan SP3">Pembuatan SP3</option>
+                            <option value="SP3">Pembuatan SP3</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Berita Acara')
-                            <option value="Pembuatan Berita Acara"
+                        @if (old('category') == 'Berita Acara')
+                            <option value="Berita Acara"
                                     selected>Pembuatan Berita Acara</option>
                         @else
-                            <option value="Pembuatan Berita Acara">Pembuatan Berita Acara</option>
+                            <option value="Berita Acara">Pembuatan Berita Acara</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Sales Order')
-                            <option value="Pembuatan Sales Order"
-                                    selected>Pembuatan Sales Order</option>
+                        @if (old('category') == 'Sales Order')
+                            <option value="Sales Order"
+                                    selected>Sales Order</option>
                         @else
-                            <option value="Pembuatan Sales Order">Pembuatan Sales Order</option>
+                            <option value="Sales Order">Pembuatan Sales Order</option>
                         @endif
                         @if (old('category') == 'Lainnya')
                             <option value="Lainnya"
