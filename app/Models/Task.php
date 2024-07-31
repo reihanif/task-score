@@ -115,13 +115,17 @@ class Task extends Model
     /**
      * Create UUID for ticket
      */
-    public function generateUniqueId($prefix = '#', $length = 4)
+    public function generateUniqueId($prefix = '#', $length = 6)
     {
-        $uuid = $prefix . mt_rand(pow(10, $length - 1), pow(10, $length) - 1);
+        // Get the last record's UUID and extract the numeric part
+        $lastRecord = $this->orderBy('uuid', 'desc')->first();
+        $lastIdNumber = $lastRecord ? intval(substr($lastRecord->uuid, strlen($prefix))) : 0;
 
-        while($this->where('uuid', $uuid)->count() > 0 ){
-            $uuid = $prefix . mt_rand(pow(10, $length - 1), pow(10, $length) - 1);
-        }
+        // Increment the number for the new UUID
+        $newIdNumber = $lastIdNumber + 1;
+
+        // Pad the number with leading zeros
+        $uuid = $prefix . str_pad($newIdNumber, $length, '0', STR_PAD_LEFT);
 
         return $uuid;
     }
