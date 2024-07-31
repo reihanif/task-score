@@ -15,6 +15,8 @@ use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentResolved;
 use App\Notifications\AssignmentSubmitted;
+use App\Notifications\AssignmentSubmittedAssignee;
+use App\Notifications\NewAssignmentTaskmaster;
 use Illuminate\Support\Facades\Notification;
 
 class AssignmentController extends Controller
@@ -26,10 +28,11 @@ class AssignmentController extends Controller
      */
     public function myAssignment()
     {
+        $user = Auth::User();
         return view('app.taskscore.assignments.my-assignments', [
-            'unresolved_assignments' => Auth::User()->unresolvedAssignments(),
-            'pending_assignments' => Auth::User()->pendingAssignments(),
-            'resolved_assignments' => Auth::User()->resolvedAssignments,
+            'unresolved_assignments' => $user->unresolvedAssignments(),
+            'pending_assignments' => $user->pendingAssignments(),
+            'resolved_assignments' => $user->resolvedAssignments,
         ]);
     }
 
@@ -141,7 +144,9 @@ class AssignmentController extends Controller
             // Send notifications
             foreach ($tasks as $task) {
                 $assignees = User::where('id', $task->assignee_id)->get();
+                $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
                 Notification::send($assignees, new NewAssignment($assignment, $task));
+                Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $task));
             }
 
             // Execute database insertations
@@ -169,11 +174,16 @@ class AssignmentController extends Controller
 
         $task = null;
 
+
         if ($request->task) {
             $task = Task::findOrFail($request->task);
         }
 
         $assignment = Assignment::findOrFail($id);
+
+        if (Auth::User()->isAssignee($id) && is_null($task)) {
+            abort(404);
+        }
 
         return view('app.taskscore.assignments.show', [
             'assignment' => $assignment,
@@ -273,6 +283,7 @@ class AssignmentController extends Controller
 
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
             Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
+            Notification::send($task->assignee, new AssignmentSubmittedAssignee($assignment, $task));
 
             // Execute database insertations
             DB::commit();
