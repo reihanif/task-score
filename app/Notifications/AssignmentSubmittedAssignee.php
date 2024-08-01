@@ -39,9 +39,10 @@ class AssignmentSubmittedAssignee extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('PTGN Notification')
+            ->subject('Assignment Submission')
             ->greeting('Assignment Submission')
             ->line('You have submitted the assignment to ' . $this->assignment->taskmaster->name . ': ' . $this->assignment->subject . $this->task->uuid)
+            ->line('Explore the full details by clicking the button below.')
             ->action('Open Assignment', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id])));
     }
 }

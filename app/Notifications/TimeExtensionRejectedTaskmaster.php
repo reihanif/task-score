@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TimeExtensionRequest extends Notification
+class TimeExtensionRejectedTaskmaster extends Notification
 {
     use Queueable;
 
@@ -30,7 +30,7 @@ class TimeExtensionRequest extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['mail'];
     }
 
     /**
@@ -39,9 +39,9 @@ class TimeExtensionRequest extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Time Extension Request')
-            ->greeting('Time Extension Request')
-            ->line('A new request for a time extension has been submitted by ' . $this->task->assignee->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid . '. Please review the details and approve or reject the request promptly.')
+            ->subject('Time Extension Rejection')
+            ->greeting('Time Extension Rejection')
+            ->line('You have rejected the time extension request from ' . $this->task->assignee->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid . '.')
             ->line('Explore the full details by clicking the button below.')
             ->action('Open Assignment', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id])));
     }
@@ -54,9 +54,9 @@ class TimeExtensionRequest extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'from' => $this->task->assignee->name,
-            'body' => 'Time extension request from <span class="font-semibold text-gray-900 dark:text-white">' . $this->task->assignee->name . '</span>: ' . $this->assignment->subject . ' ' . $this->task->uuid,
-            'action' => route('taskscore.assignment.show', ['assignment' => $this->assignment->id]),
+            'from' => $this->assignment->taskmaster->name,
+            'body' => 'Time extension rejected by <span class="font-semibold text-gray-900 dark:text-white">' . $this->assignment->taskmaster->name . '</span>: ' . $this->assignment->subject . ' ' . $this->task->uuid,
+            'action' => route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id]),
         ];
     }
 
@@ -67,6 +67,6 @@ class TimeExtensionRequest extends Notification
      */
     public function databaseType(object $notifiable): string
     {
-        return 'time-extension-request';
+        return 'time-extension-rejected';
     }
 }

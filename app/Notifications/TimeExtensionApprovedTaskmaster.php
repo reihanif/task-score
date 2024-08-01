@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewAssignmentTaskmaster extends Notification
+class TimeExtensionApprovedTaskmaster extends Notification
 {
     use Queueable;
 
@@ -39,9 +39,9 @@ class NewAssignmentTaskmaster extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('PTGN Notification')
-            ->greeting('Create Assignment')
-            ->line('A new assignment has been created for ' . $this->task->assignee->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid)
+            ->subject('Time Extension Approval')
+            ->greeting('Time Extension Approval')
+            ->line('You have approved the time extension request from ' . $this->task->assignee->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid . '.')
             ->line('Explore the full details by clicking the button below.')
             ->action('Open Assignment', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id])));
     }
