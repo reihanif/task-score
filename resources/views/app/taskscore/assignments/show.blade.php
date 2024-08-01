@@ -65,7 +65,7 @@
                                                     d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
                                                     clip-rule="evenodd" />
                                             </svg>
-                                            Edit Due
+                                            Edit
                                         </button>
                                     </div>
                                     <!-- Edit Modal -->
@@ -203,25 +203,6 @@
                                             </form>
                                         </div>
                                     @endif
-
-                                    <!-- Reassign Button -->
-                                    {{-- <div>
-                                        <button
-                                            class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                            data-modal-target="reassign-assignment-modal"
-                                            data-modal-show="reassign-assignment-modal"
-                                            type="button">
-                                            <svg class="me-1 h-3.5 w-3.5"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="currentColor"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z" />
-                                            </svg>
-                                            Reassign
-                                        </button>
-                                    </div> -->
-                                    @include('app.taskscore.assignments.modals.reassign', $assignees) --}}
                                 </div>
                             </div>
 

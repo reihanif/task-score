@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignUuid('assignee_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignUuid('assignment_id')->references('id')->on('assignments')->onDelete('cascade');
             $table->text('description');
+            $table->string('difficulty');
             $table->datetime('due')->nullable();
             $table->timestamps();
             $table->softDeletes();

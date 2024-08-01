@@ -10,7 +10,7 @@
         <div class="mb-5">
             <div class="space-y-4"
                  x-data="dueDateByDifficulty()">
-                <div class="space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
+                <div class="space-y-4">
                     <x-forms.input id="input-subject"
                                    name="subject"
                                    type="text"
@@ -27,53 +27,71 @@
                                     x-model="category"
                                     required>
                         <option value="">Select assignment category</option>
-                        @if (old('category') == 'Pembuatan Memorandum')
-                            <option value="Pembuatan Memorandum"
-                                    selected>Pembuatan Memorandum</option>
+                        @if (old('category') == 'Memorandum')
+                            <option value="Memorandum"
+                                    selected>Memorandum</option>
                         @else
-                            <option value="Pembuatan Memorandum">Pembuatan Memorandum</option>
+                            <option value="Memorandum">Memorandum</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Surat')
-                            <option value="Pembuatan Surat"
-                                    selected>Pembuatan Surat</option>
+                        @if (old('category') == 'Surat')
+                            <option value="Surat"
+                                    selected>Surat</option>
                         @else
-                            <option value="Pembuatan Surat">Pembuatan Surat</option>
+                            <option value="Surat">Surat</option>
                         @endif
-                        @if (old('category') == 'Membuat bahan presentasi')
-                            <option value="Membuat bahan presentasi"
-                                    selected>Membuat bahan presentasi</option>
+                        @if (old('category') == 'Surat Keputusan')
+                            <option value="Surat Keputusan"
+                                    selected>Surat Keputusan</option>
                         @else
-                            <option value="Membuat bahan presentasi">Membuat bahan presentasi</option>
+                            <option value="Surat Keputusan">Surat Keputusan</option>
                         @endif
-                        @if (old('category') == 'Menghadiri rapat')
-                            <option value="Menghadiri rapat"
-                                    selected>Menghadiri rapat</option>
+                        @if (old('category') == 'Surat Perintah')
+                            <option value="Surat Perintah"
+                                    selected>Surat Perintah</option>
                         @else
-                            <option value="Menghadiri rapat">Menghadiri rapat</option>
+                            <option value="Surat Perintah">Surat Perintah</option>
                         @endif
-                        @if (old('category') == 'Melakukan perjalanan dinas')
-                            <option value="Melakukan perjalanan dinas"
-                                    selected>Melakukan perjalanan dinas</option>
+                        @if (old('category') == 'Surat Edaran')
+                            <option value="Surat Edaran"
+                                    selected>Surat Edaran</option>
                         @else
-                            <option value="Melakukan perjalanan dinas">Melakukan perjalanan dinas</option>
+                            <option value="Surat Edaran">Surat Edaran</option>
                         @endif
-                        @if (old('category') == 'Pembuatan SP3')
-                            <option value="Pembuatan SP3"
-                                    selected>Pembuatan SP3</option>
+                        @if (old('category') == 'Presentasi')
+                            <option value="Presentasi"
+                                    selected>Presentasi</option>
                         @else
-                            <option value="Pembuatan SP3">Pembuatan SP3</option>
+                            <option value="Presentasi">Presentasi</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Berita Acara')
-                            <option value="Pembuatan Berita Acara"
-                                    selected>Pembuatan Berita Acara</option>
+                        @if (old('category') == 'Rapat')
+                            <option value="Rapat"
+                                    selected>Rapat</option>
                         @else
-                            <option value="Pembuatan Berita Acara">Pembuatan Berita Acara</option>
+                            <option value="Rapat">Rapat</option>
                         @endif
-                        @if (old('category') == 'Pembuatan Sales Order')
-                            <option value="Pembuatan Sales Order"
-                                    selected>Pembuatan Sales Order</option>
+                        @if (old('category') == 'Perjalanan dinas')
+                            <option value="Perjalanan dinas"
+                                    selected>Perjalanan dinas</option>
                         @else
-                            <option value="Pembuatan Sales Order">Pembuatan Sales Order</option>
+                            <option value="Perjalanan dinas">Perjalanan dinas</option>
+                        @endif
+                        @if (old('category') == 'SP3')
+                            <option value="SP3"
+                                    selected>SP3</option>
+                        @else
+                            <option value="SP3">SP3</option>
+                        @endif
+                        @if (old('category') == 'Berita Acara')
+                            <option value="Berita Acara"
+                                    selected>Berita Acara</option>
+                        @else
+                            <option value="Berita Acara">Berita Acara</option>
+                        @endif
+                        @if (old('category') == 'Sales Order')
+                            <option value="Sales Order"
+                                    selected>Sales Order</option>
+                        @else
+                            <option value="Sales Order">Sales Order</option>
                         @endif
                         @if (old('category') == 'Lainnya')
                             <option value="Lainnya"
@@ -123,136 +141,62 @@
                            multiple>
                 </div>
                 <div class="space-y-2">
-                    <p class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                        Assignment difficulty
-                    </p>
-                    {{-- <div>
-                        <ul
-                            class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
-                            <li class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
-                                <div class="interval flex items-center ps-3">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                           id="due-category"
-                                           name="due_type"
-                                           type="radio"
-                                           value="category"
-                                           x-model="selectedOption"
-                                           required>
-                                    <label class="cursor-pointer ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                           for="due-category">
-                                        Due by category
-                                    </label>
-                                </div>
-                            <li class="w-full dark:border-gray-600">
-                                <div class="exact-time flex items-center ps-3">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                           id="due-difficulty"
-                                           name="due_type"
-                                           type="radio"
-                                           value="difficulty"
-                                           x-model="selectedOption"
-                                           required>
-                                    <label class="cursor-pointer ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                           for="due-difficulty">
-                                        Due by difficulty
-                                    </label>
-                                </div>
-                            </li>
-                            </li>
-                        </ul>
-                    </div>
-                    <template x-if="selectedOption == 'category'">
-                        <div>
-                            <input class="hidden"
-                                   name="duedate"
-                                   type="text"
-                                   x-model="dueDate"
-                                   required>
-                            <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                                   id="due-date"
-                                   for="due-date"
-                                   type="text"
-                                   x-model="assignmentDue"
-                                   placeholder="Assignment due date"
-                                   readonly>
-                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                                Assignment due date is automatically generated based on the category.
-                            </p>
-                        </div>
-                    </template> --}}
-                    <div class="space-y-2">
-                        <div class="flex">
-                            <div class="flex h-5 items-center">
-                                <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                       id="basic"
-                                       name="difficulty"
-                                       x-model="difficulty"
-                                       type="radio"
-                                       value="1"
-                                       required>
-                            </div>
-                            <label class="ms-2 cursor-pointer text-sm"
-                                   for="basic">
-                                <p class="font-medium text-gray-900 dark:text-gray-300">Basic</p>
-                                <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                   id="basic-text">Assignment due will set in 1 days from now</p>
-                            </label>
-                        </div>
-
-                        <div class="flex">
-                            <div class="flex h-5 items-center">
-                                <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                       id="intermediate"
-                                       name="difficulty"
-                                       x-model="difficulty"
-                                       type="radio"
-                                       value="2"
-                                       required>
-                            </div>
-                            <label class="ms-2 cursor-pointer text-sm"
-                                   for="intermediate">
-                                <p class="font-medium text-gray-900 dark:text-gray-300">Intermediate</p>
-                                <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                   id="intermediate-text">Assignment due will set in 2 days from now</p>
-                            </label>
-                        </div>
-
-                        <div class="flex">
-                            <div class="flex h-5 items-center">
-                                <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                       id="advanced"
-                                       name="difficulty"
-                                       x-model="difficulty"
-                                       type="radio"
-                                       value="3"
-                                       required>
-                            </div>
-                            <label class="ms-2 cursor-pointer text-sm"
-                                   for="advanced">
-                                <p class="font-medium text-gray-900 dark:text-gray-300">Advanced</p>
-                                <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                   id="advanced-text">Assignment due will set in 3 days from now</p>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-2">
-                    <p class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                        Assignment due
-                    </p>
-                    <div>
-                        <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                               id="due-date"
-                               for="due-date"
-                               type="text"
-                               x-model="assignmentDue"
-                               placeholder="Assignment due date"
-                               readonly>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Assignment due date is automatically generated based on the difficulty.
+                        <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
+                            Assignment difficulty level
+                            <span class="text-red-600 dark:text-red-500">*</span>
                         </p>
-                    </div>
+                        <div class="space-y-2">
+                            <div class="flex">
+                                <div class="flex h-5 items-center">
+                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="basic"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="basic"
+                                           required>
+                                </div>
+                                <label class="cursor-pointer ms-2 text-sm"
+                                       for="basic">
+                                    <p class="font-medium text-gray-900 dark:text-gray-300">Basic</p>
+                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                       id="basic-text">Assignment due will set in 1 days from now</p>
+                                </label>
+                            </div>
+
+                            <div class="flex">
+                                <div class="flex h-5 items-center">
+                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="intermediate"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="intermediate"
+                                           required>
+                                </div>
+                                <label class="cursor-pointer ms-2 text-sm"
+                                       for="intermediate">
+                                    <p class="font-medium text-gray-900 dark:text-gray-300">Intermediate</p>
+                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                       id="intermediate-text">Assignment due will set in 2 days from now</p>
+                                </label>
+                            </div>
+
+                            <div class="flex">
+                                <div class="flex h-5 items-center">
+                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="advanced"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="advanced"
+                                           required>
+                                </div>
+                                <label class="cursor-pointer ms-2 text-sm"
+                                       for="advanced">
+                                    <p class="font-medium text-gray-900 dark:text-gray-300">Advanced</p>
+                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                       id="advanced-text">Assignment due will set in 3 days from now</p>
+                                </label>
+                            </div>
+                        </div>
                 </div>
 
                 <div class="space-y-2"

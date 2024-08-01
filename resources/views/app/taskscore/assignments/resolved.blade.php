@@ -50,6 +50,14 @@
                         scope="col">
                         Due
                     </x-table-head>
+                    <x-table-head class="whitespace-nowrap px-3 py-3"
+                        scope="col">
+                        Resolved at
+                    </x-table-head>
+                    <x-table-head class="whitespace-nowrap px-3 py-3"
+                        scope="col">
+                        Score
+                    </x-table-head>
                 </tr>
             </thead>
             <tbody>
@@ -71,7 +79,13 @@
                             {{ $item->created_at->format('d F Y H:i') }}
                         </td>
                         <td class="whitespace-nowrap px-3 py-4">
-                            {{ $item->due->diffForHumans() }}
+                            {{ $item->due->format('d F Y H:i') }}
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-4">
+                            {{ $item->resolved_at->format('d F Y H:i') }}
+                        </td>
+                        <td class="whitespace-nowrap px-3 py-4">
+                            {{ $item->score() }}%
                         </td>
                     </tr>
                 @endforeach

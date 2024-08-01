@@ -10,7 +10,10 @@ use App\Models\TimeExtension;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\TimeExtensionRequest;
 use App\Notifications\TimeExtensionApproved;
+use App\Notifications\TimeExtensionApprovedTaskmaster;
 use App\Notifications\TimeExtensionRejected;
+use App\Notifications\TimeExtensionRejectedTaskmaster;
+use App\Notifications\TimeExtensionRequestAssignee;
 use Illuminate\Support\Facades\Notification;
 
 class TimeExtensionController extends Controller
@@ -33,7 +36,9 @@ class TimeExtensionController extends Controller
             $extension_request->save();
 
             $taskmaster = User::where('id', $assignment->taskmaster_id)->get();
+            $assignees = User::where('id', $task->assignee_id)->get();
             Notification::send($taskmaster, new TimeExtensionRequest($assignment, $task));
+            Notification::send($assignees, new TimeExtensionRequestAssignee($assignment, $task));
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
@@ -59,7 +64,9 @@ class TimeExtensionController extends Controller
             $assignment = $task->assignment;
 
             $assignees = User::where('id', $task->assignee_id)->get();
+            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
             Notification::send($assignees, new TimeExtensionRejected($assignment, $task));
+            Notification::send($taskmasters, new TimeExtensionRejectedTaskmaster($assignment, $task));
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
@@ -92,7 +99,9 @@ class TimeExtensionController extends Controller
             $task->save();
 
             $assignees = User::where('id', $task->assignee_id)->get();
+            $taskmasters = User::where('id', $task->assignment->taskmaster_id)->get();
             Notification::send($assignees, new TimeExtensionApproved($task->assignment, $task));
+            Notification::send($taskmasters, new TimeExtensionApprovedTaskmaster($task->assignment, $task));
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {

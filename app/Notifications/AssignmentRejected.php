@@ -39,9 +39,10 @@ class AssignmentRejected extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('PTGN Notification')
+            ->subject('Assignment Rejected')
             ->greeting('Assignment Rejected')
             ->line('Assignment rejected by ' . $this->assignment->taskmaster->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid)
+            ->line('Explore the full details by clicking the button below.')
             ->action('Open Assignment', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id])));
     }
 

@@ -15,6 +15,8 @@ use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentResolved;
 use App\Notifications\AssignmentSubmitted;
+use App\Notifications\AssignmentSubmittedAssignee;
+use App\Notifications\NewAssignmentTaskmaster;
 use Illuminate\Support\Facades\Notification;
 
 class AssignmentController extends Controller
@@ -26,10 +28,11 @@ class AssignmentController extends Controller
      */
     public function myAssignment()
     {
+        $user = Auth::User();
         return view('app.taskscore.assignments.my-assignments', [
-            'unresolved_assignments' => Auth::User()->unresolvedAssignments(),
-            'pending_assignments' => Auth::User()->pendingAssignments(),
-            'resolved_assignments' => Auth::User()->resolvedAssignments,
+            'unresolved_assignments' => $user->unresolvedAssignments(),
+            'pending_assignments' => $user->pendingAssignments(),
+            'resolved_assignments' => $user->resolvedAssignments,
         ]);
     }
 
@@ -56,7 +59,7 @@ class AssignmentController extends Controller
     {
         $assignees = Auth::User()->subordinates();
 
-        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at')->get();
+        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at', 'desc')->get();
         $types = $assignments->map(function ($assignment) {
             return collect($assignment->toArray())
                 ->only(['type'])
@@ -116,20 +119,15 @@ class AssignmentController extends Controller
             }
 
             $tasks = new Collection;
+            $assignees_name = '';
 
             foreach ($request->assignees as $key => $assignee) {
-                // if (array_key_exists($key, $request->timetables)) {
-                //     $due = Carbon::now()->addMinutes($request->timetables[$key]);
-                // } elseif (array_key_exists($key, $request->dates) && array_key_exists($key, $request->times)) {
-                //     $date = $request->dates[$key];
-                //     $time = $request->times[$key];
-                //     $due = Carbon::parse("$date $time");
-                // }
-
-                if ($request->due_type == 'category') {
-                    $due = Carbon::createFromFormat('d/m/Y H:i',  $request->duedate);
-                } elseif ($request->due_type == 'difficulty') {
-                    $due = Carbon::now()->addDays($request->difficulty);
+                if ($request->difficulty == 'basic') {
+                    $due = Carbon::now()->addDays(1);
+                } else if ($request->difficulty == 'intermediate') {
+                    $due = Carbon::now()->addDays(2);
+                } else if ($request->difficulty == 'advanced') {
+                    $due = Carbon::now()->addDays(3);
                 }
 
                 $task = new Task();
@@ -137,9 +135,11 @@ class AssignmentController extends Controller
                 $task->assignee_id = $assignee;
                 $task->assignment_id = $assignment->id;
                 $task->description = $request->details[$key];
+                $task->difficulty = $request->difficulty;
                 $task->due = $due;
                 $task->save();
 
+                $assignees_name .= $task->assignee->name . ' ';
                 $tasks->push($task);
             }
 
@@ -148,13 +148,15 @@ class AssignmentController extends Controller
                 $assignees = User::where('id', $task->assignee_id)->get();
                 Notification::send($assignees, new NewAssignment($assignment, $task));
             }
+            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
+            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $assignees_name));
 
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             // Handle the error appropriately
-            return redirect()->back()->with('errors', 'Create assignment failed');
+            return redirect()->back()->withErrors('Create assignment failed');
         }
 
         return redirect()->back()->with('success', 'Assignment created successfully');
@@ -174,11 +176,16 @@ class AssignmentController extends Controller
 
         $task = null;
 
+
         if ($request->task) {
             $task = Task::findOrFail($request->task);
         }
 
         $assignment = Assignment::findOrFail($id);
+
+        if (Auth::User()->isAssignee($id) && is_null($task)) {
+            abort(404);
+        }
 
         return view('app.taskscore.assignments.show', [
             'assignment' => $assignment,
@@ -278,6 +285,7 @@ class AssignmentController extends Controller
 
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
             Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
+            Notification::send($task->assignee, new AssignmentSubmittedAssignee($assignment, $task));
 
             // Execute database insertations
             DB::commit();

@@ -39,10 +39,11 @@ class TimeExtensionApproved extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('PTGN Notification')
+            ->subject('Time Extension Approved')
             ->greeting('Time Extension Approved')
-            ->line('Your time extension request is approved by ' . $this->assignment->taskmaster->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid)
-            ->action('Notification Action', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id])));
+            ->line('Your time extension request has been approved by ' . $this->assignment->taskmaster->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid)
+            ->line('Explore the full details by clicking the button below.')
+            ->action('Open Assignment', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id])));
     }
 
     /**

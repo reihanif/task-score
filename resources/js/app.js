@@ -215,6 +215,7 @@ function initializeTomSelects() {
     // tomSelectInstances = [];
 
     document.querySelectorAll("select").forEach((el) => {
+        let isCreatable = el.getAttribute('data-create') ?? false;
         if (!el.hasAttribute("normal-select")) {
             if (!el.classList.contains("dt-input")) {
                 if (!el.classList.contains("tomselected")) {
@@ -224,10 +225,10 @@ function initializeTomSelects() {
                         } else {
                             new TomSelect(el, {
                                 plugins: ["remove_button", "caret_position"],
-                                create: false,
+                                create: isCreatable,
                                 sortField: {
-                                    field: "text",
-                                    direction: "asc",
+                                    field: 'text',
+                                    direction: 'asc'
                                 },
                             });
                         }
@@ -236,10 +237,10 @@ function initializeTomSelects() {
                             new TomSelect(el, {}).lock();
                         } else {
                             new TomSelect(el, {
-                                create: false,
+                                create: isCreatable,
                                 sortField: {
-                                    field: "text",
-                                    direction: "asc",
+                                    field: 'text',
+                                    direction: 'asc'
                                 },
                             });
                         }
