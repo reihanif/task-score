@@ -24,7 +24,6 @@
                                     name="category"
                                     label="Category"
                                     state="initial"
-                                    x-model="category"
                                     required>
                         <option value="">Select assignment category</option>
                         @if (old('category') == 'Memorandum')
@@ -140,66 +139,66 @@
                            max-files="5"
                            multiple>
                 </div>
-                <div class="space-y-2">
-                        <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
-                            Assignment difficulty level
-                            <span class="text-red-600 dark:text-red-500">*</span>
-                        </p>
-                        <div class="space-y-2">
-                            <div class="flex">
-                                <div class="flex h-5 items-center">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                           id="basic"
-                                           name="difficulty"
-                                           type="radio"
-                                           value="basic"
-                                           required>
-                                </div>
-                                <label class="cursor-pointer ms-2 text-sm"
-                                       for="basic">
-                                    <p class="font-medium text-gray-900 dark:text-gray-300">Basic</p>
-                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                       id="basic-text">Assignment due will set in 1 days from now</p>
-                                </label>
+                <div class="col-span-2 space-y-2">
+                    <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
+                        Assignment difficulty level
+                        <span class="text-red-600 dark:text-red-500">*</span>
+                    </p>
+                    <div class="space-y-2">
+                        <div class="flex">
+                            <div class="flex h-5 items-center">
+                                <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                       id="basic"
+                                       name="difficulty"
+                                       type="radio"
+                                       value="basic"
+                                       required>
                             </div>
-
-                            <div class="flex">
-                                <div class="flex h-5 items-center">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                           id="intermediate"
-                                           name="difficulty"
-                                           type="radio"
-                                           value="intermediate"
-                                           required>
-                                </div>
-                                <label class="cursor-pointer ms-2 text-sm"
-                                       for="intermediate">
-                                    <p class="font-medium text-gray-900 dark:text-gray-300">Intermediate</p>
-                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                       id="intermediate-text">Assignment due will set in 2 days from now</p>
-                                </label>
-                            </div>
-
-                            <div class="flex">
-                                <div class="flex h-5 items-center">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                           id="advanced"
-                                           name="difficulty"
-                                           type="radio"
-                                           value="advanced"
-                                           required>
-                                </div>
-                                <label class="cursor-pointer ms-2 text-sm"
-                                       for="advanced">
-                                    <p class="font-medium text-gray-900 dark:text-gray-300">Advanced</p>
-                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                       id="advanced-text">Assignment due will set in 3 days from now</p>
-                                </label>
-                            </div>
+                            <label class="ms-2 cursor-pointer text-sm"
+                                   for="basic">
+                                <p class="font-medium text-gray-900 dark:text-gray-300">Basic</p>
+                                <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                   id="basic-text">Assignment due will set in 1 days from now</p>
+                            </label>
                         </div>
+
+                        <div class="flex">
+                            <div class="flex h-5 items-center">
+                                <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                       id="intermediate"
+                                       name="difficulty"
+                                       type="radio"
+                                       value="intermediate"
+                                       required>
+                            </div>
+                            <label class="ms-2 cursor-pointer text-sm"
+                                   for="intermediate">
+                                <p class="font-medium text-gray-900 dark:text-gray-300">Intermediate</p>
+                                <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                   id="intermediate-text">Assignment due will set in 2 days from now</p>
+                            </label>
+                        </div>
+
+                        <div class="flex">
+                            <div class="flex h-5 items-center">
+                                <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                       id="advanced"
+                                       name="difficulty"
+                                       type="radio"
+                                       value="advanced"
+                                       required>
+                            </div>
+                            <label class="ms-2 cursor-pointer text-sm"
+                                   for="advanced">
+                                <p class="font-medium text-gray-900 dark:text-gray-300">Advanced</p>
+                                <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
+                                   id="advanced-text">Assignment due will set in 3 days from now</p>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="space-y-2"
+                <div class="space-y-1"
                      x-data="appendAssigneeField()">
                     <div class="space-y-4"
                          id="dynamic-assignee-field">
@@ -210,10 +209,21 @@
                             <div class="flex gap-2">
                                 <div class="grow space-y-4 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
                                     <div class="assignee">
-                                        <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                                            <span class="assignee-label"></span>
-                                            <span class="text-red-600 dark:text-red-500">*</span>
-                                        </label>
+                                        <div class="flex place-content-between mb-2">
+                                            <label class="block text-sm font-medium text-gray-900 dark:text-white">
+                                                <span class="assignee-label"></span>
+                                                <span class="text-red-600 dark:text-red-500">*</span>
+                                            </label>
+                                            <button class="add-assignee hidden items-center text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-500 hover:dark:text-blue-600"
+                                                    type="button"
+                                                    x-on:click="addElement"
+                                                    {{-- x-show="elementsCount < 4" --}}
+                                                    >
+                                                <x-icons.plus class="-ml-0.5 mr-0.5 h-5 w-5">
+                                                </x-icons.plus>
+                                                Add assignee
+                                            </button>
+                                        </div>
                                         <select :name="'assignees[' + index + ']'"
                                                 required>
                                             <option value="">Select assignee</option>
@@ -406,32 +416,27 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div x-show="elementsCount > 1">
-                                    <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                            type="button"
-                                            x-on:click="removeElement">
-                                        <svg class="h-4 w-4"
-                                             aria-hidden="true"
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             fill="currentColor"
-                                             viewBox="0 0 24 24">
-                                            <path fill-rule="evenodd"
-                                                  d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                                                  clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
+                                <div>
+                                    <div class="mb-2"
+                                         x-show="elementsCount > 1">
+                                        <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                                type="button"
+                                                x-on:click="removeElement">
+                                            <svg class="h-4 w-4"
+                                                 aria-hidden="true"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="currentColor"
+                                                 viewBox="0 0 24 24">
+                                                <path fill-rule="evenodd"
+                                                      d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                      clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </template>
-                    <button class="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-500 hover:dark:text-blue-600"
-                            type="button"
-                            x-on:click="addElement"
-                            x-show="elementsCount < 4">
-                        <x-icons.plus class="-ml-0.5 mr-0.5 h-5 w-5">
-                        </x-icons.plus>
-                        Add assignee
-                    </button>
                 </div>
             </div>
         </div>
@@ -521,6 +526,7 @@
     function appendAssigneeField() {
         return {
             elementsCount: 0, // Track the number of elements
+
             addElement() {
                 const container = document.getElementById("dynamic-assignee-field");
                 const template = this.$refs.templateElement.content.cloneNode(true);
@@ -550,21 +556,17 @@
                     if (elements.length > 1) {
                         element.querySelector(".assignee-label").textContent = `Assignee ${index + 1}`;
                         element.querySelector(".detail-label").textContent = `Detail`;
-
-                        // element.querySelector(".due-label").textContent = `Assignment due`;
-                        // element.querySelector(".interval label").htmlFor = `select-interval-${index + 1}`;
-                        // element.querySelector(".interval input").id = `select-interval-${index + 1}`;
-                        // element.querySelector(".exact-time label").htmlFor = `select-exact-time-${index + 1}`;
-                        // element.querySelector(".exact-time input").id = `select-exact-time-${index + 1}`;
                     } else {
                         element.querySelector(".assignee-label").textContent = `Assignee `;
                         element.querySelector(".detail-label").textContent = `Detail `;
+                    }
 
-                        // element.querySelector(".due-label").textContent = `Assignment due`;
-                        // element.querySelector(".interval label").htmlFor = `select-interval`;
-                        // element.querySelector(".interval input").id = `select-interval`;
-                        // element.querySelector(".exact-time label").htmlFor = `select-exact-time`;
-                        // element.querySelector(".exact-time input").id = `select-exact-time`;
+                    if (elements.length < 5 && index + 1 == elements.length) {
+                        element.querySelector(".add-assignee").classList.remove('hidden');
+                        element.querySelector(".add-assignee").classList.add('inline-flex');
+                    } else {
+                        element.querySelector(".add-assignee").classList.add('hidden');
+                        element.querySelector(".add-assignee").classList.remove('inline-flex');
                     }
                 });
             },

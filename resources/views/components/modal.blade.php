@@ -3,7 +3,11 @@
     id="{{ $attributes->get('id') }}"
     aria-hidden="true"
     tabindex="-1">
-    <div class="relative max-h-full w-full max-w-3xl p-4">
+    <div @class([
+        'relative max-h-full w-full p-4',
+        'max-w-3xl' => ! $attributes->has('modal-fullscreen'),
+        'max-w-7xl' => $attributes->has('modal-fullscreen'),
+    ])>
         <!-- Modal content -->
         <div class="relative rounded-lg bg-white shadow dark:bg-gray-800">
             <!-- Modal header -->
