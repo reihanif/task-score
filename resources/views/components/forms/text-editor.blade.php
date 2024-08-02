@@ -1,10 +1,10 @@
 @if ($attributes->has('label'))
-    <p class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
+    <div class="cursor-default mb-2 block text-sm font-medium text-gray-900 dark:text-white">
         {{ $attributes->get('label') }}
         @if ($attributes->has('required'))
             <span class="text-red-600 dark:text-red-500">*</span>
         @endif
-    </p>
+    </div>
 @endif
 <div class="mb-4"
     x-data="editor('{{ $attributes->get('value') ? Str::of($attributes->get('value'))->toHtmlString : '' }}')">
@@ -169,7 +169,7 @@
                 </div>
             </div>
         </template>
-        <div x-on:click="$el.querySelector('[contenteditable]').focus()" class="relative cursor-text border-b dark:border-gray-600 bg-white p-2.5 dark:bg-gray-700">
+        <div class="relative border-b dark:border-gray-600 bg-white p-2.5 dark:bg-gray-700">
             <div class="min-h-24 block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                 placeholder="{{ $attributes->get('placeholder') }}"
                 x-ref="element">
