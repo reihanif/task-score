@@ -38,16 +38,16 @@
             ])" />
 
         <div x-show="tab == 'unresolved'">
-            @include('app.taskscore.assignments.unresolved', $unresolved_assignments)
+            @include('app.taskscore.assignments.partials.unresolved', $unresolved_assignments)
         </div>
 
         <div x-show="tab == 'pending'">
-            @include('app.taskscore.assignments.pending', $pending_assignments)
+            @include('app.taskscore.assignments.partials.pending', $pending_assignments)
         </div>
 
 
         <div x-show="tab == 'resolved'">
-            @include('app.taskscore.assignments.resolved', $resolved_assignments)
+            @include('app.taskscore.assignments.partials.resolved', $resolved_assignments)
         </div>
     </div>
 
