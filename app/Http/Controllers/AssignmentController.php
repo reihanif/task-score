@@ -83,8 +83,8 @@ class AssignmentController extends Controller
     {
         $request->validate([
             'category' => 'required',
-            'subject' => 'required|unique:assignments,subject',
-            'description' => 'required',
+            'subject' => 'required|unique:assignments,subject|max:255',
+            'description' => 'required|max:2000',
         ]);
 
         DB::beginTransaction();
