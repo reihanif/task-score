@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsItself
+class Involved
 {
     /**
      * Handle an incoming request.
@@ -15,8 +15,18 @@ class IsItself
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if($request->user()->id !== $request->route('user')) {
-            return redirect()->route('homepage')->withErrors('You don\'t have permission for the page');
+        $allowAccess = false;
+
+        if ($request->user()->isTaskmaster($request->route('assignment'))) {
+            $allowAccess = true;
+        }
+
+        if ($request->user()->isTaskAssignee($request->task)) {
+            $allowAccess = true;
+        }
+
+        if (!$allowAccess) {
+            abort(404);
         }
 
         return $next($request);

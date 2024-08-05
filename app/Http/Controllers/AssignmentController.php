@@ -170,16 +170,14 @@ class AssignmentController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
-            $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
-        })->get()->sortBy('name');
-
         $task = null;
-
-
         if ($request->task) {
             $task = Task::findOrFail($request->task);
         }
+
+        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
+            $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
+        })->get()->sortBy('name');
 
         $assignment = Assignment::findOrFail($id);
 
