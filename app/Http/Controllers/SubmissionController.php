@@ -9,9 +9,12 @@ use App\Models\Submission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Notifications\AssignmentApproved;
 use App\Notifications\AssignmentRejected;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\AssignmentApprovedTaskmaster;
+use App\Notifications\AssignmentRejectedTaskmaster;
 
 class SubmissionController extends Controller
 {
@@ -41,6 +44,9 @@ class SubmissionController extends Controller
             try {
                 $assignees = User::where('id', $task->assignee_id)->get();
                 Notification::send($assignees, new AssignmentApproved($task->assignment, $task));
+
+                $taskmasters = User::where('id', $task->assignment->taskmaster_id)->get();
+                Notification::send($taskmasters, new AssignmentApprovedTaskmaster($task->assignment, $task));
             } catch (\Exception $e) {
                 return redirect()->back()->withErrors($e->getMessage());
             }
@@ -53,7 +59,7 @@ class SubmissionController extends Controller
             return redirect()->back()->withErrors('Failed to approve submission');
         }
 
-        return redirect()->back()->with('success', 'submission has been approved');
+        return redirect()->back()->with('success', 'Submission has been approved');
     }
 
     /**
@@ -81,6 +87,8 @@ class SubmissionController extends Controller
             $assignees = User::where('id', $submission->task->assignee_id)->get();
             Notification::send($assignees, new AssignmentRejected($submission->task->assignment, $submission->task));
 
+            $taskmasters = User::where('id', $submission->task->assignment->taskmaster_id)->get();
+            Notification::send($taskmasters, new AssignmentRejectedTaskmaster($submission->task->assignment, $submission->task));
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
@@ -89,7 +97,7 @@ class SubmissionController extends Controller
             return redirect()->back()->withErrors('Failed to reject submission');
         }
 
-        return redirect()->back()->with('success', 'submission has been rejected');
+        return redirect()->back()->with('success', 'Submission has been rejected');
     }
 
     /**
@@ -108,5 +116,33 @@ class SubmissionController extends Controller
         return view('app.taskscore.assignments.subordinate-submissions', [
             'submissions' => $submissions,
         ]);
+    }
+
+    /**
+     * Remove the specified submission.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function rollback($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $submission = Submission::findOrFail($id);
+            foreach($submission->attachments as $file) {
+                Storage::delete($file->path);
+            }
+            $submission->delete();
+
+            // Execute database data remove
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->withErrors('Rollback submission failed');
+        }
+
+        return redirect()->back()->with('success', 'Submission has been canceled and rolled back');
     }
 }

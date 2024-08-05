@@ -39,10 +39,11 @@ class TimeExtensionRejected extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('PTGN Notification')
+            ->subject('Time Extension Rejected')
             ->greeting('Time Extension Rejected')
-            ->line('Your time extension request rejected by ' . $this->assignment->taskmaster->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid)
-            ->action('Notification Action', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id])));
+            ->line('Your time extension request has been rejected by ' . $this->assignment->taskmaster->name . ': ' . $this->assignment->subject . ' ' . $this->task->uuid . '.')
+            ->line('Explore the full details by clicking the button below.')
+            ->action('Open Assignment', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id])));
     }
 
     /**

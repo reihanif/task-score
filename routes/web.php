@@ -66,6 +66,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::put('/{assignment}/open', [AssignmentController::class, 'open'])->name('assignment.open');
             Route::put('/{assignment}/submission-approval', [SubmissionController::class, 'approve'])->name('assignment.approve-submission');
             Route::put('/{assignment}/submission-rejection', [SubmissionController::class, 'reject'])->name('assignment.reject-submission');
+            Route::delete('/{assignment}/submission-rollback', [SubmissionController::class, 'rollback'])->name('assignment.rollback-submission');
             Route::post('/{assignment}/time-extension-request', [TimeExtensionController::class, 'store'])->name('assignment.time-extension-request');
             Route::put('/{assignment}/time-extension-reject', [TimeExtensionController::class, 'reject'])->name('assignment.time-extension-reject');
             Route::put('/{assignment}/time-extension-approve', [TimeExtensionController::class, 'approve'])->name('assignment.time-extension-approve');

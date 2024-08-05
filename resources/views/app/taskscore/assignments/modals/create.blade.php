@@ -9,8 +9,8 @@
         @csrf
         <div class="mb-5">
             <div class="space-y-4"
-                 x-data="dueDateByCategory()">
-                <div class="space-y-4 sm:grid sm:grid-cols-2 sm:space-x-4 sm:space-y-0">
+                 x-data="difficulty()">
+                <div class="space-y-4">
                     <x-forms.input id="input-subject"
                                    name="subject"
                                    type="text"
@@ -23,8 +23,8 @@
                     <x-forms.select id="input-category"
                                     name="category"
                                     label="Category"
-                                    state="initial"
                                     x-model="category"
+                                    state="initial"
                                     required>
                         <option value="">Select assignment category</option>
                         @if (old('category') == 'Memorandum')
@@ -38,6 +38,24 @@
                                     selected>Surat</option>
                         @else
                             <option value="Surat">Surat</option>
+                        @endif
+                        @if (old('category') == 'Surat Keputusan')
+                            <option value="Surat Keputusan"
+                                    selected>Surat Keputusan</option>
+                        @else
+                            <option value="Surat Keputusan">Surat Keputusan</option>
+                        @endif
+                        @if (old('category') == 'Surat Perintah')
+                            <option value="Surat Perintah"
+                                    selected>Surat Perintah</option>
+                        @else
+                            <option value="Surat Perintah">Surat Perintah</option>
+                        @endif
+                        @if (old('category') == 'Surat Edaran')
+                            <option value="Surat Edaran"
+                                    selected>Surat Edaran</option>
+                        @else
+                            <option value="Surat Edaran">Surat Edaran</option>
                         @endif
                         @if (old('category') == 'Presentasi')
                             <option value="Presentasi"
@@ -83,6 +101,74 @@
                         @endif
                     </x-forms.select>
                 </div>
+
+                <div class="col-span-2 space-y-4">
+                    <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
+                        Assignment difficulty level
+                        <span class="text-red-600 dark:text-red-500">*</span>
+                    </p>
+
+                    <div class="pb-2">
+                        <div class="space-y-4">
+                            <div class="flex">
+                                <div class="flex h-5 items-center">
+                                    <input class="peer/basic h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="basic"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="basic"
+                                           x-model="difficulty"
+                                           x-bind:disabled="disableBasic"
+                                           required>
+                                    <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/basic:cursor-default peer-disabled/basic:text-gray-400 dark:text-gray-300 peer-disabled/basic:dark:text-gray-500"
+                                           for="basic">
+                                        Basic
+                                        <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                           id="basic-text">Assignment due will set in 1 days from now</p>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="flex">
+                                <div class="flex h-8 items-center">
+                                    <input class="peer/intermediate h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="intermediate"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="intermediate"
+                                           x-model="difficulty"
+                                           x-bind:disabled="disableIntermediate"
+                                           required>
+                                    <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/intermediate:cursor-default peer-disabled/intermediate:text-gray-400 dark:text-gray-300 peer-disabled/intermediate:dark:text-gray-500"
+                                           for="intermediate">
+                                        Intermediate
+                                        <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                           id="intermediate-text">Assignment due will set in 2 days from now</p>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="flex">
+                                <div class="flex h-5 items-center">
+                                    <input class="peer/advanced h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="advanced"
+                                           name="difficulty"
+                                           type="radio"
+                                           value="advanced"
+                                           x-model="difficulty"
+                                           required>
+                                    <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/advanced:cursor-default peer-disabled/advanced:text-gray-400 dark:text-gray-300 peer-disabled/advanced:dark:text-gray-500"
+                                           for="advanced">
+                                        Advanced
+                                        <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                           id="advanced-text">Assignment due will set in 3 days from now</p>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-span-2">
                     <x-forms.text-editor name="description"
                                          value="{{ old('description') }}"
@@ -118,68 +204,12 @@
                     </label>
                     <input id="file"
                            name="attachments[]"
-                           type="file" max-files="5">
-                </div>
-                <div class="space-y-2">
-                        <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
-                            Assignment difficulty level
-                            <span class="text-red-600 dark:text-red-500">*</span>
-                        </p>
-                        <div class="space-y-2">
-                            <div class="flex">
-                                <div class="flex h-5 items-center">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                           id="basic"
-                                           name="difficulty"
-                                           type="radio"
-                                           value="basic"
-                                           required>
-                                </div>
-                                <label class="cursor-pointer ms-2 text-sm"
-                                       for="basic">
-                                    <p class="font-medium text-gray-900 dark:text-gray-300">Basic</p>
-                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                       id="basic-text">Assignment due will set in 1 days from now</p>
-                                </label>
-                            </div>
-
-                            <div class="flex">
-                                <div class="flex h-5 items-center">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                           id="intermediate"
-                                           name="difficulty"
-                                           type="radio"
-                                           value="intermediate"
-                                           required>
-                                </div>
-                                <label class="cursor-pointer ms-2 text-sm"
-                                       for="intermediate">
-                                    <p class="font-medium text-gray-900 dark:text-gray-300">Intermediate</p>
-                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                       id="intermediate-text">Assignment due will set in 2 days from now</p>
-                                </label>
-                            </div>
-
-                            <div class="flex">
-                                <div class="flex h-5 items-center">
-                                    <input class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                           id="advanced"
-                                           name="difficulty"
-                                           type="radio"
-                                           value="advanced"
-                                           required>
-                                </div>
-                                <label class="cursor-pointer ms-2 text-sm"
-                                       for="advanced">
-                                    <p class="font-medium text-gray-900 dark:text-gray-300">Advanced</p>
-                                    <p class="text-xs font-normal text-gray-500 dark:text-gray-300"
-                                       id="advanced-text">Assignment due will set in 3 days from now</p>
-                                </label>
-                            </div>
-                        </div>
+                           type="file"
+                           max-files="5"
+                           multiple>
                 </div>
 
-                <div class="space-y-2"
+                <div class="space-y-1"
                      x-data="appendAssigneeField()">
                     <div class="space-y-4"
                          id="dynamic-assignee-field">
@@ -190,10 +220,20 @@
                             <div class="flex gap-2">
                                 <div class="grow space-y-4 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
                                     <div class="assignee">
-                                        <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
-                                            <span class="assignee-label"></span>
-                                            <span class="text-red-600 dark:text-red-500">*</span>
-                                        </label>
+                                        <div class="mb-2 flex place-content-between">
+                                            <label class="block text-sm font-medium text-gray-900 dark:text-white">
+                                                <span class="assignee-label"></span>
+                                                <span class="text-red-600 dark:text-red-500">*</span>
+                                            </label>
+                                            <button class="add-assignee hidden items-center text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-500 hover:dark:text-blue-600"
+                                                    type="button"
+                                                    x-on:click="addElement"
+                                                    {{-- x-show="elementsCount < 4" --}}>
+                                                <x-icons.plus class="-ml-0.5 mr-0.5 h-5 w-5">
+                                                </x-icons.plus>
+                                                Add assignee
+                                            </button>
+                                        </div>
                                         <select :name="'assignees[' + index + ']'"
                                                 required>
                                             <option value="">Select assignee</option>
@@ -386,32 +426,27 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div x-show="elementsCount > 1">
-                                    <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                            type="button"
-                                            x-on:click="removeElement">
-                                        <svg class="h-4 w-4"
-                                             aria-hidden="true"
-                                             xmlns="http://www.w3.org/2000/svg"
-                                             fill="currentColor"
-                                             viewBox="0 0 24 24">
-                                            <path fill-rule="evenodd"
-                                                  d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                                                  clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
+                                <div>
+                                    <div class="mb-2"
+                                         x-show="elementsCount > 1">
+                                        <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                                type="button"
+                                                x-on:click="removeElement">
+                                            <svg class="h-4 w-4"
+                                                 aria-hidden="true"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="currentColor"
+                                                 viewBox="0 0 24 24">
+                                                <path fill-rule="evenodd"
+                                                      d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                      clip-rule="evenodd" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </template>
-                    <button class="inline-flex items-center text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-500 hover:dark:text-blue-600"
-                            type="button"
-                            x-on:click="addElement"
-                            x-show="elementsCount < 4">
-                        <x-icons.plus class="-ml-0.5 mr-0.5 h-5 w-5">
-                        </x-icons.plus>
-                        Add assignee
-                    </button>
                 </div>
             </div>
         </div>
@@ -435,70 +470,97 @@
         return `${hours}:${minutes}`;
     }
 
-    function dueDateByCategory() {
+    function difficulty() {
         return {
             category: '',
-            assignmentDue: '',
-            dueDate: '',
+            difficulty: '',
+            disableBasic: false,
+            disableIntermediate: false,
             init() {
                 this.$watch('category', (value) => {
-                    const due = new Date();
-                    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
-                        'Saturday'
-                    ];
-                    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-                        'August', 'September', 'October', 'November', 'December'
-                    ];
-
                     if (value !== '') {
-                        if (value === 'Pembuatan Memorandum') {
-                            due.setDate(due.getDate() + 5); // Set the due 1 days from now
+                        if (value === 'SP3') {
+                            this.difficulty = 'advanced';
+                            this.disableBasic = true;
+                            this.disableIntermediate = true;
                         } else {
-                            due.setDate(due.getDate() + 2); // Set the due 2 days from now
+                            this.difficulty = ''
+                            this.disableBasic = false;
+                            this.disableIntermediate = false;
                         }
-
-                        // Specific dates to exclude (e.g., ['2024-07-15', '2024-08-15'])
-                        const excludedDates = [].map(dateStr => new Date(dateStr));
-
-                        // Check if the due date falls on a weekend (Saturday or Sunday)
-                        while (due.getDay() === 0 || due.getDay() === 6 || excludedDates.some(excludedDate =>
-                                due.toDateString() === excludedDate.toDateString())) {
-                            due.setDate(due.getDate() + 1); // Move to the next day
-                        }
-
-                        // Check if due date falls after any of the excluded dates, then add 1 day
-                        excludedDates.forEach(excludedDate => {
-                            if (due > excludedDate) {
-                                due.setDate(due.getDate() + 1); // Add 1 day
-                            }
-                        });
-
-                        const dayName = dayNames[due.getDay()];
-                        const day = String(due.getDate()).padStart(2, '0');
-
-                        const month = String(due.getMonth() + 1).padStart(2, '0');
-                        const monthName = monthNames[due.getMonth()];
-
-                        const year = due.getFullYear();
-
-                        const hours = String(due.getHours()).padStart(2, '0');
-                        const minutes = String(due.getMinutes()).padStart(2, '0');
-                        const seconds = String(due.getSeconds()).padStart(2, '0');
-
-                        this.assignmentDue = `${dayName}, ${day} ${monthName} ${year} at ${hours}:${minutes}`;
-                        this.dueDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-                    } else {
-                        this.assignmentDue = '';
-                        this.dueDate = '';
                     }
-                });
+                })
             }
         }
     }
 
+    // function dueDateByDifficulty() {
+    //     return {
+    //         difficulty: '',
+    //         assignmentDue: '',
+    //         dueDate: '',
+    //         init() {
+    //             this.$watch('difficulty', (value) => {
+    //                 const due = new Date();
+    //                 const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
+    //                     'Saturday'
+    //                 ];
+    //                 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+    //                     'August', 'September', 'October', 'November', 'December'
+    //                 ];
+
+    //                 if (value !== '') {
+    //                     if (value === '1') {
+    //                         due.setDate(due.getDate() + 1); // Set the due 1 days from now
+    //                     } else if (value === '2') {
+    //                         due.setDate(due.getDate() + 2); // Set the due 2 days from now
+    //                     } else if (value === '3') {
+    //                         due.setDate(due.getDate() + 3); // Set the due 3 days from now
+    //                     }
+
+    //                     // Specific dates to exclude (e.g., ['2024-07-15', '2024-08-15'])
+    //                     const excludedDates = [].map(dateStr => new Date(dateStr));
+
+    //                     // Check if the due date falls on a weekend (Saturday or Sunday)
+    //                     while (due.getDay() === 0 || due.getDay() === 6 || excludedDates.some(excludedDate =>
+    //                             due.toDateString() === excludedDate.toDateString())) {
+    //                         due.setDate(due.getDate() + 1); // Move to the next day
+    //                     }
+
+    //                     // Check if due date falls after any of the excluded dates, then add 1 day
+    //                     excludedDates.forEach(excludedDate => {
+    //                         if (due > excludedDate) {
+    //                             due.setDate(due.getDate() + 1); // Add 1 day
+    //                         }
+    //                     });
+
+    //                     const dayName = dayNames[due.getDay()];
+    //                     const day = String(due.getDate()).padStart(2, '0');
+
+    //                     const month = String(due.getMonth() + 1).padStart(2, '0');
+    //                     const monthName = monthNames[due.getMonth()];
+
+    //                     const year = due.getFullYear();
+
+    //                     const hours = String(due.getHours()).padStart(2, '0');
+    //                     const minutes = String(due.getMinutes()).padStart(2, '0');
+    //                     const seconds = String(due.getSeconds()).padStart(2, '0');
+
+    //                     this.assignmentDue = `${dayName}, ${day} ${monthName} ${year} at ${hours}:${minutes}`;
+    //                     this.dueDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+    //                 } else {
+    //                     this.assignmentDue = '';
+    //                     this.dueDate = '';
+    //                 }
+    //             });
+    //         }
+    //     }
+    // }
+
     function appendAssigneeField() {
         return {
             elementsCount: 0, // Track the number of elements
+
             addElement() {
                 const container = document.getElementById("dynamic-assignee-field");
                 const template = this.$refs.templateElement.content.cloneNode(true);
@@ -528,21 +590,17 @@
                     if (elements.length > 1) {
                         element.querySelector(".assignee-label").textContent = `Assignee ${index + 1}`;
                         element.querySelector(".detail-label").textContent = `Detail`;
-
-                        // element.querySelector(".due-label").textContent = `Assignment due`;
-                        // element.querySelector(".interval label").htmlFor = `select-interval-${index + 1}`;
-                        // element.querySelector(".interval input").id = `select-interval-${index + 1}`;
-                        // element.querySelector(".exact-time label").htmlFor = `select-exact-time-${index + 1}`;
-                        // element.querySelector(".exact-time input").id = `select-exact-time-${index + 1}`;
                     } else {
                         element.querySelector(".assignee-label").textContent = `Assignee `;
                         element.querySelector(".detail-label").textContent = `Detail `;
+                    }
 
-                        // element.querySelector(".due-label").textContent = `Assignment due`;
-                        // element.querySelector(".interval label").htmlFor = `select-interval`;
-                        // element.querySelector(".interval input").id = `select-interval`;
-                        // element.querySelector(".exact-time label").htmlFor = `select-exact-time`;
-                        // element.querySelector(".exact-time input").id = `select-exact-time`;
+                    if (elements.length < 5 && index + 1 == elements.length) {
+                        element.querySelector(".add-assignee").classList.remove('hidden');
+                        element.querySelector(".add-assignee").classList.add('inline-flex');
+                    } else {
+                        element.querySelector(".add-assignee").classList.add('hidden');
+                        element.querySelector(".add-assignee").classList.remove('inline-flex');
                     }
                 });
             },
