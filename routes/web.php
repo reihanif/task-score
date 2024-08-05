@@ -40,7 +40,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('homepage');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
-    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead']);
+    Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
 
     Route::group(['middleware' => 'role:superadmin'], function () {
         Route::get('/account/{user}/settings', [AccountController::class, 'settings'])->name('account.settings');
