@@ -9,98 +9,51 @@
         @csrf
         <div class="mb-5">
             <div class="space-y-4"
-                 x-data="difficulty()">
-                <div class="space-y-4">
-                    <x-forms.input id="input-subject"
-                                   name="subject"
-                                   type="text"
-                                   value="{{ old('subject') }}"
-                                   autocomplete="off"
-                                   label="Subject"
-                                   placeholder="Assignment subject"
-                                   state="initial"
-                                   required></x-forms.input>
-                    <x-forms.select id="input-category"
-                                    name="category"
-                                    label="Category"
-                                    x-model="category"
-                                    state="initial"
-                                    required>
-                        <option value="">Select assignment category</option>
-                        @if (old('category') == 'Memorandum')
-                            <option value="Memorandum"
-                                    selected>Memorandum</option>
-                        @else
-                            <option value="Memorandum">Memorandum</option>
-                        @endif
-                        @if (old('category') == 'Surat')
-                            <option value="Surat"
-                                    selected>Surat</option>
-                        @else
-                            <option value="Surat">Surat</option>
-                        @endif
-                        @if (old('category') == 'Surat Keputusan')
-                            <option value="Surat Keputusan"
-                                    selected>Surat Keputusan</option>
-                        @else
-                            <option value="Surat Keputusan">Surat Keputusan</option>
-                        @endif
-                        @if (old('category') == 'Surat Perintah')
-                            <option value="Surat Perintah"
-                                    selected>Surat Perintah</option>
-                        @else
-                            <option value="Surat Perintah">Surat Perintah</option>
-                        @endif
-                        @if (old('category') == 'Surat Edaran')
-                            <option value="Surat Edaran"
-                                    selected>Surat Edaran</option>
-                        @else
-                            <option value="Surat Edaran">Surat Edaran</option>
-                        @endif
-                        @if (old('category') == 'Presentasi')
-                            <option value="Presentasi"
-                                    selected>Presentasi</option>
-                        @else
-                            <option value="Presentasi">Presentasi</option>
-                        @endif
-                        @if (old('category') == 'Rapat')
-                            <option value="Rapat"
-                                    selected>Rapat</option>
-                        @else
-                            <option value="Rapat">Rapat</option>
-                        @endif
-                        @if (old('category') == 'Perjalanan dinas')
-                            <option value="Perjalanan dinas"
-                                    selected>Perjalanan dinas</option>
-                        @else
-                            <option value="Perjalanan dinas">Perjalanan dinas</option>
-                        @endif
-                        @if (old('category') == 'SP3')
-                            <option value="SP3"
-                                    selected>SP3</option>
-                        @else
-                            <option value="SP3">SP3</option>
-                        @endif
-                        @if (old('category') == 'Berita Acara')
-                            <option value="Berita Acara"
-                                    selected>Berita Acara</option>
-                        @else
-                            <option value="Berita Acara">Berita Acara</option>
-                        @endif
-                        @if (old('category') == 'Sales Order')
-                            <option value="Sales Order"
-                                    selected>Sales Order</option>
-                        @else
-                            <option value="Sales Order">Sales Order</option>
-                        @endif
-                        @if (old('category') == 'Lainnya')
-                            <option value="Lainnya"
-                                    selected>Lainnya</option>
-                        @else
-                            <option value="Lainnya">Lainnya</option>
-                        @endif
-                    </x-forms.select>
+                 x-data="difficultyOption()">
+                <div>
+                    <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                           for="input-subject">
+                        Subject
+                        <span class="text-red-600 dark:text-red-500">*</span>
+                    </label>
+
+                    <div x-data="{ subject: '' }">
+                        <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
+                               id="input-subject"
+                               name="subject"
+                               type="text"
+                               value="{{ old('subject') }}"
+                               x-model="subject"
+                               autocomplete="off"
+                               placeholder="Assignment subject"
+                               maxlength="255"
+                               required>
+                        <p class="mt-1 text-end text-xs text-gray-500 dark:text-gray-400">
+                            <span x-text="subject.length"></span>/255
+                        </p>
+                    </div>
                 </div>
+
+                <x-forms.select id="input-category"
+                                name="category"
+                                label="Category"
+                                x-model="category"
+                                state="initial"
+                                required>
+                    <option value="">Select assignment category</option>
+                    <option value="Memorandum">Memorandum</option>
+                    <option value="Surat">Surat</option>
+                    <option value="Surat Keputusan">Surat Keputusan</option>
+                    <option value="Surat Perintah">Surat Perintah</option>
+                    <option value="Surat Edaran">Surat Edaran</option>
+                    <option value="Presentasi">Presentasi</option>
+                    <option value="Rapat">Rapat</option>
+                    <option value="Perjalanan dinas">Perjalanan dinas</option>
+                    <option value="SP3">SP3</option>
+                    <option value="Berita Acara">Berita Acara</option>
+                    <option value="Sales Order">Sales Order</option>
+                    <option value="Lainnya">Lainnya</option>
+                </x-forms.select>
 
                 <div class="col-span-2 space-y-4">
                     <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
@@ -217,7 +170,7 @@
                     </div>
                     <template x-ref="templateElement">
                         <div class="element">
-                            <div class="flex gap-2">
+                            <div class="flex">
                                 <div class="grow space-y-4 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
                                     <div class="assignee">
                                         <div class="mb-2 flex place-content-between">
@@ -227,8 +180,7 @@
                                             </label>
                                             <button class="add-assignee hidden items-center text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-500 hover:dark:text-blue-600"
                                                     type="button"
-                                                    x-on:click="addElement"
-                                                    {{-- x-show="elementsCount < 4" --}}>
+                                                    x-on:click="addElement">
                                                 <x-icons.plus class="-ml-0.5 mr-0.5 h-5 w-5">
                                                 </x-icons.plus>
                                                 Add assignee
@@ -426,8 +378,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <div class="mb-2"
+                                    <div class="ml-2"
                                          x-show="elementsCount > 1">
                                         <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
                                                 type="button"
@@ -443,7 +394,6 @@
                                             </svg>
                                         </button>
                                     </div>
-                                </div>
                             </div>
                         </div>
                     </template>
@@ -470,7 +420,7 @@
         return `${hours}:${minutes}`;
     }
 
-    function difficulty() {
+    function difficultyOption() {
         return {
             category: '',
             difficulty: '',
@@ -478,84 +428,18 @@
             disableIntermediate: false,
             init() {
                 this.$watch('category', (value) => {
-                    if (value !== '') {
-                        if (value === 'SP3') {
-                            this.difficulty = 'advanced';
-                            this.disableBasic = true;
-                            this.disableIntermediate = true;
-                        } else {
-                            this.difficulty = ''
-                            this.disableBasic = false;
-                            this.disableIntermediate = false;
-                        }
+                    if (value === 'SP3') {
+                        this.difficulty = 'advanced';
+                        this.disableBasic = true;
+                        this.disableIntermediate = true;
+                    } else {
+                        this.disableBasic = false;
+                        this.disableIntermediate = false;
                     }
                 })
             }
         }
     }
-
-    // function dueDateByDifficulty() {
-    //     return {
-    //         difficulty: '',
-    //         assignmentDue: '',
-    //         dueDate: '',
-    //         init() {
-    //             this.$watch('difficulty', (value) => {
-    //                 const due = new Date();
-    //                 const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday',
-    //                     'Saturday'
-    //                 ];
-    //                 const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-    //                     'August', 'September', 'October', 'November', 'December'
-    //                 ];
-
-    //                 if (value !== '') {
-    //                     if (value === '1') {
-    //                         due.setDate(due.getDate() + 1); // Set the due 1 days from now
-    //                     } else if (value === '2') {
-    //                         due.setDate(due.getDate() + 2); // Set the due 2 days from now
-    //                     } else if (value === '3') {
-    //                         due.setDate(due.getDate() + 3); // Set the due 3 days from now
-    //                     }
-
-    //                     // Specific dates to exclude (e.g., ['2024-07-15', '2024-08-15'])
-    //                     const excludedDates = [].map(dateStr => new Date(dateStr));
-
-    //                     // Check if the due date falls on a weekend (Saturday or Sunday)
-    //                     while (due.getDay() === 0 || due.getDay() === 6 || excludedDates.some(excludedDate =>
-    //                             due.toDateString() === excludedDate.toDateString())) {
-    //                         due.setDate(due.getDate() + 1); // Move to the next day
-    //                     }
-
-    //                     // Check if due date falls after any of the excluded dates, then add 1 day
-    //                     excludedDates.forEach(excludedDate => {
-    //                         if (due > excludedDate) {
-    //                             due.setDate(due.getDate() + 1); // Add 1 day
-    //                         }
-    //                     });
-
-    //                     const dayName = dayNames[due.getDay()];
-    //                     const day = String(due.getDate()).padStart(2, '0');
-
-    //                     const month = String(due.getMonth() + 1).padStart(2, '0');
-    //                     const monthName = monthNames[due.getMonth()];
-
-    //                     const year = due.getFullYear();
-
-    //                     const hours = String(due.getHours()).padStart(2, '0');
-    //                     const minutes = String(due.getMinutes()).padStart(2, '0');
-    //                     const seconds = String(due.getSeconds()).padStart(2, '0');
-
-    //                     this.assignmentDue = `${dayName}, ${day} ${monthName} ${year} at ${hours}:${minutes}`;
-    //                     this.dueDate = `${day}/${month}/${year} ${hours}:${minutes}`;
-    //                 } else {
-    //                     this.assignmentDue = '';
-    //                     this.dueDate = '';
-    //                 }
-    //             });
-    //         }
-    //     }
-    // }
 
     function appendAssigneeField() {
         return {
@@ -587,6 +471,7 @@
                     // Update the x-data attribute with a new value
                     element.setAttribute('x-data', JSON.stringify(newIndex));
 
+                    // Manipulate label
                     if (elements.length > 1) {
                         element.querySelector(".assignee-label").textContent = `Assignee ${index + 1}`;
                         element.querySelector(".detail-label").textContent = `Detail`;
@@ -595,6 +480,7 @@
                         element.querySelector(".detail-label").textContent = `Detail `;
                     }
 
+                    // Show add assignee button
                     if (elements.length < 5 && index + 1 == elements.length) {
                         element.querySelector(".add-assignee").classList.remove('hidden');
                         element.querySelector(".add-assignee").classList.add('inline-flex');
