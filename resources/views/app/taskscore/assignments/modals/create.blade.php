@@ -360,7 +360,7 @@
                                                 </template>
                                                 <div
                                                      class="relative border-b bg-white p-2.5 dark:border-gray-600 dark:bg-gray-700">
-                                                    <div class="min-h-24 block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                                                    <div x-on:click="$el.querySelector('[contenteditable]').focus()" class="cursor-text min-h-24 block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                                          placeholder="Assignment detail for assignee"
                                                          x-ref="element">
                                                     </div>
