@@ -148,20 +148,41 @@
                                 Subject
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                          scope="col">
+                                scope="col">
+                                Category
+                            </x-table-head>
+                            <x-table-head class="whitespace-nowrap px-3 py-3"
+                                        scope="col"
+                                        data-dt-order="disable">
                                 Assignee
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                          scope="col">
-                                Type
+                                        scope="col"
+                                        data-dt-order="disable">
+                                Submission
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                          scope="col">
-                                Status
+                                        scope="col"
+                                        data-dt-order="disable">
+                                Due
+                            </x-table-head>
+                            <x-table-head class="whitespace-nowrap px-3 py-3"
+                                        scope="col"
+                                        data-dt-order="disable">
+                                Difficulty
+                            </x-table-head>
+                            <x-table-head class="whitespace-nowrap px-3 py-3"
+                                        scope="col"
+                                        data-dt-order="disable">
+                                Score
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
                                           scope="col">
                                 Created at
+                            </x-table-head>
+                            <x-table-head class="whitespace-nowrap px-3 py-3"
+                                scope="col">
+                                Status
                             </x-table-head>
                             @if (Auth::User()->role == 'superadmin')
                                 <x-table-head class="px-3 py-3"
@@ -183,18 +204,92 @@
                                     {{ $assignment->subject }}
                                 </th>
                                 <td class="whitespace-nowrap px-3 py-4">
-                                    @foreach ($assignment->tasks->unique('assignee_id') as $task)
-                                        @if ($loop->count > 1)
-                                            <li>
-                                                {{ $task->assignee->name }}
-                                            </li>
-                                        @else
-                                            {{ $task->assignee->name }}
-                                        @endif
-                                    @endforeach
+                                    {{ $assignment->type }}
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4">
-                                    {{ $assignment->type }}
+                                    <ul class="list-none space-y-3">
+                                        @foreach ($assignment->tasks as $task)
+                                            <li>
+                                                {{ $task->uuid . ' - ' . $task->assignee->name }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4">
+                                    <ul class="list-none space-y-3">
+                                        @foreach ($assignment->tasks as $task)
+                                            <li>
+                                                @if ($task->latestSubmission?->isWaitingApproval())
+                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">
+                                                        Waiting for approval
+                                                    </span>
+                                                @elseif ($task->latestSubmission?->isApproved())
+                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
+                                                        Resolved
+                                                    </span>
+                                                @else
+                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-gray-800 dark:text-gray-400 rounded-full">
+                                                        -
+                                                    </span>
+                                                @endif
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4">
+                                    <ul class="list-none space-y-3">
+                                        @foreach ($assignment->tasks as $task)
+                                            <li>
+                                                {{ $task->due->format('d F Y, H:i') }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4">
+                                    <ul class="list-none space-y-3">
+                                        @foreach ($assignment->tasks as $task)
+                                            <li>
+                                                {{ ucwords($task->difficulty) }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-center">
+                                    <ul class="list-none space-y-3">
+                                        @foreach ($assignment->tasks as $task)
+                                            @if ($task->score() == 100)
+                                                <li class="flex align-items-center gap-1">
+                                                    {{ $task->score() . '%' }}
+                                                    <span>
+                                                        <svg class="inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M48 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l352 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48 128zm0 192c-17.7 0-32 14.3-32 32s14.3 32 32 32l352 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48 320z"/></svg>
+                                                    </span>
+                                                </li>
+                                            @elseif ($task->score() > 100)
+                                                <li class="flex align-items-center gap-1 text-green-600 dark:text-green-500">
+                                                    {{ $task->score() . '%'}}
+                                                    <span>
+                                                        <svg class="inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/></svg>
+                                                    </span>
+                                                </li>
+                                            @elseif (!$task->isResolved() && $task->score() < 100)
+                                                <li>
+                                                    -
+                                                </li>
+                                            @elseif ($task->score() < 100)
+                                                <li class="flex align-items-center gap-1 text-red-600 dark:text-red-500">
+                                                    {{ $task->score() . '%' }}
+                                                    <span>
+                                                        <svg class="inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+                                                    </span>
+                                                </li>
+                                            @endif
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4"
+                                    data-search="{{ $assignment->created_at->format('Ymd') }}"
+                                    data-sort="{{ $assignment->created_at->format('YmdHis') }}">
+                                    {{ $assignment->created_at->format('d F Y, H:i') }}
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4">
                                     @if ($assignment->isOpen())
@@ -208,11 +303,6 @@
                                             Closed
                                         </span>
                                     @endif
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4"
-                                    data-search="{{ $assignment->created_at->format('Ymd') }}"
-                                    data-sort="{{ $assignment->created_at->format('YmdHis') }}">
-                                    {{ $assignment->created_at->format('d F Y, H:i') }}
                                 </td>
                                 @if (Auth::User()->role == 'superadmin')
                                     <td class="float-end py-4 pe-2 ps-6">
@@ -272,12 +362,12 @@
                 </select>
             </div>
             <div>
-                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Type</h6>
+                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Category</h6>
                 <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         id="filter-type"
                         normal-select>
                     <option value=""
-                            selected>All Type</option>
+                            selected>All Category</option>
                     @foreach ($types as $type)
                         <option value="{{ $type }}">{{ $type }}</option>
                     @endforeach
@@ -290,8 +380,9 @@
                         normal-select>
                     <option value=""
                             selected>All Status</option>
-                    <option value="Open">Open</option>
-                    <option value="Closed">Closed</option>
+                    <option value="-">-</option>
+                    <option value="Resolved">Resolved</option>
+                    <option value="Waiting for approval">Waiting for approval</option>
                 </select>
             </div>
             <div>
@@ -359,7 +450,7 @@
             document
                 .getElementById("filter-type")
                 .addEventListener("change", function() {
-                    table.columns(3).search(this.value, false, false, false).draw();
+                    table.columns(2).search(this.value, false, false, false).draw();
                 });
             document
                 .getElementById("filter-status")
@@ -373,7 +464,7 @@
                 .getElementById("filter-assignee")
                 .addEventListener("change", function() {
                     table
-                        .columns(2)
+                        .columns(3)
                         .search(this.value, false, false, false)
                         .draw();
                 });
@@ -395,7 +486,7 @@
 
                     var min = parseInt(minDateStr, 10);
                     var max = parseInt(maxDateStr, 10);
-                    var date = parseFloat(data[5]["@data-search"]); // use data for the date column
+                    var date = parseFloat(data[6]["@data-search"]); // use data for the date column
 
                     if (
                         (isNaN(min) && isNaN(max)) ||

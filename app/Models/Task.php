@@ -20,7 +20,8 @@ class Task extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'due' => 'datetime'
+        'due' => 'datetime',
+        'resolved_at' => 'datetime'
     ];
 
     /**
@@ -153,7 +154,7 @@ class Task extends Model
                     $target_interval->i * 60 +
                     $target_interval->s;
 
-        return number_format(($this->calculate_score($realization, $target)), 2, '.', '');
+        return number_format(($this->calculate_score($realization, $target) < 0 ? 0 : $this->calculate_score($realization, $target)), 2, '.', '');
     }
 
     private function calculate_score(float $realization, float $target)

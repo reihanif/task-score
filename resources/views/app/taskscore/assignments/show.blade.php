@@ -203,25 +203,6 @@
                                             </form>
                                         </div>
                                     @endif
-
-                                    <!-- Reassign Button -->
-                                    {{-- <div>
-                                        <button
-                                            class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                            data-modal-target="reassign-assignment-modal"
-                                            data-modal-show="reassign-assignment-modal"
-                                            type="button">
-                                            <svg class="me-1 h-3.5 w-3.5"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="currentColor"
-                                                viewBox="0 0 16 16">
-                                                <path
-                                                    d="M5.921 11.9 1.353 8.62a.72.72 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z" />
-                                            </svg>
-                                            Reassign
-                                        </button>
-                                    </div> -->
-                                    @include('app.taskscore.assignments.modals.reassign', $assignees) --}}
                                 </div>
                             </div>
 

@@ -65,7 +65,7 @@
 
                 <div class="grid grid-cols-2">
                     <dl class="flex items-center">
-                        <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Overal score:</dt>
+                        <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Resolved overall score:</dt>
                         <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $total_score ?? 0 }}%</dd>
                     </dl>
                     <dl class="flex items-center justify-end">

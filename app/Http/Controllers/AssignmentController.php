@@ -15,6 +15,8 @@ use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentResolved;
 use App\Notifications\AssignmentSubmitted;
+use App\Notifications\AssignmentSubmittedAssignee;
+use App\Notifications\NewAssignmentTaskmaster;
 use Illuminate\Support\Facades\Notification;
 
 class AssignmentController extends Controller
@@ -26,10 +28,11 @@ class AssignmentController extends Controller
      */
     public function myAssignment()
     {
+        $user = Auth::User();
         return view('app.taskscore.assignments.my-assignments', [
-            'unresolved_assignments' => Auth::User()->unresolvedAssignments(),
-            'pending_assignments' => Auth::User()->pendingAssignments(),
-            'resolved_assignments' => Auth::User()->resolvedAssignments,
+            'unresolved_assignments' => $user->unresolvedAssignments(),
+            'pending_assignments' => $user->pendingAssignments(),
+            'resolved_assignments' => $user->resolvedAssignments,
         ]);
     }
 
@@ -56,7 +59,7 @@ class AssignmentController extends Controller
     {
         $assignees = Auth::User()->subordinates();
 
-        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at')->get();
+        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at', 'desc')->get();
         $types = $assignments->map(function ($assignment) {
             return collect($assignment->toArray())
                 ->only(['type'])
@@ -80,8 +83,8 @@ class AssignmentController extends Controller
     {
         $request->validate([
             'category' => 'required',
-            'subject' => 'required|unique:assignments,subject',
-            'description' => 'required',
+            'subject' => 'required|unique:assignments,subject|max:255',
+            'description' => 'required|max:2000',
         ]);
 
         DB::beginTransaction();
@@ -116,6 +119,7 @@ class AssignmentController extends Controller
             }
 
             $tasks = new Collection;
+            $assignees_name = '';
 
             foreach ($request->assignees as $key => $assignee) {
                 if ($request->difficulty == 'basic') {
@@ -135,6 +139,7 @@ class AssignmentController extends Controller
                 $task->due = $due;
                 $task->save();
 
+                $assignees_name .= $task->assignee->name . ' ';
                 $tasks->push($task);
             }
 
@@ -143,13 +148,15 @@ class AssignmentController extends Controller
                 $assignees = User::where('id', $task->assignee_id)->get();
                 Notification::send($assignees, new NewAssignment($assignment, $task));
             }
+            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
+            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $assignees_name));
 
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             // Handle the error appropriately
-            return redirect()->back()->with('errors', 'Create assignment failed');
+            return redirect()->back()->withErrors('Create assignment failed');
         }
 
         return redirect()->back()->with('success', 'Assignment created successfully');
@@ -163,17 +170,20 @@ class AssignmentController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
-            $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
-        })->get()->sortBy('name');
-
         $task = null;
-
         if ($request->task) {
             $task = Task::findOrFail($request->task);
         }
 
+        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
+            $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
+        })->get()->sortBy('name');
+
         $assignment = Assignment::findOrFail($id);
+
+        if (Auth::User()->isAssignee($id) && is_null($task)) {
+            abort(404);
+        }
 
         return view('app.taskscore.assignments.show', [
             'assignment' => $assignment,
@@ -273,6 +283,7 @@ class AssignmentController extends Controller
 
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
             Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
+            Notification::send($task->assignee, new AssignmentSubmittedAssignee($assignment, $task));
 
             // Execute database insertations
             DB::commit();
