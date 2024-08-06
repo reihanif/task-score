@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use App\Notifications\AssigneeReminder;
+use App\Notifications\AssigneeReminderOverdue;
 
 class Reminder extends Command
 {
@@ -37,6 +39,8 @@ class Reminder extends Command
 
             foreach ($tasks as $task) {
                 $notify = false;
+                $overdue = false;
+
                 if ($task->due->isFuture()) {
                     $task->assignment;
                     if ($task->due->diffInHours($now) < 25) {
@@ -50,26 +54,39 @@ class Reminder extends Command
                             case '15:00':
                                 $notify = true;
                                 break;
+                            default:
+                                $notify = true;
+                                break;
                         }
                     }
                 }
 
                 if ($task->due->isPast()) {
+                    $overdue = true;
                     switch ($now->format('H:i')) {
                         case '11:00':
+                            $notify = true;
+                            break;
+                        default:
                             $notify = true;
                             break;
                     }
                 }
 
                 if ($notify) {
-                    $user->notify(new AssigneeReminder($task->assignment, $task));
+
+                    if ($overdue) {
+                        $user->notify(new AssigneeReminderOverdue($task));
+                    } else {
+                        $user->notify(new AssigneeReminder($task));
+                    }
+
                     $total++;
                 }
             }
 
             if($total > 0) {
-                info($total . ' notifications sent to ' . $user->email);
+                Log::channel('notify:reminder')->info($total . ' notifications sent to ' . $user->email);
             }
         }
     }
