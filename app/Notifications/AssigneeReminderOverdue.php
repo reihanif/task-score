@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AssigneeReminder extends Notification
+class AssigneeReminderOverdue extends Notification
 {
     use Queueable;
 
@@ -39,10 +39,10 @@ class AssigneeReminder extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Action Needed: Unresolved Assignment')
-            ->greeting('Unresolved Assignment')
+            ->subject('Action Needed: Overdue Assignment')
+            ->greeting('Overdue Assignment')
             ->line('Hi, ' . $notifiable->name)
-            ->line('Just a friendly reminder – you have an important assignment pending: ' . $this->assignment->subject . ' ' . $this->task->uuid . '. Please ensure it\'s completed before ' . $this->task->due->format('d F Y, H:i') . ' ' . '(' . $this->task->due->diffForHumans() . ')' . ' to keeping up your good score.')
+            ->line('Just a quick reminder – you have an assignment that needs your immediate attention: ' . $this->assignment->subject . ' ' . $this->task->uuid . '. The due date was ' . $this->task->due->format('d F Y, H:i') . ' ' . '(' . $this->task->due->diffForHumans() . ')' . ', so please prioritize its completion as soon as possible to keep your score in good standing.')
             ->line('Explore the full details by clicking the button below.')
             ->action('Open Assignment', url(route('taskscore.assignment.show', ['assignment' => $this->assignment->id, 'task' => $this->task->id])))
             ->line('Thank you for using our application!');
