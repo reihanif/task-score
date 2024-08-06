@@ -181,6 +181,10 @@ class AssignmentController extends Controller
 
         $assignment = Assignment::findOrFail($id);
 
+        if (Auth::User()->isAssignee($id) && is_null($task)) {
+            abort(404);
+        }
+
         return view('app.taskscore.assignments.show', [
             'assignment' => $assignment,
             'assignee_task' => $task,

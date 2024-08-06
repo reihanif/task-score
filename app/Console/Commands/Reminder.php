@@ -54,9 +54,6 @@ class Reminder extends Command
                             case '15:00':
                                 $notify = true;
                                 break;
-                            default:
-                                $notify = true;
-                                break;
                         }
                     }
                 }
@@ -65,9 +62,6 @@ class Reminder extends Command
                     $overdue = true;
                     switch ($now->format('H:i')) {
                         case '11:00':
-                            $notify = true;
-                            break;
-                        default:
                             $notify = true;
                             break;
                     }
