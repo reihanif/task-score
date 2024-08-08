@@ -60,16 +60,32 @@ class AssignmentController extends Controller
         $assignees = Auth::User()->subordinates();
 
         $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at', 'desc')->get();
-        $types = $assignments->map(function ($assignment) {
+        $default_types = collect([
+            'Memorandum',
+            'Surat',
+            'Surat Keputusan',
+            'Surat Perintah',
+            'Surat Edaran',
+            'Presentasi',
+            'Rapat',
+            'Perjalanan Dinas',
+            'SP3',
+            'Berita Acara',
+            'Sales Order'
+        ]);
+        $types = Assignment::all()->map(function ($assignment) {
             return collect($assignment->toArray())
                 ->only(['type'])
                 ->all();
-        })->flatten()->unique();
+        })->flatten()->filter(function ($item) {
+            return $item !== 'Lainnya';
+        });
+        $categories = $default_types->merge($types)->sort()->values()->unique()->merge(collect(['Lainnya']));
 
         return view('app.taskscore.assignments.subordinate-assignments', [
             'assignees' => $assignees,
             'assignments' => $assignments,
-            'types' => $types
+            'categories' => $categories
         ]);
     }
 
@@ -87,12 +103,18 @@ class AssignmentController extends Controller
             'description' => 'required|max:2000',
         ]);
 
+        if ($request->category == 'Lainnya') {
+            $type = ucwords($request->category_other);
+        } else {
+            $type = $request->category;
+        }
+
         DB::beginTransaction();
 
         try {
             $assignment = new Assignment();
             $assignment->taskmaster_id = Auth::User()->id;
-            $assignment->type = $request->category;
+            $assignment->type = $type;
             $assignment->subject = $request->subject;
             $assignment->description = $request->description;
             $assignment->save();

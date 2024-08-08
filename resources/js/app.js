@@ -216,6 +216,8 @@ function initializeTomSelects() {
 
     document.querySelectorAll("select").forEach((el) => {
         let isCreatable = el.getAttribute('data-create') ?? false;
+        let hasDataOrder = Array.from(el.options).some(option => option.hasAttribute('data-order'));
+        let sortField = hasDataOrder ? 'order' : 'text';
         if (!el.hasAttribute("normal-select")) {
             if (!el.classList.contains("dt-input")) {
                 if (!el.classList.contains("tomselected")) {
@@ -227,7 +229,7 @@ function initializeTomSelects() {
                                 plugins: ["remove_button", "caret_position"],
                                 create: isCreatable,
                                 sortField: {
-                                    field: 'text',
+                                    field: sortField,
                                     direction: 'asc'
                                 },
                             });
@@ -239,7 +241,7 @@ function initializeTomSelects() {
                             new TomSelect(el, {
                                 create: isCreatable,
                                 sortField: {
-                                    field: 'text',
+                                    field: sortField,
                                     direction: 'asc'
                                 },
                             });
