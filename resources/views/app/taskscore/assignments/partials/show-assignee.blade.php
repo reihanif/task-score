@@ -1,13 +1,15 @@
 <div
      class="grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
     <div class="space-y-3">
-        <dl>
-            <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Detail
-                Assignment</dt>
-            <dd class="text-sm text-gray-600 dark:text-gray-400">
-                {{ Str::of($assignee_task->description)->toHtmlString }}
-            </dd>
-        </dl>
+        @if ($task->description)
+            <dl>
+                <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Detail
+                    Assignment</dt>
+                <dd class="text-sm text-gray-600 dark:text-gray-400">
+                    {{ Str::of($assignee_task->description)->toHtmlString }}
+                </dd>
+            </dl>
+        @endif
         <div class="grid space-y-2 md:grid-cols-3">
             <dl class="space-y-2 md:col-span-2">
                 <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Due</dt>

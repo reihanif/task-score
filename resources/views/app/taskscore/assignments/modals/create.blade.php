@@ -197,7 +197,6 @@
                                     <div>
                                         <p class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                                             <span class="detail-label"></span>
-                                            <span class="text-red-600 dark:text-red-500">*</span>
                                         </p>
                                         <div x-data="editor('')">
                                             <div
@@ -366,7 +365,6 @@
                                                     </div>
                                                     <input class="pointer-events-none absolute top-2 opacity-0"
                                                            :name="'details[' + index + ']'"
-                                                           required
                                                            x-model="content"></input>
                                                 </div>
                                                 <p

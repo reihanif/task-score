@@ -61,7 +61,7 @@
                             id="label-email"
                             for="email">
                             Email
-                            <span class="text-red-600 dark:text-red-500">*</span>
+                            <span class="hidden text-red-600 dark:text-red-500">*</span>
                         </label>
                         <div>
                             <input
@@ -77,7 +77,7 @@
                     </div>
 
                     <div class="col-span-6 sm:col-span-3">
-                        <div class="hidden"
+                        <div class="block"
                             id="form-username">
                             <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                                 id="label-username"
@@ -95,7 +95,7 @@
                             </div>
                         </div>
 
-                        <div id="form-username-placeholder">
+                        <div id="form-username-placeholder" class="hidden">
                             <!-- Input for interface -->
                             <x-forms.input id="username-placeholder"
                                 type="text"
@@ -109,7 +109,7 @@
                     </div>
                 </div>
 
-                <div class="hidden"
+                <div class="block"
                     id="password-element">
                     <x-forms.input id="password"
                         name="password"
@@ -198,18 +198,8 @@
 
 @section('script')
     <script>
-        window.onload = function() {
-            const accountType = document.querySelector('input[name="provider"]:checked').value;
-
-            if (accountType == 'ldap') {
-                ldap();
-            } else {
-                local();
-            }
-        };
-
         function ldap() {
-            document.getElementById('password-element').style.display = 'none';
+            document.getElementById('password-element').classList.add("hidden");
             document.getElementById('password').removeAttribute('required');
             document.getElementById('password').value = null;
             document.getElementById('form-username-placeholder').classList.remove("hidden");
@@ -221,7 +211,7 @@
         }
 
         function local() {
-            document.getElementById('password-element').style.display = 'block';
+            document.getElementById('password-element').classList.remove('hidden');
             document.getElementById('password').setAttribute('required', true);
             document.getElementById('form-username-placeholder').classList.add("hidden");
             document.getElementById('form-username').classList.remove("hidden");
