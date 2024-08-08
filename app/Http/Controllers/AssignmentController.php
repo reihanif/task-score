@@ -156,7 +156,6 @@ class AssignmentController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
 
-            dd($e);
             // Handle the error appropriately
             return redirect()->back()->withErrors('Create assignment failed');
         }
