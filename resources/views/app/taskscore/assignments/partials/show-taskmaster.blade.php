@@ -43,13 +43,15 @@
                         </span>
                     </dd>
                 </dl>
-                <dl>
-                    <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Detail
-                        Assignment</dt>
-                    <dd class="text-sm text-gray-600 dark:text-gray-400">
-                        {{ Str::of($task->description)->toHtmlString }}
-                    </dd>
-                </dl>
+                @if ($task->description)
+                    <dl>
+                        <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Detail
+                            Assignment</dt>
+                        <dd class="text-sm text-gray-600 dark:text-gray-400">
+                            {{ Str::of($task->description)->toHtmlString }}
+                        </dd>
+                    </dl>
+                @endif
                 <div class="grid space-y-2 md:grid-cols-3">
                     <dl class="space-y-2 md:col-span-2">
                         <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Due</dt>
