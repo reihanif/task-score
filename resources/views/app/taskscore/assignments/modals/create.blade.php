@@ -34,7 +34,7 @@
                     </div>
                 </div>
 
-                <div class="space-y-2" x-data="{ category: '' }">
+                <div class="space-y-2">
                     <x-forms.select id="input-category"
                                     name="category"
                                     label="Category"
