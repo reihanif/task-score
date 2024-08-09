@@ -67,10 +67,10 @@
                         <td class="whitespace-nowrap px-3 py-4">
                             {{ $item->assignment->taskmaster->name }}
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4">
+                        <td class="whitespace-nowrap px-3 py-4" data-order="{{ $item->created_at->format('YmdHi') }}">
                             {{ $item->created_at->format('d F Y H:i') }}
                         </td>
-                        <td class="whitespace-nowrap px-3 py-4">
+                        <td class="whitespace-nowrap px-3 py-4" data-order="{{ $item->due->format('YmdHi') }}">
                             {{ $item->due->diffForHumans() }}
                         </td>
                     </tr>
