@@ -34,26 +34,30 @@
                     </div>
                 </div>
 
-                <x-forms.select id="input-category"
-                                name="category"
-                                label="Category"
-                                x-model="category"
-                                state="initial"
-                                required>
-                    <option value="">Select assignment category</option>
-                    <option value="Memorandum">Memorandum</option>
-                    <option value="Surat">Surat</option>
-                    <option value="Surat Keputusan">Surat Keputusan</option>
-                    <option value="Surat Perintah">Surat Perintah</option>
-                    <option value="Surat Edaran">Surat Edaran</option>
-                    <option value="Presentasi">Presentasi</option>
-                    <option value="Rapat">Rapat</option>
-                    <option value="Perjalanan dinas">Perjalanan dinas</option>
-                    <option value="SP3">SP3</option>
-                    <option value="Berita Acara">Berita Acara</option>
-                    <option value="Sales Order">Sales Order</option>
-                    <option value="Lainnya">Lainnya</option>
-                </x-forms.select>
+                <div class="space-y-2">
+                    <x-forms.select id="input-category"
+                                    name="category"
+                                    label="Category"
+                                    x-model="category"
+                                    state="initial"
+                                    required>
+                        <option value="">Select assignment category</option>
+                        @foreach ($categories as $key => $category)
+                            <option value="{{ $category }}" data-order="{{ str_pad($key, 2, '0', STR_PAD_LEFT) }}">{{ $category }}</option>
+                        @endforeach
+                    </x-forms.select>
+
+                    <template x-if="category == 'Lainnya'">
+                        <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
+                                   id="input-category-other"
+                                   name="category_other"
+                                   type="text"
+                                   autocomplete="off"
+                                   placeholder="Category name"
+                                   maxlength="255"
+                                   required>
+                    </template>
+                </div>
 
                 <div class="col-span-2 space-y-4">
                     <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">

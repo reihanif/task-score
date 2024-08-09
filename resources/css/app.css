@@ -244,6 +244,14 @@ input[datepicker] {
     pointer-events: none;
 }
 
+.break-words a {
+    @apply text-blue-600 dark:text-blue-400 underline cursor-pointer;
+}
+
+.tiptap a {
+    @apply text-blue-600 dark:text-blue-400 underline cursor-pointer;
+}
+
 /* Datatables */
 table {
     @apply !w-full;

@@ -6,7 +6,7 @@
     <h6 class="text-xl font-semibold text-gray-800 dark:text-white">Dashboard</h6>
 
     <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-8 space-y-4">
+        <div class="col-span-12 md:col-span-8 space-y-4">
             <div class="overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="inline-flex items-center space-x-4">
                     <img class="h-12 rounded-full"
@@ -149,9 +149,9 @@
             </div>
         </div> --}}
 
-        <div class="col-span-4">
+        <div class="col-span-12 md:col-span-4">
             <div
-                class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+                class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-2">
                 <div class="mb-4 flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
                     <div>
                         <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Total</h3>
@@ -178,7 +178,7 @@
                     id="donut-chart"
                     style="min-height: 378.7px;"></div>
                 <!-- Card Footer -->
-                <div class="flex items-center justify-between pt-4 sm:pt-6 lg:justify-evenly">
+                <div class="flex items-center justify-evenly pt-4 sm:pt-6 lg:justify-evenly ">
                     <div>
                         <svg class="mb-1 h-8 w-8 text-gray-500 dark:text-gray-400"
                             aria-hidden="true"
