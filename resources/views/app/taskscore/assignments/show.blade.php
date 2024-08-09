@@ -332,8 +332,7 @@
 
         <div class="col-span-full space-y-4 md:col-span-9">
             <!-- Assignment Description -->
-            <div
-                class="grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+            <div class="h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
                 <div class="space-y-2">
                     <h6 class="text-md mr-3 font-semibold dark:text-white">Descriptions</h6>
                     <!-- Assignment Description Area -->
@@ -341,7 +340,7 @@
                         <div class="h-fit space-y-4">
                             <!-- Assignment Description -->
                             <div class="space-y-2">
-                                <div class="text-sm text-gray-600 dark:text-gray-400">
+                                <div class="break-words text-sm text-gray-600 dark:text-gray-400">
                                     {{ Str::of($assignment->description)->toHtmlString }}
                                 </div>
                             </div>
