@@ -6,7 +6,7 @@
                 @foreach ($tabs as $tab)
                     <li class="me-1 sm:me-2">
                         @if (array_key_exists('badge', $tab))
-                            <a class="active inline-block rounded-t-lg border-blue-600 p-3 sm:p-4 py-3 text-blue-600 hover:border-b-2 hover:text-gray-600 dark:border-blue-500 dark:text-blue-500"
+                            <a class="active inline-block rounded-t-lg border-blue-600 px-3 sm:px-4 py-3 text-blue-600 hover:border-b-2 hover:text-gray-600 dark:border-blue-500 dark:text-blue-500"
                                 href="#"
                                 x-bind:class="{
                                     'cursor-default border-b-2 border-blue-600 text-blue-600 dark:border-blue-500 dark:text-blue-500': tab ==
