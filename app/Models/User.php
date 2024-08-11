@@ -6,6 +6,7 @@ namespace App\Models;
 
 use stdClass;
 use App\Models\Permission;
+use App\Models\TimeExtension;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -119,6 +120,38 @@ class User extends Authenticatable
         return Task::where('resolved_at', null)->where('assignee_id', $this->id)->whereHas('latestSubmission', function($query) {
             return $query->whereNull('is_approve');
         })->whereHas('assignment')->get();
+    }
+
+    /**
+     * Count the waiting approval submission
+     */
+    public function getWaitingApprovalSubmissionAttribute()
+    {
+        return Submission::whereNull('approval_detail')->whereNull('is_approve')->whereHas('task', function($query) {
+            return $query->whereHas('assignment', function($sub_query) {
+                return $sub_query->where('taskmaster_id', $this->id);
+            });
+        })->count();
+    }
+
+    /**
+     * Count the waiting approval time extension
+     */
+    public function getWaitingApprovalTimeExtensionAttribute()
+    {
+        return TimeExtension::whereNull('approved_at')->whereNull('is_approve')->whereHas('task', function($query) {
+            return $query->whereHas('assignment', function($sub_query) {
+                return $sub_query->where('taskmaster_id', $this->id);
+            });
+        })->count();
+    }
+
+    /**
+     * Count the waiting approval of submission & time extension
+     */
+    public function getWaitingApprovalRequestAttribute()
+    {
+        return $this->waiting_approval_submission + $this->waiting_approval_time_extension;
     }
 
     /**
