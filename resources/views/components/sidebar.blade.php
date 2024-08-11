@@ -1,12 +1,12 @@
 <aside id="sidebar"
-    aria-label="Sidebar"
-    {{ $attributes }}>
+       aria-label="Sidebar"
+       {{ $attributes }}>
     <div class="h-full overflow-y-auto bg-white px-3 pb-4 text-sm dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
 
             <x-sidebar-menu data-menu-name="Dashboard"
-                data-route-name="homepage"
-                data-menu-title="Homepage">
+                            data-route-name="homepage"
+                            data-menu-title="Homepage">
                 <x-icons.chart-pie />
             </x-sidebar-menu>
 
@@ -14,23 +14,32 @@
             @if (in_array(Auth::User()->role, ['superadmin', 'admin', 'user']))
                 @if (Auth::User()->unresolvedAssignments()->count() > 0)
                     <x-sidebar-menu data-menu-name="My Assignment"
-                        data-route-name="taskscore.assignment.my-assignments"
-                        data-badge-content="{{ Auth::User()->unresolvedAssignments()->count() }}"
-                        data-badge-color="blue">
+                                    data-route-name="taskscore.assignment.my-assignments"
+                                    data-badge-content="{{ Auth::User()->unresolvedAssignments()->count() }}"
+                                    data-badge-color="blue">
                         <x-icons.person-fill-check />
                     </x-sidebar-menu>
                 @else
                     <x-sidebar-menu data-menu-name="My Assignment"
-                        data-route-name="taskscore.assignment.my-assignments">
+                                    data-route-name="taskscore.assignment.my-assignments">
                         <x-icons.person-fill-check />
                     </x-sidebar-menu>
                 @endif
 
-                <x-sidebar-menu data-menu-name="Subordinate"
-                    data-route-name="taskscore.assignment.subordinate-assignments"
-                    data-menu-title="Subordinate assignments">
-                    <x-icons.diagram />
-                </x-sidebar-menu>
+                @if (Auth::User()->waiting_approval_request > 0)
+                    <x-sidebar-menu data-menu-name="Subordinate"
+                                    data-route-name="taskscore.assignment.subordinate-assignments"
+                                    data-badge-content="{{ Auth::User()->waiting_approval_request }}"
+                                    data-badge-color="yellow">
+                        <x-icons.diagram />
+                    </x-sidebar-menu>
+                @else
+                    <x-sidebar-menu data-menu-name="Subordinate"
+                                    data-route-name="taskscore.assignment.subordinate-assignments"
+                                    data-menu-title="Subordinate assignments">
+                        <x-icons.diagram />
+                    </x-sidebar-menu>
+                @endif
 
                 {{-- <x-sidebar-menu data-menu-name="Tasklist"
                     data-route-name="taskscore.assignment.tasklists"
@@ -54,33 +63,33 @@
 
                 @if (Auth::User()->permission->manage_user)
                     <x-sidebar-menu data-menu-name="Users"
-                        data-route-name="users.index">
+                                    data-route-name="users.index">
                         <x-icons.users />
                     </x-sidebar-menu>
                 @endif
 
                 @if (Auth::User()->permission->manage_department)
                     <x-sidebar-menu data-menu-name="Departments"
-                        data-route-name="departments.index">
+                                    data-route-name="departments.index">
                         <x-icons.briefcase />
                     </x-sidebar-menu>
                 @endif
 
                 @if (Auth::User()->permission->manage_position)
                     <x-sidebar-expanded-menu data-group-name="Organizations"
-                        data-group-title="Organizations management"
-                        :menu="collect([
-                            [
-                                'data-menu-name' => 'Position',
-                                'data-route-name' => 'positions.index',
-                                'data-menu-title' => 'Position lists inside organizations',
-                            ],
-                            [
-                                'data-menu-name' => 'Hierarchy',
-                                'data-route-name' => 'hierarchy',
-                                'data-menu-title' => 'Hierarchy organizations',
-                            ],
-                        ])">
+                                             data-group-title="Organizations management"
+                                             :menu="collect([
+                                                 [
+                                                     'data-menu-name' => 'Position',
+                                                     'data-route-name' => 'positions.index',
+                                                     'data-menu-title' => 'Position lists inside organizations',
+                                                 ],
+                                                 [
+                                                     'data-menu-name' => 'Hierarchy',
+                                                     'data-route-name' => 'hierarchy',
+                                                     'data-menu-title' => 'Hierarchy organizations',
+                                                 ],
+                                             ])">
                         <x-icons.users-group />
                     </x-sidebar-expanded-menu>
                 @endif

@@ -18,7 +18,7 @@
                 </div>
                 <div class="col-span-2">
                     <label class="mb-2 inline-flex gap-1 text-sm font-medium text-gray-900 dark:text-white"
-                        for="file">Files <span class="text-red-600 dark:text-red-500">*</span>
+                        for="file">Files
                         <button class="text-gray-400 hover:text-gray-900 dark:text-gray-500 dark:hover:text-white"
                             data-tooltip-target="tooltip-default"
                             type="button">
@@ -44,8 +44,7 @@
                     <input id="file"
                         name="attachments[]"
                         type="file"
-                        multiple
-                        required>
+                        multiple>
                 </div>
             </div>
         </div>

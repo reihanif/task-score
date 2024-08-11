@@ -164,6 +164,11 @@
                             <x-table-head class="whitespace-nowrap px-3 py-3"
                                         scope="col"
                                         data-dt-order="disable">
+                                Time Extension
+                            </x-table-head>
+                            <x-table-head class="whitespace-nowrap px-3 py-3"
+                                        scope="col"
+                                        data-dt-order="disable">
                                 Due
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
@@ -179,10 +184,6 @@
                             <x-table-head class="whitespace-nowrap px-3 py-3"
                                           scope="col">
                                 Created at
-                            </x-table-head>
-                            <x-table-head class="whitespace-nowrap px-3 py-3"
-                                scope="col">
-                                Status
                             </x-table-head>
                             @if (Auth::User()->role == 'superadmin')
                                 <x-table-head class="px-3 py-3"
@@ -219,19 +220,16 @@
                                     <ul class="list-none space-y-3">
                                         @foreach ($assignment->tasks as $task)
                                             <li>
-                                                @if ($task->latestSubmission?->isWaitingApproval())
-                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">
-                                                        Waiting for approval
-                                                    </span>
-                                                @elseif ($task->latestSubmission?->isApproved())
-                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
-                                                        Resolved
-                                                    </span>
-                                                @else
-                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-gray-800 dark:text-gray-400 rounded-full">
-                                                        -
-                                                    </span>
-                                                @endif
+                                                {{ $task->submission_status_badge }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4">
+                                    <ul class="list-none space-y-3">
+                                        @foreach ($assignment->tasks as $task)
+                                            <li>
+                                                {{ $task->time_extension_status_badge }}
                                             </li>
                                         @endforeach
                                     </ul>
@@ -288,21 +286,8 @@
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4"
                                     data-search="{{ $assignment->created_at->format('Ymd') }}"
-                                    data-sort="{{ $assignment->created_at->format('YmdHis') }}">
+                                    data-order="{{ $assignment->created_at->format('YmdHis') }}">
                                     {{ $assignment->created_at->format('d F Y, H:i') }}
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4">
-                                    @if ($assignment->isOpen())
-                                        <span
-                                              class="me-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                            Open
-                                        </span>
-                                    @else
-                                        <span
-                                              class="me-2 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">
-                                            Closed
-                                        </span>
-                                    @endif
                                 </td>
                                 @if (Auth::User()->role == 'superadmin')
                                     <td class="float-end py-4 pe-2 ps-6">
@@ -374,15 +359,16 @@
                 </select>
             </div>
             <div>
-                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Status</h6>
+                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Submission</h6>
                 <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        id="filter-status"
+                        id="filter-submission"
                         normal-select>
                     <option value=""
-                            selected>All Status</option>
+                            selected>All Submission</option>
                     <option value="-">-</option>
-                    <option value="Resolved">Resolved</option>
                     <option value="Waiting for approval">Waiting for approval</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Resolved">Resolved</option>
                 </select>
             </div>
             <div>
@@ -453,7 +439,7 @@
                     table.columns(2).search(this.value, false, false, false).draw();
                 });
             document
-                .getElementById("filter-status")
+                .getElementById("filter-submission")
                 .addEventListener("change", function() {
                     table
                         .columns(4)
@@ -486,7 +472,7 @@
 
                     var min = parseInt(minDateStr, 10);
                     var max = parseInt(maxDateStr, 10);
-                    var date = parseFloat(data[6]["@data-search"]); // use data for the date column
+                    var date = parseFloat(data[9]["@data-search"]); // use data for the date column
 
                     if (
                         (isNaN(min) && isNaN(max)) ||
