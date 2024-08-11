@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -46,6 +47,14 @@ class Task extends Model
     public function latestSubmission(): HasOne
     {
         return $this->hasOne(Submission::class)->latestOfMany();
+    }
+
+    /**
+     * Get latest time_extension request of the tasks.
+     */
+    public function latestTimeExtension(): HasOne
+    {
+        return $this->hasOne(TimeExtension::class)->latestOfMany();
     }
 
     /**
@@ -133,6 +142,48 @@ class Task extends Model
     public function getScoreAttribute()
     {
         return $this->score();
+    }
+
+    /**
+     * Create score attribute.
+     */
+    public function getScoreAttribute()
+    {
+        return $this->score();
+    }
+
+    /**
+     * Create submission status badge attribute.
+     */
+    public function getSubmissionStatusBadgeAttribute()
+    {
+        if ($this->latestSubmission?->isWaitingApproval()) {
+            $status = '<span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">Waiting for approval</span>';
+        } elseif ($this->latestSubmission?->isApproved()) {
+            $status = '<span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Resolved</span>';
+        } elseif ($this->latestSubmission?->isNotApproved()) {
+            $status = '<span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-red-800 bg-red-200 rounded-full">Rejected</span>';
+        } else {
+            $status = '<span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-gray-800 dark:text-gray-400 rounded-full">-</span>';
+        }
+        return Str::of($status)->toHtmlString;
+    }
+
+    /**
+     * Create time extension status badge attribute.
+     */
+    public function getTimeExtensionStatusBadgeAttribute()
+    {
+        if ($this->latestTimeExtension?->isWaitingApproval()) {
+            $status = '<span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">Waiting for approval</span>';
+        } elseif ($this->latestTimeExtension?->isApproved()) {
+            $status = '<span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-green-800 bg-green-200 rounded-full">Approved</span>';
+        } elseif ($this->latestTimeExtension?->isNotApproved()) {
+            $status = '<span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-red-800 bg-red-200 rounded-full">Rejected</span>';
+        } else {
+            $status = '<span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-gray-800 dark:text-gray-400 rounded-full">-</span>';
+        }
+        return Str::of($status)->toHtmlString;
     }
 
     /**
