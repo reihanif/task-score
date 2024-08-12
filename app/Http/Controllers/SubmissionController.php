@@ -24,7 +24,7 @@ class SubmissionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function approve($id)
+    public function approve(Request $request, $id)
     {
         DB::beginTransaction();
 
@@ -32,7 +32,7 @@ class SubmissionController extends Controller
             $submission = Submission::findOrFail($id);
             $submission->timestamps = false;
             $submission->is_approve = (bool) true;
-            $submission->approval_detail = 'approved';
+            $submission->approval_detail = $request->detail;
             $submission->approved_at = Carbon::now()->toDateTimeString();
             $submission->save();
 
