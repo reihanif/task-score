@@ -435,4 +435,86 @@
                 ])
             @endassignee
         </div>
-    @endsection
+    </div>
+@endsection
+@section('script')
+<script>
+    function score(task) {
+        const now = new Date();
+        const realizationInterval = diff(new Date(task.created_at), now);
+        const targetInterval = diff(new Date(task.created_at), new Date(task.due));
+
+        const realization =
+            realizationInterval.days * 86400 +
+            realizationInterval.hours * 3600 +
+            realizationInterval.minutes * 60 +
+            realizationInterval.seconds;
+
+        const target =
+            targetInterval.days * 86400 +
+            targetInterval.hours * 3600 +
+            targetInterval.minutes * 60 +
+            targetInterval.seconds;
+
+        const calculatedScore = calculateScore(realization, target);
+        return Math.max(0, calculatedScore).toFixed(2);
+    }
+
+    function calculateScore(realization, target) {
+        if (realization >= target) {
+            return (1 - ((realization - target) / target)) * 100;
+        } else if (realization <= (target * 1.1)) {
+            return 110;
+        } else {
+            return 100 + ((realization - target) * (110 - 100) / ((realization * 1.1) - target));
+        }
+    }
+
+    function diff(date1, date2) {
+        const interval = {
+            days: Math.floor((date2 - date1) / (1000 * 60 * 60 * 24)),
+            hours: Math.floor(((date2 - date1) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+            minutes: Math.floor(((date2 - date1) % (1000 * 60 * 60)) / (1000 * 60)),
+            seconds: Math.floor(((date2 - date1) % (1000 * 60)) / 1000)
+        };
+        return interval;
+    }
+
+    function updateProgressBar(task) {
+        const scoreValue = parseFloat(score(task));
+        const scoreBar = document.getElementById(`score-bar-${task.id}`);
+
+        if (scoreBar) {
+            const scorePercentage = scoreValue <= 100 ? scoreValue : 100;
+            scoreBar.style.width = `${scorePercentage}%`;
+            scoreBar.innerText = `${scoreValue}%`;
+
+            if (scoreValue !== 0) {
+                scoreBar.classList.add('bg-blue-600', 'text-blue-100');
+                scoreBar.classList.remove('text-gray-500', 'dark:text-gray-400');
+            } else {
+                scoreBar.classList.add('text-gray-500', 'dark:text-gray-400');
+                scoreBar.classList.remove('bg-blue-600', 'text-blue-100');
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const tasks = @json($assignment->tasks); // Ensure tasks are being passed as an array of objects
+
+        if (Array.isArray(tasks) && tasks.length > 0) {
+            // Initial score update
+            tasks.forEach(task => {
+                updateProgressBar(task);
+            });
+
+            // Update scores every second
+            setInterval(() => {
+                tasks.forEach(task => {
+                    updateProgressBar(task);
+                });
+            }, 1000);
+        }
+    });
+</script>
+@endsection
