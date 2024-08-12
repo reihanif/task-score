@@ -94,7 +94,7 @@ class Task extends Model
      */
     public function isSubmitted()
     {
-        return $this->submissions()->whereNull('approval_detail')->get()->isEmpty();
+        return $this->latestSubmission?->isWaitingApproval();
     }
 
     /**
@@ -186,11 +186,12 @@ class Task extends Model
      */
     public function score()
     {
-        if (!$this->isResolved()) {
-            return 0;
+        if ($this->isSubmitted()) {
+            $realization_interval = $this->created_at->diff($this->latestSubmission?->created_at);
+        } elseif ($this->isResolved()) {
+            $realization_interval = $this->created_at->diff($this->resolved_at);
         }
 
-        $realization_interval = $this->created_at->diff($this->resolved_at);
         $target_interval = $this->created_at->diff($this->due);
 
                 $realization =
