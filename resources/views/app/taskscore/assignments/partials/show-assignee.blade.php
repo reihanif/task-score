@@ -1,5 +1,5 @@
 <div
-     class="grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+     class="h-auto rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
     <div class="space-y-3">
         @if ($task->description)
             <dl>
@@ -101,24 +101,57 @@
                                         <img class="min-w-8 h-8 w-8 rounded-full"
                                              src="https://ui-avatars.com/api/?name={{ urlencode($assignee_task->assignee->name) }}&background=0D8ABC&color=fff&bold=true">
                                     </span>
-                                    <div class="flex gap-1">
+                                    <div class="gap-1">
                                         <div
-                                             class="grow rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-600 dark:bg-gray-700">
+                                             class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                             <div class="mb-3 items-center justify-between gap-3 sm:flex">
-                                                <time
-                                                      class="min-w-28 mb-1 self-start text-xs font-normal text-gray-400 sm:order-last sm:mb-0">
-                                                    {{ $submission->created_at->format('d F Y, H:i') }}
-                                                </time>
-                                                <div class="lex text-sm font-normal text-gray-500 dark:text-gray-300">
-                                                    {{ $assignee_task->assignee->name }} submitted assignment
-                                                    <span
-                                                          class="font-semibold text-gray-900 hover:underline dark:text-white">
-                                                        {{ $assignee_task->uuid . ' ' }}{{ $assignment->subject }}
-                                                    </span>
+                                                <div>
+                                                    <time class="min-w-28 align-top text-xs font-normal text-gray-400">
+                                                        {{ $submission->created_at->format('d F Y, H:i') }}
+                                                    </time>
+                                                    <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                        {{ $assignee_task->assignee->name }} submitted assignment
+                                                        <span
+                                                              class="font-semibold text-gray-900 hover:underline dark:text-white">
+                                                            {{ $assignee_task->uuid . ' ' }}{{ $assignment->subject }}
+                                                        </span>
+                                                    </div>
                                                 </div>
+                                                @if ($submission->isWaitingApproval() && $loop->last)
+                                                    <div class="flex-none self-start">
+                                                        <button class="inline-flex items-center self-center rounded-lg bg-white p-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-50 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 dark:focus:ring-gray-600"
+                                                                id="dropdownMenuIconButton"
+                                                                data-dropdown-toggle="dropdownDots"
+                                                                data-dropdown-placement="bottom-start"
+                                                                type="button">
+                                                            <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                                                                 aria-hidden="true"
+                                                                 xmlns="http://www.w3.org/2000/svg"
+                                                                 fill="currentColor"
+                                                                 viewBox="0 0 4 15">
+                                                                <path
+                                                                      d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
+                                                            </svg>
+                                                        </button>
+                                                        <div class="z-10 hidden w-40 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700"
+                                                             id="dropdownDots">
+                                                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
+                                                                aria-labelledby="dropdownMenuIconButton">
+                                                                <li>
+                                                                    <a class="block cursor-pointer px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                                       data-modal-target="rollback-submission-modal-{{ $submission->id }}"
+                                                                       data-modal-show="rollback-submission-modal-{{ $submission->id }}">
+                                                                        Rollback
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    @include('app.taskscore.assignments.modals.rollback-submission')
+                                                @endif
                                             </div>
                                             <div
-                                                 class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-500 dark:border-gray-500 dark:bg-gray-600 dark:text-gray-300">
+                                                 class="break-words rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-500 dark:border-gray-500 dark:bg-gray-600 dark:text-gray-300">
                                                 {{ Str::of($submission->detail)->toHtmlString }}
                                             </div>
                                             <!-- Files -->
@@ -186,38 +219,6 @@
                                                 </span>
                                             @endif
                                         </div>
-                                        @if ($submission->isWaitingApproval() && $loop->last)
-                                            <div class="flex-none">
-                                                <button class="inline-flex items-center self-center rounded-lg bg-white p-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-50 dark:bg-gray-900 dark:text-white dark:hover:bg-gray-800 dark:focus:ring-gray-600"
-                                                        id="dropdownMenuIconButton"
-                                                        data-dropdown-toggle="dropdownDots"
-                                                        data-dropdown-placement="bottom-start"
-                                                        type="button">
-                                                    <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
-                                                        aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 4 15">
-                                                        <path
-                                                            d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-                                                    </svg>
-                                                </button>
-                                                <div class="z-10 hidden w-40 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700"
-                                                    id="dropdownDots">
-                                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                                        aria-labelledby="dropdownMenuIconButton">
-                                                        <li>
-                                                            <a class="block cursor-pointer px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                            data-modal-target="rollback-submission-modal-{{ $submission->id }}"
-                                                            data-modal-show="rollback-submission-modal-{{ $submission->id }}">
-                                                            Rollback
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            @include('app.taskscore.assignments.modals.rollback-submission')
-                                        @endif
                                     </div>
                                 </li>
                                 @if ($submission->isApproved())
@@ -227,10 +228,9 @@
                                             <img class="min-w-8 h-8 w-8 rounded-full"
                                                  src="https://ui-avatars.com/api/?name={{ urlencode($assignment->taskmaster->name) }}&background=0D8ABC&color=fff&bold=true">
                                         </span>
-                                        <div
-                                             class="items-center justify-between gap-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-600 dark:bg-gray-700 sm:flex">
+                                        <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                             <time
-                                                  class="min-w-28 mb-1 self-start text-xs font-normal text-gray-400 sm:order-last sm:mb-0">
+                                                  class="min-w-28 align-top text-xs font-normal text-gray-400">
                                                 {{ $submission->approved_at->format('d F Y, H:i') }}
                                             </time>
                                             <div class="lex text-sm font-normal text-gray-500 dark:text-gray-300">
@@ -251,9 +251,9 @@
                                         </span>
                                         <div
                                              class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                            <div class="mb-3 items-center justify-between gap-3 sm:flex">
+                                            <div class="mb-3">
                                                 <time
-                                                      class="min-w-28 mb-1 self-start text-xs font-normal text-gray-400 sm:order-last sm:mb-0">
+                                                      class="min-w-28 align-top text-xs font-normal text-gray-400">
                                                     {{ $submission->approved_at->format('d F Y, H:i') }}
                                                 </time>
                                                 <div class="lex text-sm font-normal text-gray-500 dark:text-gray-300">
@@ -265,7 +265,7 @@
                                                 </div>
                                             </div>
                                             <div
-                                                 class="rounded-lg border border-red-300 bg-red-50 p-3 text-xs text-red-800 dark:border-red-400 dark:bg-gray-600 dark:text-red-300">
+                                                 class="break-words rounded-lg border border-red-300 bg-red-50 p-3 text-xs text-red-800 dark:border-red-400 dark:bg-gray-600 dark:text-red-300">
                                                 {{ Str::of($submission->approval_detail)->toHtmlString }}
                                             </div>
                                         </div>
