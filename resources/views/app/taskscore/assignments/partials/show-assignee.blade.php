@@ -289,7 +289,7 @@
                         <img class="h-8 w-8 rounded-full"
                              src="https://ui-avatars.com/api/?name={{ urlencode($assignee_task->assignee->name) }}&background=0D8ABC&color=fff&bold=true"
                              alt="Jese image">
-                        <div class="leading-1.5 flex w-full max-w-full flex-col">
+                        <div class="leading-1.5 flex w-full max-w-[90%] flex-col">
                             <div class="flex items-center space-x-2 rtl:space-x-reverse">
                                 <span class="text-sm font-semibold text-gray-900 dark:text-white">
                                     {{ $assignee_task->assignee->name }}
@@ -297,7 +297,7 @@
                                 <span
                                       class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ $time_extension->created_at->format('d F Y, H:i') }}</span>
                             </div>
-                            <div class="py-2 text-sm font-normal text-gray-600 dark:text-gray-400">
+                            <div class="break-words py-2 text-sm font-normal text-gray-600 dark:text-gray-400">
                                 {{ Str::of($time_extension->body)->toHtmlString }}
                             </div>
                             @if ($time_extension->isWaitingApproval())
