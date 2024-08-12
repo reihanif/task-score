@@ -14,8 +14,7 @@
                 <div class="col-span-2">
                     <x-forms.text-editor name="detail"
                         label="Approval detail"
-                        placeholder="Approval description and detail"
-                        required>
+                        placeholder="Approval description and detail">
                     </x-forms.text-editor>
                 </div>
             </div>
