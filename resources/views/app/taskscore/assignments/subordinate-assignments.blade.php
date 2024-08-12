@@ -148,41 +148,42 @@
                                 Subject
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                scope="col">
+                                          scope="col">
                                 Category
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                        scope="col"
-                                        data-dt-order="disable">
+                                          data-dt-order="disable"
+                                          scope="col">
                                 Assignee
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                        scope="col"
-                                        data-dt-order="disable">
+                                          data-dt-order="disable"
+                                          scope="col">
                                 Submission
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                        scope="col"
-                                        data-dt-order="disable">
+                                          data-dt-order="disable"
+                                          scope="col">
+                                Time Extension
+                            </x-table-head>
+                            <x-table-head class="whitespace-nowrap px-3 py-3"
+                                          data-dt-order="disable"
+                                          scope="col">
                                 Due
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                        scope="col"
-                                        data-dt-order="disable">
+                                          data-dt-order="disable"
+                                          scope="col">
                                 Difficulty
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
-                                        scope="col"
-                                        data-dt-order="disable">
+                                          data-dt-order="disable"
+                                          scope="col">
                                 Score
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
                                           scope="col">
                                 Created at
-                            </x-table-head>
-                            <x-table-head class="whitespace-nowrap px-3 py-3"
-                                scope="col">
-                                Status
                             </x-table-head>
                             @if (Auth::User()->role == 'superadmin')
                                 <x-table-head class="px-3 py-3"
@@ -219,17 +220,54 @@
                                     <ul class="list-none space-y-3">
                                         @foreach ($assignment->tasks as $task)
                                             <li>
-                                                @if ($task->latestSubmission?->isWaitingApproval())
-                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-yellow-800 bg-yellow-200 rounded-full">
-                                                        Waiting for approval
+                                                @if ($task->latestsubmission?->isWaitingApproval())
+                                                    <span
+                                                          class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-yellow-200 px-1.5 text-xs font-semibold text-yellow-800">
+                                                        {{ $task->submission_status }}
                                                     </span>
-                                                @elseif ($task->latestSubmission?->isApproved())
-                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-green-800 bg-green-200 rounded-full">
-                                                        Resolved
+                                                @elseif ($task->latestsubmission?->isApproved())
+                                                    <span
+                                                          class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-green-200 px-1.5 text-xs font-semibold text-green-800">
+                                                        {{ $task->submission_status }}
+                                                    </span>
+                                                @elseif ($task->latestsubmission?->isNotApproved())
+                                                    <span
+                                                          class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-red-200 px-1.5 text-xs font-semibold text-red-800">
+                                                        {{ $task->submission_status }}
                                                     </span>
                                                 @else
-                                                    <span class="inline-flex items-center justify-center px-1.5 w-fit h-4 text-xs font-semibold text-gray-800 dark:text-gray-400 rounded-full">
-                                                        -
+                                                    <span
+                                                          class="inline-flex h-4 w-fit items-center justify-center rounded-full px-1.5 text-xs font-semibold text-gray-800 dark:text-gray-400">
+                                                        {{ $task->submission_status }}
+                                                    </span>
+                                                @endif
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4">
+                                    <ul class="list-none space-y-3">
+                                        @foreach ($assignment->tasks as $task)
+                                            <li>
+                                                @if ($task->latestTimeExtension?->isWaitingApproval())
+                                                    <span
+                                                          class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-yellow-200 px-1.5 text-xs font-semibold text-yellow-800">
+                                                        {{ $task->time_extension_status }}
+                                                    </span>
+                                                @elseif ($task->latestTimeExtension?->isApproved())
+                                                    <span
+                                                          class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-green-200 px-1.5 text-xs font-semibold text-green-800">
+                                                        {{ $task->time_extension_status }}
+                                                    </span>
+                                                @elseif ($task->latestTimeExtension?->isNotApproved())
+                                                    <span
+                                                          class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-red-200 px-1.5 text-xs font-semibold text-red-800">
+                                                        {{ $task->time_extension_status }}
+                                                    </span>
+                                                @else
+                                                    <span
+                                                          class="inline-flex h-4 w-fit items-center justify-center rounded-full px-1.5 text-xs font-semibold text-gray-800 dark:text-gray-400">
+                                                        {{ $task->time_extension_status }}
                                                     </span>
                                                 @endif
                                             </li>
@@ -258,17 +296,28 @@
                                     <ul class="list-none space-y-3">
                                         @foreach ($assignment->tasks as $task)
                                             @if ($task->score == 100)
-                                                <li class="flex align-items-center gap-1">
+                                                <li class="align-items-center flex gap-1">
                                                     {{ $task->score . '%' }}
                                                     <span>
-                                                        <svg class="inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M48 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l352 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48 128zm0 192c-17.7 0-32 14.3-32 32s14.3 32 32 32l352 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48 320z"/></svg>
+                                                        <svg class="inline-block h-4 w-4"
+                                                             xmlns="http://www.w3.org/2000/svg"
+                                                             viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                            <path fill="currentColor"
+                                                                  d="M48 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l352 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48 128zm0 192c-17.7 0-32 14.3-32 32s14.3 32 32 32l352 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48 320z" />
+                                                        </svg>
                                                     </span>
                                                 </li>
                                             @elseif ($task->score > 100)
-                                                <li class="flex align-items-center gap-1 text-green-600 dark:text-green-500">
-                                                    {{ $task->score . '%'}}
+                                                <li
+                                                    class="align-items-center flex gap-1 text-green-600 dark:text-green-500">
+                                                    {{ $task->score . '%' }}
                                                     <span>
-                                                        <svg class="inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z"/></svg>
+                                                        <svg class="inline-block h-4 w-4"
+                                                             xmlns="http://www.w3.org/2000/svg"
+                                                             viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                            <path fill="currentColor"
+                                                                  d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z" />
+                                                        </svg>
                                                     </span>
                                                 </li>
                                             @elseif (!$task->isResolved() && $task->score < 100)
@@ -276,10 +325,15 @@
                                                     -
                                                 </li>
                                             @elseif ($task->score < 100)
-                                                <li class="flex align-items-center gap-1 text-red-600 dark:text-red-500">
+                                                <li class="align-items-center flex gap-1 text-red-600 dark:text-red-500">
                                                     {{ $task->score . '%' }}
                                                     <span>
-                                                        <svg class="inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="currentColor" d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"/></svg>
+                                                        <svg class="inline-block h-4 w-4"
+                                                             xmlns="http://www.w3.org/2000/svg"
+                                                             viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                            <path fill="currentColor"
+                                                                  d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
+                                                        </svg>
                                                     </span>
                                                 </li>
                                             @endif
@@ -288,21 +342,8 @@
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4"
                                     data-search="{{ $assignment->created_at->format('Ymd') }}"
-                                    data-sort="{{ $assignment->created_at->format('YmdHis') }}">
+                                    data-order="{{ $assignment->created_at->format('YmdHis') }}">
                                     {{ $assignment->created_at->format('d F Y, H:i') }}
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4">
-                                    @if ($assignment->isOpen())
-                                        <span
-                                              class="me-2 rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">
-                                            Open
-                                        </span>
-                                    @else
-                                        <span
-                                              class="me-2 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800 dark:bg-red-900 dark:text-red-300">
-                                            Closed
-                                        </span>
-                                    @endif
                                 </td>
                                 @if (Auth::User()->role == 'superadmin')
                                     <td class="float-end py-4 pe-2 ps-6">
@@ -374,15 +415,16 @@
                 </select>
             </div>
             <div>
-                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Status</h6>
+                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Submission</h6>
                 <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        id="filter-status"
+                        id="filter-submission"
                         normal-select>
                     <option value=""
-                            selected>All Status</option>
+                            selected>All Submission</option>
                     <option value="-">-</option>
-                    <option value="Resolved">Resolved</option>
                     <option value="Waiting for approval">Waiting for approval</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Resolved">Resolved</option>
                 </select>
             </div>
             <div>
@@ -453,7 +495,7 @@
                     table.columns(2).search(this.value, false, false, false).draw();
                 });
             document
-                .getElementById("filter-status")
+                .getElementById("filter-submission")
                 .addEventListener("change", function() {
                     table
                         .columns(4)
@@ -486,7 +528,7 @@
 
                     var min = parseInt(minDateStr, 10);
                     var max = parseInt(maxDateStr, 10);
-                    var date = parseFloat(data[6]["@data-search"]); // use data for the date column
+                    var date = parseFloat(data[9]["@data-search"]); // use data for the date column
 
                     if (
                         (isNaN(min) && isNaN(max)) ||

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -46,6 +47,14 @@ class Task extends Model
     public function latestSubmission(): HasOne
     {
         return $this->hasOne(Submission::class)->latestOfMany();
+    }
+
+    /**
+     * Get latest time_extension request of the tasks.
+     */
+    public function latestTimeExtension(): HasOne
+    {
+        return $this->hasOne(TimeExtension::class)->latestOfMany();
     }
 
     /**
@@ -133,6 +142,48 @@ class Task extends Model
     public function getScoreAttribute()
     {
         return $this->score();
+    }
+
+    /**
+     * Create score attribute.
+     */
+    public function getScoreAttribute()
+    {
+        return $this->score();
+    }
+
+    /**
+     * Create submission status attribute.
+     */
+    public function getSubmissionStatusAttribute()
+    {
+        if ($this->latestSubmission?->isWaitingApproval()) {
+            $status = 'Waiting for approval';
+        } elseif ($this->latestSubmission?->isApproved()) {
+            $status = 'Resolved';
+        } elseif ($this->latestSubmission?->isNotApproved()) {
+            $status = 'Rejected';
+        } else {
+            $status = '-';
+        }
+        return Str::of($status)->toHtmlString;
+    }
+
+    /**
+     * Create time extension status attribute.
+     */
+    public function getTimeExtensionStatusAttribute()
+    {
+        if ($this->latestTimeExtension?->isWaitingApproval()) {
+            $status = 'Waiting for approval';
+        } elseif ($this->latestTimeExtension?->isApproved()) {
+            $status = 'Approved';
+        } elseif ($this->latestTimeExtension?->isNotApproved()) {
+            $status = 'Rejected';
+        } else {
+            $status = '-';
+        }
+        return $status;
     }
 
     /**

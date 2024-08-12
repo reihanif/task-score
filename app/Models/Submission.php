@@ -58,6 +58,6 @@ class Submission extends Model
      */
     public function isWaitingApproval()
     {
-        return $this->approval_detail == null && $this->is_approve == false;
+        return $this->approval_detail == null && $this->is_approve == null;
     }
 }
