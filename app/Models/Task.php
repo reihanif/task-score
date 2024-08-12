@@ -139,11 +139,6 @@ class Task extends Model
         return $uuid;
     }
 
-    public function getScoreAttribute()
-    {
-        return $this->score();
-    }
-
     /**
      * Create score attribute.
      */
