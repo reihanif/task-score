@@ -190,6 +190,8 @@ class Task extends Model
             $realization_interval = $this->created_at->diff($this->latestSubmission?->created_at);
         } elseif ($this->isResolved()) {
             $realization_interval = $this->created_at->diff($this->resolved_at);
+        } else {
+            return 0;
         }
 
         $target_interval = $this->created_at->diff($this->due);
