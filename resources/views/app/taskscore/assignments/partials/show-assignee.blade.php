@@ -228,18 +228,27 @@
                                             <img class="min-w-8 h-8 w-8 rounded-full"
                                                  src="https://ui-avatars.com/api/?name={{ urlencode($assignment->taskmaster->name) }}&background=0D8ABC&color=fff&bold=true">
                                         </span>
-                                        <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-600 dark:bg-gray-700">
-                                            <time
-                                                  class="min-w-28 align-top text-xs font-normal text-gray-400">
-                                                {{ $submission->approved_at->format('d F Y, H:i') }}
-                                            </time>
-                                            <div class="lex text-sm font-normal text-gray-500 dark:text-gray-300">
-                                                Assignment
-                                                <span
-                                                      class="font-semibold text-blue-600 hover:underline dark:text-blue-500">
-                                                    approved</span>
-                                                by {{ $assignment->taskmaster->name }}
+                                        <div
+                                             class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                                            <div class="items-center justify-between gap-3 sm:flex">
+                                                <time
+                                                      class="min-w-28 mb-1 self-start text-xs font-normal text-gray-400 sm:order-last sm:mb-0">
+                                                    {{ $submission->approved_at->format('d F Y, H:i') }}
+                                                </time>
+                                                <div class="text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                    Assignment
+                                                    <span
+                                                          class="font-semibold text-blue-600 hover:underline dark:text-blue-500">
+                                                        approved</span>
+                                                    by {{ $assignment->taskmaster->name }}
+                                                </div>
                                             </div>
+                                            @if ($submission->approval_detail)
+                                                <div
+                                                     class="mt-3 break-words rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                                    {{ Str::of($submission->approval_detail)->toHtmlString }}
+                                                </div>
+                                            @endif
                                         </div>
                                     </li>
                                 @elseif ($submission->isNotApproved())
@@ -252,8 +261,7 @@
                                         <div
                                              class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-600 dark:bg-gray-700">
                                             <div class="mb-3">
-                                                <time
-                                                      class="min-w-28 align-top text-xs font-normal text-gray-400">
+                                                <time class="min-w-28 align-top text-xs font-normal text-gray-400">
                                                     {{ $submission->approved_at->format('d F Y, H:i') }}
                                                 </time>
                                                 <div class="lex text-sm font-normal text-gray-500 dark:text-gray-300">
