@@ -61,17 +61,44 @@
                             {{ $task->due->format('d F Y, H:i') . ' ' . '(' . $task->due->diffForHumans() . ')' }}
                         </dd>
                     </dl>
-                    <dl class="space-y-2">
-                        <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Score</dt>
-                        <dd class="text-sm text-gray-600 dark:text-gray-400">
-                            <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                                <div class="{{ $task->score() !== 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none"
-                                     style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
-                                    {{ $task->score() }}%
+                    @if ($task->isResolved())
+                        <dl class="space-y-2">
+                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Final Score</dt>
+                            <dd class="text-sm text-gray-600 dark:text-gray-400">
+                                <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                                    <div class="{{ $task->score() !== 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none"
+                                        style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
+                                        {{ $task->score() }}%
+                                    </div>
                                 </div>
-                            </div>
-                        </dd>
-                    </dl>
+                            </dd>
+                        </dl>
+                    @elseif ($task->isSubmitted())
+                        <dl class="space-y-2">
+                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Possible Score</dt>
+                            <dd class="text-sm text-gray-600 dark:text-gray-400">
+                                <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                                    <div class="{{ $task->score() !== 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none"
+                                        style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
+                                        {{ $task->score() }}%
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                    @else
+                        <dl class="space-y-2">
+                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Possible Score</dt>
+                            <dd class="text-sm text-gray-600 dark:text-gray-400">
+                                <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                                    <div id="score-bar-{{ $task->id }}"
+                                        class="rounded-full p-0.5 text-center text-xs font-medium leading-none"
+                                        style="width: 0%">
+                                        0%
+                                    </div>
+                                </div>
+                            </dd>
+                        </dl>
+                    @endif
                 </div>
 
                 <div class="space-y-3"
