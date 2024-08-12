@@ -58,8 +58,21 @@ class AssignmentController extends Controller
     public function subordinateAssignment()
     {
         $assignees = Auth::User()->subordinates();
+        $assignees_id = $assignees->pluck('id');
+        $taskmaster_position = [Auth::User()->position_id];
+        if(is_null(Auth::User()->position_id)) {
+            $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at', 'desc')->get();
+        } else {
+            $assignments = Assignment::whereHas('taskmaster', function ($query) use ($taskmaster_position) {
+                $query->whereIn('position_id', $taskmaster_position);
+            })->whereHas('tasks', function ($query) use ($assignees_id) {
+                $query->whereIn('assignee_id', $assignees_id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+        }
+        // dd($assignments);
 
-        $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at', 'desc')->get();
         $default_types = collect([
             'Memorandum',
             'Surat',

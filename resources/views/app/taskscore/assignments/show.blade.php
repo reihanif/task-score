@@ -8,7 +8,7 @@
             <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
                 <div class="w-full space-y-3">
                     <!-- Breadcrumbs if User is Taskmaster of the assignment -->
-                    @taskmaster
+                    @involved
                         <x-breadcrumbs class="mb-2"
                             :menus="collect([
                                 [
@@ -20,7 +20,7 @@
                                     'route' => null,
                                 ],
                             ])" />
-                    @endtaskmaster
+                    @endinvolved
                     <!-- Breadcrumbs if User is Assignee of the assignment -->
                     @assignee
                         <x-breadcrumbs class="mb-2"
@@ -423,9 +423,9 @@
             </div>
 
             <!-- Assignment tasks as taskmaster -->
-            @taskmaster
+            @involved
                 @include('app.taskscore.assignments.partials.show-taskmaster', $assignment)
-            @endtaskmaster
+            @endinvolved
 
             <!-- Assignment tasks as assignee -->
             @assignee

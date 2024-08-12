@@ -201,4 +201,26 @@ class User extends Authenticatable
     {
         return $this->id == Assignment::select('taskmaster_id')->findOrFail($assignment_id)->taskmaster_id;
     }
+
+    /**
+     * Check if the user role is superadmin
+     */
+    public function isSuperadmin()
+    {
+        return $this->role == 'superadmin';
+    }
+
+    /**
+     * Check if the user is involved (has access) with a specific assignment
+     */
+    public function isInvolved($assignment_id = null)
+    {
+        $is_involved = false;
+        $assignment = Assignment::findOrFail($assignment_id);
+        if ($assignment->taskmaster->position_id == $this->position_id) {
+            $is_involved = true;
+        }
+
+        return $is_involved;
+    }
 }
