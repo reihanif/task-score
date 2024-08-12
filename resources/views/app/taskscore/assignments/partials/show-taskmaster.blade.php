@@ -1,12 +1,14 @@
 @foreach ($assignment->tasks as $task)
-    <div class="grid h-auto gap-8 rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+    <div class="h-auto rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
         x-data="{ expanded: {{ auth()->user()->isTaskAssignee($task->id) ||auth()->user()->isTaskmaster($assignment->id)? 'true': 'false' }} }">
         <div class="space-y-3">
             <dl>
                 <dt class="font-semibold text-blue-600 dark:text-blue-400">
-                    <button class="flex w-full justify-between text-left"
+                    <button class="mb-2 flex w-full justify-between text-left"
                         x-on:click="expanded = ! expanded">
-                        {{ $task->uuid }}
+                        <div>
+                                {{ $task->uuid }}
+                        </div>
                         <!-- Chevron Icons -->
                         <svg class="h-6 w-6 transition"
                             aria-hidden="true"
@@ -21,28 +23,28 @@
                         </svg>
                         <!-- End of Chevron Icons -->
                     </button>
+                    <dl>
+                        <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Assignee
+                        </dt>
+                        <dd class="inline-flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                            <img class="h-8 w-8 rounded-full"
+                                src="https://ui-avatars.com/api/?name={{ urlencode($task->assignee->name) }}&background=0D8ABC&color=fff&bold=true"
+                                alt="{{ $task->assignee->name }} avatar" />
+                            <span>
+                                <div class="font-semibold text-gray-500 dark:text-gray-300">
+                                    {{ $task->assignee->name }}
+                                </div>
+                                <div>
+                                    {{ $task->assignee->position?->name }}
+                                </div>
+                            </span>
+                        </dd>
+                    </dl>
                 </dt>
             </dl>
             <div class="space-y-3"
                 x-show="expanded"
                 x-collapse>
-                <dl>
-                    <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Assignee
-                    </dt>
-                    <dd class="inline-flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                        <img class="h-8 w-8 rounded-full"
-                            src="https://ui-avatars.com/api/?name={{ urlencode($task->assignee->name) }}&background=0D8ABC&color=fff&bold=true"
-                            alt="{{ $task->assignee->name }} avatar" />
-                        <span>
-                            <div class="font-semibold text-gray-500 dark:text-gray-300">
-                                {{ $task->assignee->name }}
-                            </div>
-                            <div>
-                                {{ $task->assignee->position?->name }}
-                            </div>
-                        </span>
-                    </dd>
-                </dl>
                 @if ($task->description)
                     <dl>
                         <dt class="mb-2 text-sm font-semibold leading-none text-gray-900 dark:text-white">Detail
@@ -132,7 +134,7 @@
                                                     </div>
                                                 </div>
                                                 <div
-                                                    class="rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                                    class="break-words rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
                                                     {{ Str::of($submission->detail)->toHtmlString }}
                                                 </div>
                                                 <!-- Files -->
@@ -303,7 +305,7 @@
                                                             {{ $submission->approved_at->format('d F Y, H:i') }}
                                                         </time>
                                                         <div
-                                                            class="lex text-sm font-normal text-gray-500 dark:text-gray-300">
+                                                            class="text-sm font-normal text-gray-500 dark:text-gray-300">
                                                             Assignment
                                                             <span class="font-semibold text-red-700 hover:underline dark:text-red-400">
                                                                 rejected</span>
@@ -311,7 +313,7 @@
                                                         </div>
                                                     </div>
                                                     <div
-                                                        class="rounded-lg border border-red-300 bg-red-50 p-3 text-xs text-red-800 dark:border-red-400 dark:bg-gray-700 dark:text-red-400">
+                                                        class="break-words rounded-lg border border-red-300 bg-red-50 p-3 text-xs text-red-800 dark:border-red-400 dark:bg-gray-700 dark:text-red-400">
                                                         {{ Str::of($submission->approval_detail)->toHtmlString }}
                                                     </div>
                                                 </div>
