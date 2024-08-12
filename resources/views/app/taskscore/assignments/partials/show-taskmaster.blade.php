@@ -1,6 +1,6 @@
 @foreach ($assignment->tasks as $task)
     <div class="h-auto rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-         x-data="{ expanded: {{ auth()->user()->isTaskAssignee($task->id) ||auth()->user()->isTaskmaster($assignment->id)? 'true': 'false' }} }">
+         x-data="{ expanded: {{ auth()->user()->isTaskAssignee($task->id) || auth()->user()->isTaskmaster($assignment->id) || auth()->user()->isInvolved($assignment->id) ? 'true': 'false' }} }">
         <div class="space-y-3">
             <dl>
                 <dt>
@@ -223,72 +223,73 @@
                                                 @endif
 
                                                 @if ($submission->isWaitingApproval())
-                                                    <span
-                                                          class="mt-2 text-xs font-normal text-yellow-500 dark:text-yellow-400">
+                                                    <span class="mt-2 text-xs font-normal text-yellow-500 dark:text-yellow-400">
                                                         Waiting approval
                                                     </span>
 
-                                                    <!-- Buttons -->
-                                                    <div class="flex justify-end gap-2">
-                                                        <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                                                data-modal-show="approve-submission-modal-{{ $submission->id }}"
-                                                                data-modal-target="approve-submission-modal-{{ $submission->id }}"
-                                                                type="button">
-                                                            <svg class="me-1 h-3.5 w-3.5"
-                                                                 aria-hidden="true"
-                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                 fill="currentColor"
-                                                                 viewBox="0 0 24 24">
-                                                                <path
-                                                                      d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z" />
-                                                                <path fill-rule="evenodd"
-                                                                      d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
-                                                                      clip-rule="evenodd" />
-                                                            </svg>
-                                                            Approve
-                                                        </button>
-                                                        <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                                                data-modal-show="reject-submission-modal-{{ $submission->id }}"
-                                                                data-modal-target="reject-submission-modal-{{ $submission->id }}"
-                                                                type="button">
-                                                            Reject
-                                                        </button>
-                                                    </div>
-                                                    <!-- Approval Modal -->
-                                                    @include(
-                                                        'app.taskscore.assignments.modals.approve-task',
-                                                        $submission)
+                                                    @taskmaster
+                                                        <!-- Buttons -->
+                                                        <div class="flex justify-end gap-2">
+                                                            <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                                                    data-modal-show="approve-submission-modal-{{ $submission->id }}"
+                                                                    data-modal-target="approve-submission-modal-{{ $submission->id }}"
+                                                                    type="button">
+                                                                <svg class="me-1 h-3.5 w-3.5"
+                                                                    aria-hidden="true"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    fill="currentColor"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path
+                                                                        d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z" />
+                                                                    <path fill-rule="evenodd"
+                                                                        d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
+                                                                        clip-rule="evenodd" />
+                                                                </svg>
+                                                                Approve
+                                                            </button>
+                                                            <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                                                    data-modal-show="reject-submission-modal-{{ $submission->id }}"
+                                                                    data-modal-target="reject-submission-modal-{{ $submission->id }}"
+                                                                    type="button">
+                                                                Reject
+                                                            </button>
+                                                        </div>
+                                                        <!-- Approval Modal -->
+                                                        @include(
+                                                            'app.taskscore.assignments.modals.approve-task',
+                                                            $submission)
 
-                                                    <!-- Rejection Modal -->
-                                                    <x-modal id="reject-submission-modal-{{ $submission->id }}"
-                                                             data-title="Reject submission">
-                                                        <!-- Modal body -->
-                                                        <form class="p-4 md:p-5"
-                                                              x-on:submit="loading = ! loading"
-                                                              action="{{ route('taskscore.assignment.reject-submission', $submission->id) }}"
-                                                              method="post"
-                                                              enctype="multipart/form-data">
-                                                            @csrf
-                                                            @method('put')
-                                                            <div class="mb-5">
-                                                                <div class="space-y-4">
-                                                                    <div class="col-span-2">
-                                                                        <x-forms.text-editor name="detail"
-                                                                                             label="Rejection detail"
-                                                                                             placeholder="Rejection description and detail"
-                                                                                             required>
-                                                                        </x-forms.text-editor>
+                                                        <!-- Rejection Modal -->
+                                                        <x-modal id="reject-submission-modal-{{ $submission->id }}"
+                                                                data-title="Reject submission">
+                                                            <!-- Modal body -->
+                                                            <form class="p-4 md:p-5"
+                                                                x-on:submit="loading = ! loading"
+                                                                action="{{ route('taskscore.assignment.reject-submission', $submission->id) }}"
+                                                                method="post"
+                                                                enctype="multipart/form-data">
+                                                                @csrf
+                                                                @method('put')
+                                                                <div class="mb-5">
+                                                                    <div class="space-y-4">
+                                                                        <div class="col-span-2">
+                                                                            <x-forms.text-editor name="detail"
+                                                                                                label="Rejection detail"
+                                                                                                placeholder="Rejection description and detail"
+                                                                                                required>
+                                                                            </x-forms.text-editor>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="flex place-content-end">
-                                                                <button class="inline-flex items-center rounded-lg bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                                                                        type="submit">
-                                                                    Reject
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                    </x-modal>
+                                                                <div class="flex place-content-end">
+                                                                    <button class="inline-flex items-center rounded-lg bg-red-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                                                                            type="submit">
+                                                                        Reject
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                        </x-modal>
+                                                    @endtaskmaster
                                                 @endif
                                             </div>
                                         </li>
@@ -386,24 +387,26 @@
                                             Waiting approval
                                         </span>
 
-                                        <!-- Buttons -->
-                                        <div class="flex justify-end gap-2">
-                                            <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-blue-500 dark:focus:ring-gray-700"
-                                                    data-modal-show="approve-time-extension-modal-{{ $time_extension->id }}"
-                                                    data-modal-target="approve-time-extension-modal-{{ $time_extension->id }}"
-                                                    type="button">
-                                                Approve
-                                            </button>
-                                            <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-red-500 dark:focus:ring-gray-700"
-                                                    data-modal-show="reject-time-extension-modal-{{ $time_extension->id }}"
-                                                    data-modal-target="reject-time-extension-modal-{{ $time_extension->id }}"
-                                                    type="button">
-                                                Reject
-                                            </button>
-                                        </div>
+                                        @taskmaster
+                                            <!-- Buttons -->
+                                            <div class="flex justify-end gap-2">
+                                                <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-blue-500 dark:focus:ring-gray-700"
+                                                        data-modal-show="approve-time-extension-modal-{{ $time_extension->id }}"
+                                                        data-modal-target="approve-time-extension-modal-{{ $time_extension->id }}"
+                                                        type="button">
+                                                    Approve
+                                                </button>
+                                                <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-red-500 dark:focus:ring-gray-700"
+                                                        data-modal-show="reject-time-extension-modal-{{ $time_extension->id }}"
+                                                        data-modal-target="reject-time-extension-modal-{{ $time_extension->id }}"
+                                                        type="button">
+                                                    Reject
+                                                </button>
+                                            </div>
 
-                                        @include('app.taskscore.assignments.modals.approve-time-extension')
-                                        @include('app.taskscore.assignments.modals.reject-time-extension')
+                                            @include('app.taskscore.assignments.modals.approve-time-extension')
+                                            @include('app.taskscore.assignments.modals.reject-time-extension')
+                                        @endtaskmaster
                                     @elseif ($time_extension->isApproved())
                                         <span class="text-sm font-normal text-blue-500 dark:text-blue-400">
                                             Approved at {{ $time_extension->approved_at->format('d F Y, H:i') }}

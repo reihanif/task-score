@@ -21,6 +21,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Blade::directive('involved', function($expression) {
+            return "<?php if (auth()->user()->isInvolved(Route::current()->parameters()['assignment'])): ?>";
+        });
+
+        Blade::directive('endinvolved', function ($expression) {
+            return "<?php endif; ?>";
+        });
+
         Blade::directive('taskmaster', function ($expression) {
             return "<?php if (auth()->user()->isTaskmaster(Route::current()->parameters()['assignment'])): ?>";
         });
