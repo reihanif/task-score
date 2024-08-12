@@ -95,5 +95,11 @@
                 @endif
             </ul>
         @endif
+
+        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 font-normal text-gray-400 dark:text-gray-500">
+            <div class="mb-4 text-sm">
+                {{ config('app.version') }}
+            </div>
+        </div>
     </div>
 </aside>
