@@ -260,6 +260,20 @@ function initializeTomSelects() {
                     if (el.hasAttribute("multiple")) {
                         if (el.hasAttribute("readonly")) {
                             new TomSelect(el, {}).lock();
+                        } else if (el.hasAttribute("hascaption")) {
+                            new TomSelect(el, {
+                                plugins: ["remove_button", "caret_position"],
+                                create: isCreatable,
+                                sortField: {
+                                    field: sortField,
+                                    direction: "asc",
+                                },
+                                render: {
+                                    option: function(data, escape) {
+                                        return '<div>' + escape(data.caption) + '</div>';
+                                    }
+                                }
+                            });
                         } else {
                             new TomSelect(el, {
                                 plugins: ["remove_button", "caret_position"],
@@ -273,6 +287,22 @@ function initializeTomSelects() {
                     } else {
                         if (el.hasAttribute("readonly")) {
                             new TomSelect(el, {}).lock();
+                        } else if (el.hasAttribute("hascaption")) {
+                            new TomSelect(el, {
+                                create: isCreatable,
+                                sortField: {
+                                    field: sortField,
+                                    direction: "asc",
+                                },
+                                render: {
+                                    option: function(data, escape) {
+                                        return '<div>' +
+                                            '<span>' + escape(data.text) + '</span>' +
+                                            '<span class="block mt-0.5 text-xs text-gray-500 dark:text-gray-400">' + escape(data.caption) + '</span>' +
+                                        '</div>';
+                                    }
+                                }
+                            });
                         } else {
                             new TomSelect(el, {
                                 create: isCreatable,
