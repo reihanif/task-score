@@ -91,7 +91,7 @@ class TimeExtensionController extends Controller
 
             $task = $extension_request->task;
             if ($request->timetable) {
-                $task->due = $now->addMinutes($request->timetable);
+                $task->due = $extension_request->created_at->addMinutes($request->timetable);
             } elseif ($request->date && $request->time) {
                 $date = $request->date;
                 $time = $request->time;
