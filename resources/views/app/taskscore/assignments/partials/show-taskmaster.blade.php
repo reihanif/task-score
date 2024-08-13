@@ -1,6 +1,6 @@
 @foreach ($assignment->tasks as $task)
     <div class="h-auto rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-         x-data="{ expanded: {{ auth()->user()->isTaskAssignee($task->id) || auth()->user()->isTaskmaster($assignment->id) || auth()->user()->isInvolved($assignment->id) ? 'true': 'false' }} }">
+         x-data="{ expanded: {{ auth()->user()->isTaskAssignee($task->id) ||auth()->user()->isTaskmaster($assignment->id) ||auth()->user()->isInvolved($assignment->id)? 'true': 'false' }} }">
         <div class="space-y-3">
             <dl>
                 <dt>
@@ -63,11 +63,12 @@
                     </dl>
                     @if ($task->isResolved())
                         <dl class="space-y-2">
-                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Final Score</dt>
+                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Final Score
+                            </dt>
                             <dd class="text-sm text-gray-600 dark:text-gray-400">
                                 <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                                     <div class="{{ $task->score() !== 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none"
-                                        style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
+                                         style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
                                         {{ $task->score() }}%
                                     </div>
                                 </div>
@@ -75,11 +76,12 @@
                         </dl>
                     @elseif ($task->isSubmitted())
                         <dl class="space-y-2">
-                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Possible Score</dt>
+                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Possible Score
+                            </dt>
                             <dd class="text-sm text-gray-600 dark:text-gray-400">
                                 <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
                                     <div class="{{ $task->score() !== 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none"
-                                        style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
+                                         style="width: {{ $task->score() <= 100 ? $task->score() : 100 }}%">
                                         {{ $task->score() }}%
                                     </div>
                                 </div>
@@ -87,18 +89,44 @@
                         </dl>
                     @else
                         <dl class="space-y-2">
-                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Possible Score</dt>
+                            <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Possible Score
+                            </dt>
                             <dd class="text-sm text-gray-600 dark:text-gray-400">
                                 <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                                    <div id="score-bar-{{ $task->id }}"
-                                        class="rounded-full p-0.5 text-center text-xs font-medium leading-none"
-                                        style="width: 0%">
+                                    <div class="rounded-full p-0.5 text-center text-xs font-medium leading-none"
+                                         id="score-bar-{{ $task->id }}"
+                                         style="width: 0%">
                                         0%
                                     </div>
                                 </div>
                             </dd>
                         </dl>
                     @endif
+
+                    @taskmaster
+                        <!-- Edit Due Button -->
+                        <div>
+                            <button class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                    data-modal-show="edit-task-due-modal-{{ $task->id }}"
+                                    data-modal-target="edit-task-due-modal-{{ $task->id }}"
+                                    type="button">
+                                <svg class="me-1 h-3.5 w-3.5"
+                                     aria-hidden="true"
+                                     xmlns="http://www.w3.org/2000/svg"
+                                     fill="currentColor"
+                                     viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                          d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z"
+                                          clip-rule="evenodd" />
+                                    <path fill-rule="evenodd"
+                                          d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
+                                          clip-rule="evenodd" />
+                                </svg>
+                                Edit due
+                            </button>
+                            @include('app.taskscore.assignments.modals.edit-task-due')
+                        </div>
+                    @endtaskmaster
                 </div>
 
                 <div class="space-y-3"
@@ -223,7 +251,8 @@
                                                 @endif
 
                                                 @if ($submission->isWaitingApproval())
-                                                    <span class="mt-2 text-xs font-normal text-yellow-500 dark:text-yellow-400">
+                                                    <span
+                                                          class="mt-2 text-xs font-normal text-yellow-500 dark:text-yellow-400">
                                                         Waiting approval
                                                     </span>
 
@@ -235,15 +264,15 @@
                                                                     data-modal-target="approve-submission-modal-{{ $submission->id }}"
                                                                     type="button">
                                                                 <svg class="me-1 h-3.5 w-3.5"
-                                                                    aria-hidden="true"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    fill="currentColor"
-                                                                    viewBox="0 0 24 24">
+                                                                     aria-hidden="true"
+                                                                     xmlns="http://www.w3.org/2000/svg"
+                                                                     fill="currentColor"
+                                                                     viewBox="0 0 24 24">
                                                                     <path
-                                                                        d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z" />
+                                                                          d="M9 7V2.221a2 2 0 0 0-.5.365L4.586 6.5a2 2 0 0 0-.365.5H9Z" />
                                                                     <path fill-rule="evenodd"
-                                                                        d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
-                                                                        clip-rule="evenodd" />
+                                                                          d="M11 7V2h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Zm4.707 5.707a1 1 0 0 0-1.414-1.414L11 14.586l-1.293-1.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z"
+                                                                          clip-rule="evenodd" />
                                                                 </svg>
                                                                 Approve
                                                             </button>
@@ -261,22 +290,22 @@
 
                                                         <!-- Rejection Modal -->
                                                         <x-modal id="reject-submission-modal-{{ $submission->id }}"
-                                                                data-title="Reject submission">
+                                                                 data-title="Reject submission">
                                                             <!-- Modal body -->
                                                             <form class="p-4 md:p-5"
-                                                                x-on:submit="loading = ! loading"
-                                                                action="{{ route('taskscore.assignment.reject-submission', $submission->id) }}"
-                                                                method="post"
-                                                                enctype="multipart/form-data">
+                                                                  x-on:submit="loading = ! loading"
+                                                                  action="{{ route('taskscore.assignment.reject-submission', $submission->id) }}"
+                                                                  method="post"
+                                                                  enctype="multipart/form-data">
                                                                 @csrf
                                                                 @method('put')
                                                                 <div class="mb-5">
                                                                     <div class="space-y-4">
                                                                         <div class="col-span-2">
                                                                             <x-forms.text-editor name="detail"
-                                                                                                label="Rejection detail"
-                                                                                                placeholder="Rejection description and detail"
-                                                                                                required>
+                                                                                                 label="Rejection detail"
+                                                                                                 placeholder="Rejection description and detail"
+                                                                                                 required>
                                                                             </x-forms.text-editor>
                                                                         </div>
                                                                     </div>
@@ -317,10 +346,10 @@
                                                         </div>
                                                     </div>
                                                     @if ($submission->approval_detail)
-                                                    <div
-                                                         class="mt-3 break-words rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
-                                                        {{ Str::of($submission->approval_detail)->toHtmlString }}
-                                                    </div>
+                                                        <div
+                                                             class="mt-3 break-words rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs text-gray-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400">
+                                                            {{ Str::of($submission->approval_detail)->toHtmlString }}
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </li>

@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
         Route::post('/{task}/resolve', [AssignmentController::class, 'resolve'])->name('assignment.resolve');
+        Route::put('/{task}/update-due', [AssignmentController::class, 'updateDue'])->name('assignment.update-due');
 
         Route::put('/{submission}/submission-approval', [SubmissionController::class, 'approve'])->name('assignment.approve-submission');
         Route::put('/{submission}/submission-rejection', [SubmissionController::class, 'reject'])->name('assignment.reject-submission');
