@@ -83,9 +83,10 @@ class TimeExtensionController extends Controller
         DB::beginTransaction();
 
         try {
+            $now = Carbon::now();
             $extension_request = TimeExtension::findOrFail($id);
             $extension_request->is_approve = (bool) true;
-            $extension_request->approved_at = Carbon::now()->toDateTimeString();
+            $extension_request->approved_at = $now->toDateTimeString();
             $extension_request->save();
 
             $task = $extension_request->task;
