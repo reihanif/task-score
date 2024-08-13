@@ -422,7 +422,7 @@
                 </div>
             </div>
 
-            <!-- Assignment tasks as taskmaster -->
+            <!-- Assignment tasks as taskmaster or has the same position with taskmaster -->
             @involved
                 @include('app.taskscore.assignments.partials.show-taskmaster', $assignment)
             @endinvolved
