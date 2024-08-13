@@ -273,6 +273,39 @@ class AssignmentController extends Controller
     }
 
     /**
+     * Update the task due.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  uuid  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateDue(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $task = Task::findOrFail($id);
+            if ($request->timetable) {
+                $task->due = $task->due->addMinutes($request->timetable);
+            } elseif ($request->date && $request->time) {
+                $date = $request->date;
+                $time = $request->time;
+                $task->due = Carbon::parse("$date $time");
+            }
+            $task->save();
+
+            // Execute database update
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->withErrors('Failed to update due');
+        }
+
+        return redirect()->back()->with('success', 'Assignment ' . $task->uuid . ' due has been updated');
+    }
+
+    /**
      * Resolve the specified assignment.
      *
      * @param  \Illuminate\Http\Request  $request
