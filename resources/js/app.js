@@ -239,83 +239,42 @@ Tom Select Js
 TomSelect.define("remove_button", TomSelect_remove_button);
 TomSelect.define("caret_position", TomSelect_caret_position);
 
-// Store TomSelect instances
-let tomSelectInstances = [];
-
 // Function to initialize TomSelect for all select elements
 function initializeTomSelects() {
-    // Destroy existing TomSelect instances
-    // tomSelectInstances.forEach((instance) => instance.destroy());
-    // tomSelectInstances = [];
-
     document.querySelectorAll("select").forEach((el) => {
-        let isCreatable = el.getAttribute("data-create") ?? false;
-        let hasDataOrder = Array.from(el.options).some((option) =>
-            option.hasAttribute("data-order")
-        );
-        let sortField = hasDataOrder ? "order" : "text";
-        if (!el.hasAttribute("normal-select")) {
-            if (!el.classList.contains("dt-input")) {
-                if (!el.classList.contains("tomselected")) {
-                    if (el.hasAttribute("multiple")) {
-                        if (el.hasAttribute("readonly")) {
-                            new TomSelect(el, {}).lock();
-                        } else if (el.hasAttribute("hascaption")) {
-                            new TomSelect(el, {
-                                plugins: ["remove_button", "caret_position"],
-                                create: isCreatable,
-                                sortField: {
-                                    field: sortField,
-                                    direction: "asc",
-                                },
-                                render: {
-                                    option: function(data, escape) {
-                                        return '<div>' + escape(data.caption) + '</div>';
-                                    }
-                                }
-                            });
-                        } else {
-                            new TomSelect(el, {
-                                plugins: ["remove_button", "caret_position"],
-                                create: isCreatable,
-                                sortField: {
-                                    field: sortField,
-                                    direction: "asc",
-                                },
-                            });
-                        }
-                    } else {
-                        if (el.hasAttribute("readonly")) {
-                            new TomSelect(el, {}).lock();
-                        } else if (el.hasAttribute("hascaption")) {
-                            new TomSelect(el, {
-                                create: isCreatable,
-                                sortField: {
-                                    field: sortField,
-                                    direction: "asc",
-                                },
-                                render: {
-                                    option: function(data, escape) {
-                                        return '<div>' +
-                                            '<span>' + escape(data.text) + '</span>' +
-                                            '<span class="block mt-0.5 text-xs text-gray-500 dark:text-gray-400">' + escape(data.caption) + '</span>' +
-                                        '</div>';
-                                    }
-                                }
-                            });
-                        } else {
-                            new TomSelect(el, {
-                                create: isCreatable,
-                                sortField: {
-                                    field: sortField,
-                                    direction: "asc",
-                                },
-                            });
-                        }
-                    }
-                }
-            }
+        if (el.hasAttribute("normal-select") || el.classList.contains("dt-input") || el.classList.contains("tomselected")) {
+            return;
         }
+
+        const isCreatable = el.getAttribute("data-create") ?? false;
+        const hasDataOrder = Array.from(el.options).some(option => option.hasAttribute("data-order"));
+        const sortField = hasDataOrder ? "order" : "text";
+        const config = {
+            create: isCreatable,
+            sortField: {
+                field: sortField,
+                direction: "asc",
+            }
+        };
+
+        if (el.hasAttribute("readonly")) {
+            new TomSelect(el, config).lock();
+        } else if (el.hasAttribute("hascaption")) {
+            config.render = {
+                option: function (data, escape) {
+                    return '<div>' +
+                        '<span>' + escape(data.text) + '</span>' +
+                        '<span class="block mt-0.5 text-xs text-gray-500 dark:text-gray-400">' + escape(data.caption) + '</span>' +
+                    '</div>';
+                }
+            };
+        }
+
+        if (el.hasAttribute("multiple")) {
+            config.plugins = ["remove_button", "caret_position"];
+        }
+
+        new TomSelect(el, config);
     });
 }
 
