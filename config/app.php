@@ -23,7 +23,7 @@ return [
     | Application Version
     |--------------------------------------------------------------------------
     */
-    'version' => env('APP_VERSION', trim(exec('git rev-parse --abbrev-ref HEAD'))),
+    'version' => env('APP_VERSION', null),
 
     /*
     |--------------------------------------------------------------------------
