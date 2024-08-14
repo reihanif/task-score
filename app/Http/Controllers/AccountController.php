@@ -73,12 +73,25 @@ class AccountController extends Controller
 
     public function updatePermissions(Request $request, $id)
     {
-        $permission = Permission::where('user_id', $id)->firstOrFail();
+        $user = User::findOrFail($id);
 
-        $permission->manage_user = $request->manage_user ? true : false;
-        $permission->manage_department = $request->manage_department ? true : false;
-        $permission->manage_position = $request->manage_position ? true : false;
-        $permission->save();
+        if($request->manage_user) {
+            $user->assignPermission('manage-user');
+        } else {
+            $user->unassignPermission('manage-user');
+        }
+
+        if($request->manage_department) {
+            $user->assignPermission('manage-department');
+        } else {
+            $user->unassignPermission('manage-department');
+        }
+
+        if($request->manage_position) {
+            $user->assignPermission('manage-position');
+        } else {
+            $user->unassignPermission('manage-position');
+        }
 
         return redirect()->back()->with('success', 'Account permission has been updated!');
     }

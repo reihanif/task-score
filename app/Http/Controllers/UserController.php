@@ -97,7 +97,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::findOrFail($id);
+        $positions = Position::orderBy('name', 'asc')->get();
+
+        return view('app.account.settings', compact('user', 'positions'));
     }
 
     /**
