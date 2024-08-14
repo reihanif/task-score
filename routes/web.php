@@ -75,30 +75,34 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/{timeExtension}/time-extension-approve', [TimeExtensionController::class, 'approve'])->name('assignment.time-extension-approve');
     });
 
-    Route::group(['can' => 'viewAny, User::class'], function () {
+    Route::group(['middleware' => 'can:viewAny,User::class'], function () {
         Route::put('/account/{user}/update', [AccountController::class, 'updateAccount'])->name('account.update');
         Route::put('/account/{user}/change-password', [AccountController::class, 'changePassword'])->name('account.change-password');
 
         Route::resource('users', UserController::class);
     });
 
-    Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
-    Route::resource('departments', DepartmentController::class)->only([
-        'store',
-        'update',
-        'destroy',
-        'show'
-    ]);
+    Route::group(['middleware' => 'can:viewAny,Department::class'], function () {
+        Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
+        Route::resource('departments', DepartmentController::class)->only([
+            'store',
+            'update',
+            'destroy',
+            'show'
+        ]);
+    });
 
-    Route::resource('positions', PositionController::class)->only([
-        'index',
-        'store',
-        'update',
-        'destroy',
-        'show'
-    ]);
-    Route::get('/hierarchy', [HierarchyController::class, 'index'])->name('hierarchy');
+    Route::group(['middleware' => 'can:viewAny,Position::class'], function () {
+        Route::resource('positions', PositionController::class)->only([
+            'index',
+            'store',
+            'update',
+            'destroy',
+            'show'
+        ]);
+        Route::get('/hierarchy', [HierarchyController::class, 'index'])->name('hierarchy');
 
-    Route::post('/positions/{position}/authorize', [RelationController::class, 'authorizePosition'])->name('positions.authorize');
-    Route::put('/positions/{position}/unauthorize', [RelationController::class, 'unauthorizePosition'])->name('positions.unauthorize');
+        Route::post('/positions/{position}/authorize', [RelationController::class, 'authorizePosition'])->name('positions.authorize');
+        Route::put('/positions/{position}/unauthorize', [RelationController::class, 'unauthorizePosition'])->name('positions.unauthorize');
+    });
 });
