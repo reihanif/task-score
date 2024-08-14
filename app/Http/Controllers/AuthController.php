@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -49,7 +50,7 @@ class AuthController extends Controller
                 ldap_bind($ldap_connect, $ldap_rdn, $password);
                 $exception = false;
             } catch (\Exception $exception) {
-                return redirect()->route('auth.index')->withErrors('Username or password invalid')->onlyInput('username');
+                session()->flash('error', 'Incorrect username or password');
             }
 
             // successfully binding to ldap server
