@@ -191,10 +191,11 @@
                                             </button>
                                         </div>
                                         <select :name="'assignees[' + index + ']'"
+                                                hascaption
                                                 required>
                                             <option value="">Select assignee</option>
                                             @foreach ($assignees as $assignee)
-                                                <option value="{{ $assignee->id }}">{{ $assignee->name }}</option>
+                                                <option value="{{ $assignee->id }}" data-caption="{{ $assignee->position->name }}">{{ $assignee->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>

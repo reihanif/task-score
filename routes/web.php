@@ -64,6 +64,7 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
         Route::post('/{task}/resolve', [AssignmentController::class, 'resolve'])->name('assignment.resolve');
+        Route::put('/{task}/update-due', [AssignmentController::class, 'updateDue'])->name('assignment.update-due');
 
         Route::put('/{submission}/submission-approval', [SubmissionController::class, 'approve'])->name('assignment.approve-submission');
         Route::put('/{submission}/submission-rejection', [SubmissionController::class, 'reject'])->name('assignment.reject-submission');
@@ -74,24 +75,24 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/{timeExtension}/time-extension-approve', [TimeExtensionController::class, 'approve'])->name('assignment.time-extension-approve');
     });
 
-    Route::group(['middleware' => 'permission:manage_user'], function () {
+    Route::group(['middleware' => 'can:viewAny,\App\Models\User'], function () {
         Route::put('/account/{user}/update', [AccountController::class, 'updateAccount'])->name('account.update');
         Route::put('/account/{user}/change-password', [AccountController::class, 'changePassword'])->name('account.change-password');
 
-        Route::resource('users', UserController::class)->except([
+        Route::resource('users', UserController::class);
+    });
+
+    Route::group(['middleware' => 'can:viewAny,\App\Models\Department'], function () {
+        Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
+        Route::resource('departments', DepartmentController::class)->only([
+            'store',
+            'update',
+            'destroy',
             'show'
         ]);
     });
 
-    Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
-    Route::resource('departments', DepartmentController::class)->only([
-        'store',
-        'update',
-        'destroy',
-        'show'
-    ])->middleware('permission:manage_department');
-
-    Route::group(['middleware' => 'permission:manage_position'], function () {
+    Route::group(['middleware' => 'can:viewAny,\App\Models\Position'], function () {
         Route::resource('positions', PositionController::class)->only([
             'index',
             'store',
