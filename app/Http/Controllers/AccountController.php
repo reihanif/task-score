@@ -73,6 +73,15 @@ class AccountController extends Controller
 
     public function updatePermissions(Request $request, $id)
     {
+        /*
+        * Validate all input fields
+        */
+        $this->validate($request, [
+            'manage_user' => 'required',
+            'manage_department' => 'required',
+            'manage_position' => 'required',
+        ]);
+
         $user = User::findOrFail($id);
 
         if($request->manage_user) {
