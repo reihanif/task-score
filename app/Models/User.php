@@ -68,11 +68,42 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the permission associated with the user.
+     * Get the permissions associated with the user.
      */
-    public function permission(): HasOne
+    public function permissions()
     {
-        return $this->hasOne(Permission::class);
+        return $this->belongsToMany(Permission::class);
+    }
+
+    /**
+     * Check if user has specified permission.
+     */
+    public function hasPermission($permissionName)
+    {
+        return $this->permissions()->where('name', $permissionName)->exists();
+    }
+
+    /**
+     * Assign permission to user.
+     */
+    public function assignPermission($permission)
+    {
+        if (is_string($permission)) {
+            $permission = Permission::where('name', $permission)->firstOrFail();
+        }
+        $this->permissions()->attach($permission);
+    }
+
+    /**
+     * Unassign permission from user.
+     */
+    public function unassignPermission($permission)
+    {
+        if (is_string($permission)) {
+            $permission = Permission::where('name', $permission)->firstOrFail();
+        }
+
+        $this->permissions()->detach($permission);
     }
 
     /**

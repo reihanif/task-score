@@ -6,9 +6,7 @@
     <div class="col-span-full flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
         <div>
             <h5 class="mr-3 font-semibold dark:text-white">Account Settings</h5>
-            @if (in_array(true, [
-                Auth::User()->permission->manage_user,
-            ]))
+            @can('viewAny', \App\Models\User::class)
                 <x-breadcrumbs class="mt-2"
                     :menus="collect([
                         [
@@ -23,7 +21,7 @@
             @else
                 <x-breadcrumbs class="mt-2"
                     :menus="collect([['name' => 'Account Settings', 'route' => null]])" />
-            @endif
+            @endcan
         </div>
     </div>
 
