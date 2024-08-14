@@ -75,14 +75,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::put('/{timeExtension}/time-extension-approve', [TimeExtensionController::class, 'approve'])->name('assignment.time-extension-approve');
     });
 
-    Route::group(['middleware' => 'can:viewAny,User::class'], function () {
+    Route::group(['middleware' => 'can:viewAny,\App\Models\User'], function () {
         Route::put('/account/{user}/update', [AccountController::class, 'updateAccount'])->name('account.update');
         Route::put('/account/{user}/change-password', [AccountController::class, 'changePassword'])->name('account.change-password');
 
         Route::resource('users', UserController::class);
     });
 
-    Route::group(['middleware' => 'can:viewAny,Department::class'], function () {
+    Route::group(['middleware' => 'can:viewAny,\App\Models\Department'], function () {
         Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
         Route::resource('departments', DepartmentController::class)->only([
             'store',
@@ -92,7 +92,7 @@ Route::group(['middleware' => 'auth'], function () {
         ]);
     });
 
-    Route::group(['middleware' => 'can:viewAny,Position::class'], function () {
+    Route::group(['middleware' => 'can:viewAny,\App\Models\Position'], function () {
         Route::resource('positions', PositionController::class)->only([
             'index',
             'store',
