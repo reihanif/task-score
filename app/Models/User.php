@@ -95,6 +95,18 @@ class User extends Authenticatable
     }
 
     /**
+     * Unassign permission from user.
+     */
+    public function unassignPermission($permission)
+    {
+        if (is_string($permission)) {
+            $permission = Permission::where('name', $permission)->firstOrFail();
+        }
+
+        $this->permissions()->detach($permission);
+    }
+
+    /**
      * Get all the tasks associated with the user as assignee.
      */
     public function tasks(): HasMany

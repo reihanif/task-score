@@ -23,10 +23,19 @@ class Permission extends Model
 
     public function assignToUser($user)
     {
-        if (is_string($user)) {
+        if ($user) {
             $user = User::where('id', $user)->firstOrFail();
         }
         $this->users()->attach($user);
+    }
+
+    public function detachFromUser($user)
+    {
+        if ($user) {
+            $user = User::where('id', $user)->firstOrFail();
+        }
+
+        $this->users()->detach($user);
     }
 
     public function scopeWithUser($query, $userId)
