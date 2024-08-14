@@ -73,7 +73,6 @@ class AuthController extends Controller
                             'provider' => 'ldap'
                         ]
                     );
-                    Permission::firstOrCreate(['user_id' => $user->id]);
                     Auth::login($user);
 
                     // Execute database insertations
@@ -107,7 +106,7 @@ class AuthController extends Controller
             } catch (\Exception $e) {
                 DB::rollback();
                 // Handle the error appropriately
-                return redirect()->back()->with('errors', 'Update assignment failed');
+                return redirect()->back()->withErrors('Login attempt failed');
             }
 
             return redirect()->intended('/')->with('success', 'Welcome ' . $user->name);

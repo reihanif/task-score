@@ -67,8 +67,36 @@ return new class extends Migration
      */
     public function down(): void
     {
+        // Recreate the old_permissions table
+        Schema::create('old_permissions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignUuid('user_id')->constrained()->onDelete('cascade');
+            $table->boolean('manage_user')->default(false);
+            $table->boolean('manage_department')->default(false);
+            $table->boolean('manage_position')->default(false);
+            $table->timestamps();
+        });
+
+        // Retrieve the permissions and user associations
+        $permissionUser = DB::table('permission_user')->get();
+
+        foreach ($permissionUser as $permission) {
+            $newPermissionName = DB::table('permissions')->where('id', $permission->permission_id)->value('name');
+            $permissionName = str_replace('-', '_', $newPermissionName);
+
+            DB::table('old_permissions')->updateOrInsert(
+                ['user_id' => $permission->user_id],
+                [$permissionName => true]
+            );
+        }
+
+        // Drop the permission_user table
         Schema::dropIfExists('permission_user');
+
+        // Drop the permissions table
         Schema::dropIfExists('permissions');
+
+        // Rename old_permissions back to permissions
         Schema::rename('old_permissions', 'permissions');
     }
 };
