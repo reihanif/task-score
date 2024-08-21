@@ -242,19 +242,25 @@ TomSelect.define("caret_position", TomSelect_caret_position);
 // Function to initialize TomSelect for all select elements
 function initializeTomSelects() {
     document.querySelectorAll("select").forEach((el) => {
-        if (el.hasAttribute("normal-select") || el.classList.contains("dt-input") || el.classList.contains("tomselected")) {
+        if (
+            el.hasAttribute("normal-select") ||
+            el.classList.contains("dt-input") ||
+            el.classList.contains("tomselected")
+        ) {
             return;
         }
 
         const isCreatable = el.getAttribute("data-create") ?? false;
-        const hasDataOrder = Array.from(el.options).some(option => option.hasAttribute("data-order"));
+        const hasDataOrder = Array.from(el.options).some((option) =>
+            option.hasAttribute("data-order")
+        );
         const sortField = hasDataOrder ? "order" : "text";
         const config = {
             create: isCreatable,
             sortField: {
                 field: sortField,
                 direction: "asc",
-            }
+            },
         };
 
         if (el.hasAttribute("readonly")) {
@@ -262,11 +268,17 @@ function initializeTomSelects() {
         } else if (el.hasAttribute("hascaption")) {
             config.render = {
                 option: function (data, escape) {
-                    return '<div>' +
-                        '<span>' + escape(data.text) + '</span>' +
-                        '<span class="block mt-0.5 text-xs text-gray-500 dark:text-gray-400">' + escape(data.caption) + '</span>' +
-                    '</div>';
-                }
+                    return (
+                        "<div>" +
+                        "<span>" +
+                        escape(data.text) +
+                        "</span>" +
+                        '<span class="block mt-0.5 text-xs text-gray-500 dark:text-gray-400">' +
+                        escape(data.caption) +
+                        "</span>" +
+                        "</div>"
+                    );
+                },
             };
         }
 

@@ -43,23 +43,24 @@
                                     required>
                         <option value="">Select assignment category</option>
                         @foreach ($categories as $key => $category)
-                            <option value="{{ $category }}" data-order="{{ str_pad($key, 2, '0', STR_PAD_LEFT) }}">{{ $category }}</option>
+                            <option data-order="{{ str_pad($key, 2, '0', STR_PAD_LEFT) }}"
+                                    value="{{ $category }}">{{ $category }}</option>
                         @endforeach
                     </x-forms.select>
 
                     <template x-if="category == 'Lainnya'">
                         <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                                   id="input-category-other"
-                                   name="category_other"
-                                   type="text"
-                                   autocomplete="off"
-                                   placeholder="Category name"
-                                   maxlength="255"
-                                   required>
+                               id="input-category-other"
+                               name="category_other"
+                               type="text"
+                               autocomplete="off"
+                               placeholder="Category name"
+                               maxlength="255"
+                               required>
                     </template>
                 </div>
 
-                <div class="col-span-2 space-y-4">
+                <div class="space-y-4">
                     <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
                         Assignment difficulty level
                         <span class="text-red-600 dark:text-red-500">*</span>
@@ -126,6 +127,97 @@
                     </div>
                 </div>
 
+                <div class="space-y-4"
+                     x-data="recurringComponent">
+                    <label class="inline-block cursor-pointer items-center space-y-2">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurring</div>
+                        <input class="peer sr-only"
+                               type="checkbox"
+                               x-model="recurring">
+                        <div
+                             class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800">
+                        </div>
+                    </label>
+
+                    <div class="space-y-2 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+                         x-show="recurring"
+                         x-data="{ repeat: '' }">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurrance pattern</div>
+                        <div class="space-y-2">
+                            <label for="input-repeat" class="text-sm font-normal text-gray-900 dark:text-gray-300">Repeat<span
+                                      class="text-red-600 dark:text-red-500">*</span></label>
+                            <select id="input-repeat"
+                                    x-model="repeat"
+                                    required>
+                                <option value="">Select repeat pattern</option>
+                                <option data-order="0"
+                                        value="daily">Daily</option>
+                                <option data-order="1"
+                                        value="weekly">Weekly</option>
+                                <option data-order="2"
+                                        value="monthly">Monthly</option>
+                                <option data-order="3"
+                                        value="yearly">Yearly</option>
+                            </select>
+                        </div>
+                        <div x-show="repeat && repeat !== 'daily'">
+                            <div class="space-y-2">
+                                <div class="text-sm font-normal text-gray-900 dark:text-gray-300">On<span
+                                          class="text-red-600 dark:text-red-500">*</span></div>
+                                <template x-if="repeat == 'weekly'">
+                                    <ul class="grid w-full grid-cols-5 gap-2">
+                                        <template x-for="(day, index) in days">
+                                            <li>
+                                                <input class="peer hidden"
+                                                       name="day"
+                                                       x-model="recureDays"
+                                                       type="checkbox"
+                                                       x-bind:id="day.name"
+                                                       x-bind:value="day.name">
+                                                <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                       x-bind:for="day.name"
+                                                       x-text="day.shortname">
+                                                </label>
+                                            </li>
+                                        </template>
+                                        <div class="col-span-5 text-xs">
+                                            <span>Occurs every week on </span><span x-text="formattedDays()"></span>
+                                        </div>
+                                    </ul>
+                                </template>
+                                <div x-show="repeat == 'monthly'">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <select id="day-of"
+                                                required>
+                                            <option value="1">First</option>
+                                        </select>
+                                        <select id="day"
+                                                required>
+                                            <option value="1">Monday</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div x-data="timeSelector()" class="space-y-2">
+                            <label for="input-time" class="text-sm font-normal text-gray-900 dark:text-gray-300">At<span
+                                      class="text-red-600 dark:text-red-500">*</span></label>
+                            <select id="input-time"
+                                    x-model="selectedTime"
+                                    required>
+                                <option value="">Select time</option>
+                                <template x-for="time in availableTimes()"
+                                          x-bind:key="time"
+                                          x-init="$nextTick(() => initializeTomSelects())">
+                                    <option x-bind:value="time"
+                                            x-text="time">
+                                    </option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-span-2">
                     <x-forms.text-editor name="description"
                                          value="{{ old('description') }}"
@@ -134,6 +226,7 @@
                                          required>
                     </x-forms.text-editor>
                 </div>
+
                 <div class="col-span-2">
                     <label class="mb-2 inline-flex gap-1 text-sm font-medium text-gray-900 dark:text-white"
                            for="file">Attachment
@@ -195,7 +288,8 @@
                                                 required>
                                             <option value="">Select assignee</option>
                                             @foreach ($assignees as $assignee)
-                                                <option value="{{ $assignee->id }}" data-caption="{{ $assignee->position?->name }}">{{ $assignee->name }}</option>
+                                                <option data-caption="{{ $assignee->position?->name }}"
+                                                        value="{{ $assignee->id }}">{{ $assignee->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -364,7 +458,8 @@
                                                 </template>
                                                 <div
                                                      class="relative border-b bg-white p-2.5 dark:border-gray-600 dark:bg-gray-700">
-                                                    <div x-on:click="$el.querySelector('[contenteditable]').focus()" class="cursor-text min-h-24 block h-full w-full border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                                                    <div class="min-h-24 block h-full w-full cursor-text border-0 bg-white px-0 text-sm text-gray-800 focus:ring-0 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                                                         x-on:click="$el.querySelector('[contenteditable]').focus()"
                                                          placeholder="Assignment detail for assignee"
                                                          x-ref="element">
                                                     </div>
@@ -381,22 +476,22 @@
                                         </div>
                                     </div>
                                 </div>
-                                    <div class="ml-2"
-                                         x-show="elementsCount > 1">
-                                        <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
-                                                type="button"
-                                                x-on:click="removeElement">
-                                            <svg class="h-4 w-4"
-                                                 aria-hidden="true"
-                                                 xmlns="http://www.w3.org/2000/svg"
-                                                 fill="currentColor"
-                                                 viewBox="0 0 24 24">
-                                                <path fill-rule="evenodd"
-                                                      d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                                                      clip-rule="evenodd" />
-                                            </svg>
-                                        </button>
-                                    </div>
+                                <div class="ml-2"
+                                     x-show="elementsCount > 1">
+                                    <button class="inline-flex rounded-lg border border-gray-200 bg-white p-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-red-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
+                                            type="button"
+                                            x-on:click="removeElement">
+                                        <svg class="h-4 w-4"
+                                             aria-hidden="true"
+                                             xmlns="http://www.w3.org/2000/svg"
+                                             fill="currentColor"
+                                             viewBox="0 0 24 24">
+                                            <path fill-rule="evenodd"
+                                                  d="M8.586 2.586A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4a2 2 0 0 1 .586-1.414ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
+                                                  clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </template>
@@ -413,6 +508,34 @@
 </x-modal>
 
 <script>
+    function recurringComponent() {
+        return {
+            recurring: false,
+            recureDays: [],
+            days: [
+                { name: '1', shortname: 'Mon' },
+                { name: '2', shortname: 'Tue' },
+                { name: '3', shortname: 'Wed' },
+                { name: '4', shortname: 'Thu' },
+                { name: '5', shortname: 'Fri' }
+            ],
+            formattedDays() {
+                let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                let conjuction = '';
+
+                if (this.recureDays.length == 2) {
+                    conjuction = ' and ';
+                } else {
+                    conjuction = ', ';
+                }
+
+                let result = this.recureDays.sort((a, b) => a.localeCompare(b)).map(day => daysOfWeek[day]).join(conjuction);
+
+                return result;
+            }
+        }
+    }
+
     function addMinutesFromCurrentTime(add) {
         let now = new Date();
         now.setMinutes(now.getMinutes() + add);
@@ -421,6 +544,31 @@
         let minutes = String(now.getMinutes()).padStart(2, '0');
 
         return `${hours}:${minutes}`;
+    }
+
+    function timeSelector() {
+        return {
+            selectedTime: '',
+            startTime: '07:30',
+            endTime: '16:00',
+            availableTimes() {
+                const times = [];
+                let currentTime = this.startTime;
+
+                while (currentTime <= this.endTime) {
+                    times.push(currentTime);
+                    currentTime = this.addMinutes(currentTime, 30);
+                }
+
+                return times;
+            },
+            addMinutes(time, minutes) {
+                const [hour, minute] = time.split(':').map(Number);
+                const date = new Date();
+                date.setHours(hour, minute + minutes);
+                return date.toTimeString().slice(0, 5);
+            }
+        }
     }
 
     function difficultyOption() {
