@@ -409,15 +409,11 @@
 
                 <div class="space-y-4"
                      x-data="recurringComponent">
-                    <label class="inline-block cursor-pointer items-center space-y-2">
-                        <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurring</div>
-                        <input class="peer sr-only"
-                               type="checkbox"
-                               x-model="recurring">
-                        <div
-                             class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800">
-                        </div>
-                    </label>
+
+                    <div class="flex items-center mb-4">
+                        <input id="recurring-checkbox" type="checkbox" x-model="recurring" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="recurring-checkbox" class="cursor-pointer ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Recurring assignment</label>
+                    </div>
 
                     <div class="space-y-2 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
                          x-show="recurring"
@@ -429,6 +425,7 @@
                                       class="text-red-600 dark:text-red-500">*</span></label>
                             <select id="input-repeat"
                                     x-model="repeat"
+                                    name="repeat"
                                     required>
                                 <option value="">Select repeat pattern</option>
                                 <option data-order="0"
@@ -466,60 +463,36 @@
                                         </div>
                                     </ul>
                                 </template>
-                                <div x-show="repeat == 'monthly'">
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <div class="relative flex max-w-[8rem] items-center">
-                                            <button class="h-11 rounded-s-lg border border-gray-300 bg-gray-100 p-3 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
-                                                    id="decrement-button"
-                                                    data-input-counter-decrement="quantity-input"
-                                                    type="button">
-                                                <svg class="h-3 w-3 text-gray-900 dark:text-white"
-                                                     aria-hidden="true"
-                                                     xmlns="http://www.w3.org/2000/svg"
-                                                     fill="none"
-                                                     viewBox="0 0 18 2">
-                                                    <path stroke="currentColor"
-                                                          stroke-linecap="round"
-                                                          stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M1 1h16" />
-                                                </svg>
-                                            </button>
-                                            <input class="block h-11 w-full border-x-0 border-gray-300 bg-gray-50 py-2.5 text-center text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                                   id="quantity-input"
-                                                   data-input-counter
-                                                   data-input-counter-min="1"
-                                                   data-input-counter-max="31"
-                                                   type="text"
-                                                   aria-describedby="helper-text-explanation"
-                                                   placeholder="Day"
-                                                   required />
-                                            <button class="h-11 rounded-e-lg border border-gray-300 bg-gray-100 p-3 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
-                                                    id="increment-button"
-                                                    data-input-counter-increment="quantity-input"
-                                                    type="button">
-                                                <svg class="h-3 w-3 text-gray-900 dark:text-white"
-                                                     aria-hidden="true"
-                                                     xmlns="http://www.w3.org/2000/svg"
-                                                     fill="none"
-                                                     viewBox="0 0 18 18">
-                                                    <path stroke="currentColor"
-                                                          stroke-linecap="round"
-                                                          stroke-linejoin="round"
-                                                          stroke-width="2"
-                                                          d="M9 1v16M1 9h16" />
-                                                </svg>
-                                            </button>
+                                <template x-if="repeat == 'monthly'">
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 start-0 top-0 flex items-center ps-3.5 pointer-events-none">
+                                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                                <path fill-rule="evenodd" d="M6 5V4a1 1 0 1 1 2 0v1h3V4a1 1 0 1 1 2 0v1h3V4a1 1 0 1 1 2 0v1h1a2 2 0 0 1 2 2v2H3V7a2 2 0 0 1 2-2h1ZM3 19v-8h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Zm5-6a1 1 0 1 0 0 2h8a1 1 0 1 0 0-2H8Z" clip-rule="evenodd"/>
+                                            </svg>
                                         </div>
+                                        <select id="input-day"
+                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                name="day"
+                                                x-model="day"
+                                                required>
+                                            <option value="">Select day</option>
+                                            <template x-for="days in daysOfMonth()"
+                                                    x-bind:key="days">
+                                                <option x-bind:value="days"
+                                                        x-text="days">
+                                                </option>
+                                            </template>
+                                        </select>
                                     </div>
-                                </div>
+                                </template>
                             </div>
                         </template>
-                        <div class="space-y-2"
-                             x-data="timeSelector()">
+                        <div class="space-y-2">
                             <label class="text-sm font-normal text-gray-900 dark:text-gray-300"
                                    for="input-time">At<span class="text-red-600 dark:text-red-500">*</span></label>
                             <select id="input-time"
+                                    name="time"
+                                    class="recurring-input"
                                     x-model="selectedTime"
                                     normal-select
                                     required>
@@ -571,6 +544,9 @@
                     shortname: 'Fri'
                 }
             ],
+            daysOfMonth() {
+                return Array.from({ length: 31 }, (_, i) => i + 1);
+            },
             formattedDays() {
                 let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                 let conjuction = '';
@@ -586,21 +562,6 @@
 
                 return result;
             },
-        }
-    }
-
-    function addMinutesFromCurrentTime(add) {
-        let now = new Date();
-        now.setMinutes(now.getMinutes() + add);
-
-        let hours = String(now.getHours()).padStart(2, '0');
-        let minutes = String(now.getMinutes()).padStart(2, '0');
-
-        return `${hours}:${minutes}`;
-    }
-
-    function timeSelector() {
-        return {
             selectedTime: '',
             startTime: '07:30',
             endTime: '16:00',
@@ -629,23 +590,33 @@
         }
     }
 
+    function addMinutesFromCurrentTime(add) {
+        let now = new Date();
+        now.setMinutes(now.getMinutes() + add);
+
+        let hours = String(now.getHours()).padStart(2, '0');
+        let minutes = String(now.getMinutes()).padStart(2, '0');
+
+        return `${hours}:${minutes}`;
+    }
+
     function initializeTomSelect() {
-        const el = document.querySelector('#input-time');
-
-        if (el) {
-            if (el.tomselect) {
-                el.tomselect.destroy();
-            }
-
-            const config = {
-                sortField: {
-                    field: "text",
-                    direction: "asc",
+        document.querySelectorAll('.recurring-input').forEach((el) => {
+            if (el) {
+                if (el.tomselect) {
+                    el.tomselect.destroy();
                 }
-            };
 
-            new TomSelect(el, config);
-        }
+                const config = {
+                    sortField: {
+                        field: "order",
+                        direction: "asc",
+                    }
+                };
+
+                new TomSelect(el, config);
+            }
+        })
     }
 
     function difficultyOption() {
