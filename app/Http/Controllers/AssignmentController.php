@@ -109,6 +109,7 @@ class AssignmentController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
         $request->validate([
             'category' => 'required',
             'subject' => 'required|unique:assignments,subject|max:255',

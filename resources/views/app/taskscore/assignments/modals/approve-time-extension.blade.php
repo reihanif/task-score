@@ -16,8 +16,7 @@
                     <p class="due-label mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                         Add time extension
                     </p>
-                    <ul
-                        class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
+                    <ul class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
                         <li class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
                             <div class="interval flex items-center ps-3">
                                 <input
@@ -48,7 +47,6 @@
                                     Select exact time
                                 </label>
                             </div>
-                        </li>
                         </li>
                     </ul>
                 </div>

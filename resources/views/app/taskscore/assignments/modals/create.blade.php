@@ -10,6 +10,7 @@
         <div class="mb-5">
             <div class="space-y-4"
                  x-data="difficultyOption()">
+
                 <div>
                     <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                            for="input-subject">
@@ -123,97 +124,6 @@
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="space-y-4"
-                     x-data="recurringComponent">
-                    <label class="inline-block cursor-pointer items-center space-y-2">
-                        <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurring</div>
-                        <input class="peer sr-only"
-                               type="checkbox"
-                               x-model="recurring">
-                        <div
-                             class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800">
-                        </div>
-                    </label>
-
-                    <div class="space-y-2 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
-                         x-show="recurring"
-                         x-data="{ repeat: '' }">
-                        <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurrance pattern</div>
-                        <div class="space-y-2">
-                            <label for="input-repeat" class="text-sm font-normal text-gray-900 dark:text-gray-300">Repeat<span
-                                      class="text-red-600 dark:text-red-500">*</span></label>
-                            <select id="input-repeat"
-                                    x-model="repeat"
-                                    required>
-                                <option value="">Select repeat pattern</option>
-                                <option data-order="0"
-                                        value="daily">Daily</option>
-                                <option data-order="1"
-                                        value="weekly">Weekly</option>
-                                <option data-order="2"
-                                        value="monthly">Monthly</option>
-                                <option data-order="3"
-                                        value="yearly">Yearly</option>
-                            </select>
-                        </div>
-                        <div x-show="repeat && repeat !== 'daily'">
-                            <div class="space-y-2">
-                                <div class="text-sm font-normal text-gray-900 dark:text-gray-300">On<span
-                                          class="text-red-600 dark:text-red-500">*</span></div>
-                                <template x-if="repeat == 'weekly'">
-                                    <ul class="grid w-full grid-cols-5 gap-2">
-                                        <template x-for="(day, index) in days">
-                                            <li>
-                                                <input class="peer hidden"
-                                                       name="day"
-                                                       x-model="recureDays"
-                                                       type="checkbox"
-                                                       x-bind:id="day.name"
-                                                       x-bind:value="day.name">
-                                                <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                       x-bind:for="day.name"
-                                                       x-text="day.shortname">
-                                                </label>
-                                            </li>
-                                        </template>
-                                        <div class="col-span-5 text-xs">
-                                            <span>Occurs every week on </span><span x-text="formattedDays()"></span>
-                                        </div>
-                                    </ul>
-                                </template>
-                                <div x-show="repeat == 'monthly'">
-                                    <div class="grid grid-cols-2 gap-2">
-                                        <select id="day-of"
-                                                required>
-                                            <option value="1">First</option>
-                                        </select>
-                                        <select id="day"
-                                                required>
-                                            <option value="1">Monday</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div x-data="timeSelector()" class="space-y-2">
-                            <label for="input-time" class="text-sm font-normal text-gray-900 dark:text-gray-300">At<span
-                                      class="text-red-600 dark:text-red-500">*</span></label>
-                            <select id="input-time"
-                                    x-model="selectedTime"
-                                    required>
-                                <option value="">Select time</option>
-                                <template x-for="time in availableTimes()"
-                                          x-bind:key="time"
-                                          x-init="$nextTick(() => initializeTomSelects())">
-                                    <option x-bind:value="time"
-                                            x-text="time">
-                                    </option>
-                                </template>
-                            </select>
                         </div>
                     </div>
                 </div>
@@ -496,6 +406,134 @@
                         </div>
                     </template>
                 </div>
+
+                <div class="space-y-4"
+                     x-data="recurringComponent">
+                    <label class="inline-block cursor-pointer items-center space-y-2">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurring</div>
+                        <input class="peer sr-only"
+                               type="checkbox"
+                               x-model="recurring">
+                        <div
+                             class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:-translate-x-full dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800">
+                        </div>
+                    </label>
+
+                    <div class="space-y-2 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+                         x-show="recurring"
+                         x-data="{ repeat: '' }">
+                        <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurrance pattern</div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-normal text-gray-900 dark:text-gray-300"
+                                   for="input-repeat">Repeat<span
+                                      class="text-red-600 dark:text-red-500">*</span></label>
+                            <select id="input-repeat"
+                                    x-model="repeat"
+                                    required>
+                                <option value="">Select repeat pattern</option>
+                                <option data-order="0"
+                                        value="daily">Daily</option>
+                                <option data-order="1"
+                                        value="weekly">Weekly</option>
+                                <option data-order="2"
+                                        value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <template x-if="repeat && repeat !== 'daily'">
+                            <div class="space-y-2">
+                                <div class="text-sm font-normal text-gray-900 dark:text-gray-300">
+                                    On<span x-show="repeat == 'monthly'"> day</span><span
+                                          class="text-red-600 dark:text-red-500">*</span></div>
+                                <template x-if="repeat == 'weekly'">
+                                    <ul class="grid w-full grid-cols-5 gap-2">
+                                        <template x-for="(day, index) in days">
+                                            <li>
+                                                <input class="peer hidden"
+                                                       name="day"
+                                                       type="checkbox"
+                                                       x-model="recureDays"
+                                                       x-bind:id="day.name"
+                                                       x-bind:value="day.name">
+                                                <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                       x-bind:for="day.name"
+                                                       x-text="day.shortname">
+                                                </label>
+                                            </li>
+                                        </template>
+                                        <div class="col-span-5 text-xs">
+                                            <span x-show="recureDays.length > 0">Occurs every week on </span><span
+                                                  x-text="formattedDays()"></span>
+                                        </div>
+                                    </ul>
+                                </template>
+                                <div x-show="repeat == 'monthly'">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <div class="relative flex max-w-[8rem] items-center">
+                                            <button class="h-11 rounded-s-lg border border-gray-300 bg-gray-100 p-3 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                                    id="decrement-button"
+                                                    data-input-counter-decrement="quantity-input"
+                                                    type="button">
+                                                <svg class="h-3 w-3 text-gray-900 dark:text-white"
+                                                     aria-hidden="true"
+                                                     xmlns="http://www.w3.org/2000/svg"
+                                                     fill="none"
+                                                     viewBox="0 0 18 2">
+                                                    <path stroke="currentColor"
+                                                          stroke-linecap="round"
+                                                          stroke-linejoin="round"
+                                                          stroke-width="2"
+                                                          d="M1 1h16" />
+                                                </svg>
+                                            </button>
+                                            <input class="block h-11 w-full border-x-0 border-gray-300 bg-gray-50 py-2.5 text-center text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                                   id="quantity-input"
+                                                   data-input-counter
+                                                   data-input-counter-min="1"
+                                                   data-input-counter-max="31"
+                                                   type="text"
+                                                   aria-describedby="helper-text-explanation"
+                                                   placeholder="Day"
+                                                   required />
+                                            <button class="h-11 rounded-e-lg border border-gray-300 bg-gray-100 p-3 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                                                    id="increment-button"
+                                                    data-input-counter-increment="quantity-input"
+                                                    type="button">
+                                                <svg class="h-3 w-3 text-gray-900 dark:text-white"
+                                                     aria-hidden="true"
+                                                     xmlns="http://www.w3.org/2000/svg"
+                                                     fill="none"
+                                                     viewBox="0 0 18 18">
+                                                    <path stroke="currentColor"
+                                                          stroke-linecap="round"
+                                                          stroke-linejoin="round"
+                                                          stroke-width="2"
+                                                          d="M9 1v16M1 9h16" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="space-y-2"
+                             x-data="timeSelector()">
+                            <label class="text-sm font-normal text-gray-900 dark:text-gray-300"
+                                   for="input-time">At<span class="text-red-600 dark:text-red-500">*</span></label>
+                            <select id="input-time"
+                                    x-model="selectedTime"
+                                    normal-select
+                                    required>
+                                <option value="">Select time</option>
+                                <template x-for="time in availableTimes()"
+                                          x-bind:key="time">
+                                    <option x-bind:value="time"
+                                            x-text="time">
+                                    </option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="flex place-content-end">
@@ -512,12 +550,26 @@
         return {
             recurring: false,
             recureDays: [],
-            days: [
-                { name: '1', shortname: 'Mon' },
-                { name: '2', shortname: 'Tue' },
-                { name: '3', shortname: 'Wed' },
-                { name: '4', shortname: 'Thu' },
-                { name: '5', shortname: 'Fri' }
+            days: [{
+                    name: '1',
+                    shortname: 'Mon'
+                },
+                {
+                    name: '2',
+                    shortname: 'Tue'
+                },
+                {
+                    name: '3',
+                    shortname: 'Wed'
+                },
+                {
+                    name: '4',
+                    shortname: 'Thu'
+                },
+                {
+                    name: '5',
+                    shortname: 'Fri'
+                }
             ],
             formattedDays() {
                 let daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -529,10 +581,11 @@
                     conjuction = ', ';
                 }
 
-                let result = this.recureDays.sort((a, b) => a.localeCompare(b)).map(day => daysOfWeek[day]).join(conjuction);
+                let result = this.recureDays.sort((a, b) => a.localeCompare(b)).map(day => daysOfWeek[day]).join(
+                    conjuction);
 
                 return result;
-            }
+            },
         }
     }
 
@@ -567,7 +620,31 @@
                 const date = new Date();
                 date.setHours(hour, minute + minutes);
                 return date.toTimeString().slice(0, 5);
+            },
+            init() {
+                this.$nextTick(() => {
+                    initializeTomSelect();
+                });
             }
+        }
+    }
+
+    function initializeTomSelect() {
+        const el = document.querySelector('#input-time');
+
+        if (el) {
+            if (el.tomselect) {
+                el.tomselect.destroy();
+            }
+
+            const config = {
+                sortField: {
+                    field: "text",
+                    direction: "asc",
+                }
+            };
+
+            new TomSelect(el, config);
         }
     }
 

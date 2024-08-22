@@ -1,6 +1,9 @@
 import "./bootstrap";
 import "flowbite";
 import Datepicker from "flowbite-datepicker/Datepicker";
+import Litepicker from 'litepicker';
+import 'litepicker/dist/plugins/ranges';
+window.Litepicker = Litepicker;
 
 import DataTable from "datatables.net-dt";
 window.DataTable = DataTable;
@@ -185,33 +188,45 @@ document.addEventListener("alpine:init", () => {
 Flowbite Datepicker
 */
 document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
-    var title = datepickerEl.hasAttribute("datepicker-title");
-    var minDate = datepickerEl.hasAttribute("datepicker-min-date");
-    var maxDate = datepickerEl.hasAttribute("datepicker-max-date");
-    var orientation = datepickerEl.hasAttribute("datepicker-orientation");
-    var options = {
-        todayBtn: true,
-        clearBtn: true,
-        autohide: true,
-        todayBtnMode: 1,
-        format: "dd-mm-yy",
-    };
-    if (title) {
-        options.title = datepickerEl.getAttribute("datepicker-title");
-    }
-    if (minDate) {
-        options.minDate = datepickerEl.getAttribute("datepicker-min-date");
-    }
-    if (maxDate) {
-        options.maxDate = datepickerEl.getAttribute("datepicker-max-date");
-    }
-    if (orientation) {
-        options.orientation = datepickerEl.getAttribute(
-            "datepicker-orientation"
-        );
+    let singleModeOption = true;
+    if(Boolean(datepickerEl.dataset.singleMode)) {
+        singleModeOption = (/true/i).test(datepickerEl.dataset.singleMode);
     }
 
-    new Datepicker(datepickerEl, options);
+    let resetButtonOption = false;
+    if(Boolean(datepickerEl.dataset.resetButton)) {
+        resetButtonOption = (/true/i).test(datepickerEl.dataset.resetButton);
+    }
+
+    var options = {
+        element: datepickerEl,
+        format: datepickerEl.dataset.format,
+        minDate: datepickerEl.dataset.minDate ?? null,
+        minDays: Number(datepickerEl.dataset.minDays) ?? null,
+        maxDate: datepickerEl.dataset.maxDate ?? null,
+        maxDays: Number(datepickerEl.dataset.maxDays) ?? null,
+        singleMode: singleModeOption,
+        showTooltip: true,
+        autoApply: true,
+        resetButton: resetButtonOption,
+        setup: (picker) => {
+            picker.on('show', (datepickerEl) => {
+              console.log(datepickerEl.dataset.minDate);
+              console.log(options.minDate);
+            });
+        },
+    };
+
+    if (!options.singleMode) {
+        options.numberOfColumns = 2;
+        options.numberOfMonths = 2;
+    };
+
+    if (datepickerEl.hasAttribute("datepicker-predefined-ranges")) {
+        options.plugins = ['ranges']
+    }
+
+    new Litepicker(options);
 });
 
 // make table row clickable
@@ -242,11 +257,7 @@ TomSelect.define("caret_position", TomSelect_caret_position);
 // Function to initialize TomSelect for all select elements
 function initializeTomSelects() {
     document.querySelectorAll("select").forEach((el) => {
-        if (
-            el.hasAttribute("normal-select") ||
-            el.classList.contains("dt-input") ||
-            el.classList.contains("tomselected")
-        ) {
+        if (el.hasAttribute("normal-select") || el.classList.contains("dt-input") || el.classList.contains("tomselected")) {
             return;
         }
 
