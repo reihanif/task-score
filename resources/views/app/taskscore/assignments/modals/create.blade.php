@@ -11,7 +11,7 @@
         <div class="mb-5">
             <div class="space-y-4"
                  x-data="difficultyOption()">
-                    {{-- <div>
+                    <div>
                          <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
                                 for="input-subject">
                              Subject
@@ -405,7 +405,7 @@
                                  </div>
                              </div>
                          </template>
-                     </div> --}}
+                     </div>
 
 
                 <div class="space-y-4">
@@ -453,8 +453,8 @@
                                                 <template x-for="(day, index) in days">
                                                     <li class="relative">
                                                         <input class="peer opacity-0 absolute"
-                                                               name="day[]"
-                                                               type="checkbox"
+                                                               name="day_of_week"
+                                                               type="radio"
                                                                x-model="recureDays"
                                                                x-bind:id="day.name"
                                                                x-on:change="validateCheckboxes()"
@@ -472,7 +472,7 @@
                                             <select class="recurring-input"
                                                     id="input-day"
                                                     x-model="selectedDay"
-                                                    x-bind:name="repeat == 'monthly' ? 'day' : null"
+                                                    x-bind:name="repeat == 'monthly' ? 'day_of_month' : null"
                                                     x-bind:required="repeat == 'monthly'"
                                                     required>
                                                 <option value="">Select day</option>
@@ -639,7 +639,7 @@
                 });
             },
             validateCheckboxes() {
-                const checkboxes = document.querySelectorAll('input[name="day[]"]');
+                const checkboxes = document.querySelectorAll('input[name="day_of_weeks[]"]');
 
                 checkboxes.forEach(checkbox => {
                     checkbox.setCustomValidity('');

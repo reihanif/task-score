@@ -210,8 +210,7 @@ document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
         resetButton: resetButtonOption,
         setup: (picker) => {
             picker.on('show', (datepickerEl) => {
-              console.log(datepickerEl.dataset.minDate);
-              console.log(options.minDate);
+                //
             });
         },
     };
