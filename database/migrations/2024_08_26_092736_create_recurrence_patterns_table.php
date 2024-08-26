@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignUuid('assignment_id')->constrained('assignments')->onDelete('cascade');
             $table->enum('recurrence_type', ['daily', 'weekly', 'monthly']);
             $table->integer('interval')->default(1);
-            $table->integer('day_of_week')->nullable();
+            $table->json('day_of_week')->nullable();
             $table->integer('day_of_month')->nullable();
             $table->time('time');
             $table->date('recurrence_end_date')->nullable();
