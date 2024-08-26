@@ -65,14 +65,6 @@ class Assignment extends Model
     }
 
     /**
-     * Get the assignment's occurences.
-     */
-    public function occurrences()
-    {
-        return $this->hasMany(Occurrence::class);
-    }
-
-    /**
      * Check if assignment status is closed.
      */
     public function isClosed()
