@@ -1,6 +1,5 @@
 import "./bootstrap";
 import "flowbite";
-import Datepicker from "flowbite-datepicker/Datepicker";
 import Litepicker from 'litepicker';
 import 'litepicker/dist/plugins/ranges';
 window.Litepicker = Litepicker;
@@ -185,7 +184,7 @@ document.addEventListener("alpine:init", () => {
 });
 
 /*
-Flowbite Datepicker
+Datepicker
 */
 document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
     let singleModeOption = true;
@@ -200,7 +199,7 @@ document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
 
     var options = {
         element: datepickerEl,
-        format: datepickerEl.dataset.format,
+        format: datepickerEl.dataset.format ?? 'DD MMMM YYYY',
         minDate: datepickerEl.dataset.minDate ?? null,
         minDays: Number(datepickerEl.dataset.minDays) ?? null,
         maxDate: datepickerEl.dataset.maxDate ?? null,
