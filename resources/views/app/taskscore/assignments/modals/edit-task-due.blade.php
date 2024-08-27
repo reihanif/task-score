@@ -19,14 +19,14 @@
                             <div class="interval flex items-center ps-3">
                                 <input
                                     class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                    id="select-interval"
+                                    id="select-interval{{ $task->id }}"
                                     type="radio"
                                     value="interval-time"
                                     name="due"
                                     x-model="selectedOption"
                                     required>
                                 <label class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                    for="select-interval">
+                                    for="select-interval{{ $task->id }}">
                                     Add interval time
                                 </label>
                             </div>
@@ -34,14 +34,14 @@
                             <div class="exact-time flex items-center ps-3">
                                 <input
                                     class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
-                                    id="select-exact-time"
+                                    id="select-exact-time{{ $task->id }}"
                                     type="radio"
                                     value="exact-time"
                                     name="due"
                                     x-model="selectedOption"
                                     required>
                                 <label class="ms-2 w-full py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                                    for="select-exact-time">
+                                    for="select-exact-time{{ $task->id }}">
                                     Select exact time
                                 </label>
                             </div>

@@ -9,15 +9,16 @@ use App\Models\User;
 use App\Models\Assignment;
 use App\Models\Submission;
 use Illuminate\Http\Request;
+use App\Models\RecurrencePattern;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentResolved;
 use App\Notifications\AssignmentSubmitted;
-use App\Notifications\AssignmentSubmittedAssignee;
-use App\Notifications\NewAssignmentTaskmaster;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\NewAssignmentTaskmaster;
+use App\Notifications\AssignmentSubmittedAssignee;
 
 class AssignmentController extends Controller
 {
@@ -129,6 +130,7 @@ class AssignmentController extends Controller
             $assignment->type = $type;
             $assignment->subject = $request->subject;
             $assignment->description = $request->description;
+            $assignment->is_recurring = $request->is_recurring ? true : false;
             $assignment->save();
 
             if ($request->hasFile('attachments')) {
@@ -177,11 +179,28 @@ class AssignmentController extends Controller
                 $tasks->push($task);
             }
 
+            if ($request->is_recurring) {
+                $recurrence_end_date = null;
+                if($request->recurrence_end_date) {
+                    $recurrence_end_date = new Carbon($request->recurrence_end_date);
+                }
+                RecurrencePattern::create([
+                    'assignment_id' => $assignment->id,
+                    'recurrence_type' => $request->repeat,
+                    // 'interval' => $request->interval,
+                    'day_of_week' => $request->day_of_weeks,
+                    'day_of_month' => $request->day_of_month,
+                    'time' => $request->time,
+                    'recurrence_end_date' => $recurrence_end_date
+                ]);
+            }
+
             // Send notifications
             foreach ($tasks as $task) {
                 $assignees = User::where('id', $task->assignee_id)->get();
                 Notification::send($assignees, new NewAssignment($assignment, $task));
             }
+
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
             Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $assignees_name));
 
