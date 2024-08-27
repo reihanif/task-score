@@ -453,8 +453,8 @@
                                                 <template x-for="(day, index) in days">
                                                     <li class="relative">
                                                         <input class="peer opacity-0 absolute"
-                                                               name="day_of_week"
-                                                               type="radio"
+                                                               name="day_of_weeks[]"
+                                                               type="checkbox"
                                                                x-model="recureDays"
                                                                x-bind:id="day.name"
                                                                x-on:change="validateCheckboxes()"
