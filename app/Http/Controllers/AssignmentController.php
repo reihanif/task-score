@@ -130,6 +130,7 @@ class AssignmentController extends Controller
             $assignment->type = $type;
             $assignment->subject = $request->subject;
             $assignment->description = $request->description;
+            $assignment->is_recurring = $request->is_recurring ? true : false;
             $assignment->save();
 
             if ($request->hasFile('attachments')) {
@@ -187,7 +188,7 @@ class AssignmentController extends Controller
                     'assignment_id' => $assignment->id,
                     'recurrence_type' => $request->repeat,
                     // 'interval' => $request->interval,
-                    'day_of_week' => $request->day_of_week,
+                    'day_of_week' => $request->day_of_weeks,
                     'day_of_month' => $request->day_of_month,
                     'time' => $request->time,
                     'recurrence_end_date' => $recurrence_end_date
@@ -207,7 +208,6 @@ class AssignmentController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e);
 
             // Handle the error appropriately
             return redirect()->back()->withErrors('Create assignment failed');

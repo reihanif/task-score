@@ -59,7 +59,7 @@ class Assignment extends Model
     /**
      * Get the assignment's recurrence pattern.
      */
-    public function recurrencePattern()
+    public function recurrence()
     {
         return $this->hasOne(RecurrencePattern::class);
     }

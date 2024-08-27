@@ -11,6 +11,10 @@ class RecurrencePattern extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'day_of_week' => 'array',
+    ];
+
     public function assignment()
     {
         return $this->belongsTo(Assignment::class);
