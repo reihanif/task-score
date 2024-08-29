@@ -3,7 +3,6 @@
        {{ $attributes }}>
     <div class="h-full overflow-y-auto bg-white px-3 pb-4 text-sm dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
-
             <x-sidebar-menu data-menu-name="Dashboard"
                             data-route-name="homepage"
                             data-menu-title="Homepage">
@@ -40,6 +39,12 @@
                         <x-icons.diagram />
                     </x-sidebar-menu>
                 @endif
+
+                <x-sidebar-menu data-menu-name="Disposition"
+                            data-route-name="dispositions.index"
+                            data-menu-title="Homepage">
+                    <x-icons.disposition />
+                </x-sidebar-menu>
             @endif
         </ul>
 

@@ -11,6 +11,7 @@ use App\Http\Controllers\HierarchyController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DispositionController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TimeExtensionController;
@@ -104,5 +105,13 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::post('/positions/{position}/authorize', [RelationController::class, 'authorizePosition'])->name('positions.authorize');
         Route::put('/positions/{position}/unauthorize', [RelationController::class, 'unauthorizePosition'])->name('positions.unauthorize');
+    });
+
+    Route::group(['as' => 'dispositions.', 'prefix' => 'dispositions'], function () {
+        Route::get('/', [DispositionController::class, 'index'])->name('index');
+        Route::get('/{disposition_id}', [DispositionController::class, 'show'])->name('show');
+        Route::post('/', [DispositionController::class, 'store'])->name('store');
+        Route::post('/request-delete/{disposition_id}', [DispositionController::class, 'requestDelete'])->name('request-delete');
+        Route::delete('/delete/{disposition_id}', [DispositionController::class, 'delete'])->name('delete');
     });
 });
