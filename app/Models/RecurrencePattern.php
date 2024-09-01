@@ -13,7 +13,8 @@ class RecurrencePattern extends Model
 
     protected $casts = [
         'day_of_week' => 'array',
-        'time' => 'datetime'
+        'time' => 'datetime',
+        'recurrence_end_date' => 'datetime'
     ];
 
     public function assignment()
@@ -53,9 +54,14 @@ class RecurrencePattern extends Model
                 $pattern = ucwords($this->recurrence_type) . ' in ' . $dayNamesString . ' at ' . $this->time->format('H:i');
                 break;
             case('monthly'):
-                $pattern = ucwords($this->recurrence_type) . ' at ' . $this->time->format('H:i');
+                $pattern = ucwords($this->recurrence_type) . ' in day ' . $this->day_of_month . ' at ' . $this->time->format('H:i');
                 break;
         }
+
+        if(!is_null($this->recurrence_end_date)) {
+            $pattern .= ' until ' . $this->recurrence_end_date->format('d F Y');
+        }
+
         return $pattern;
     }
 }
