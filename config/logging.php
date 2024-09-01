@@ -123,6 +123,12 @@ return [
             'path' => storage_path('logs/reminder.log'),
             'level' => 'debug',
         ],
+
+        'recurrence' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/recurrence.log'),
+            'level' => 'debug',
+        ],
     ],
 
 ];

@@ -57,6 +57,14 @@ class Assignment extends Model
     }
 
     /**
+     * Get the assignment's recurrence pattern.
+     */
+    public function recurrence()
+    {
+        return $this->hasOne(RecurrencePattern::class);
+    }
+
+    /**
      * Check if assignment status is closed.
      */
     public function isClosed()
