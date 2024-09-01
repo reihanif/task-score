@@ -29,11 +29,19 @@ class AssignmentController extends Controller
      */
     public function myAssignment()
     {
+        $categories = collect([
+            'Berita Acara',
+            'Sales Order'
+        ]);
         $user = Auth::User();
+        $superiors = $user->position->superior?->users ?? [];
+
         return view('app.taskscore.assignments.my-assignments', [
             'unresolved_assignments' => $user->unresolvedAssignments(),
             'pending_assignments' => $user->pendingAssignments(),
             'resolved_assignments' => $user->resolvedAssignments,
+            'categories' => $categories,
+            'superiors' => $superiors
         ]);
     }
 
@@ -203,6 +211,101 @@ class AssignmentController extends Controller
 
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
             Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $assignees_name));
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            // Handle the error appropriately
+            return redirect()->back()->withErrors('Create assignment failed');
+        }
+
+        return redirect()->back()->with('success', 'Assignment created successfully');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeMyAssignment(Request $request)
+    {
+        $request->validate([
+            'category' => 'required',
+            'subject' => 'required|unique:assignments,subject|max:255',
+            'description' => 'required|max:2000',
+        ]);
+
+        if ($request->category == 'Lainnya') {
+            $type = ucwords($request->category_other);
+        } else {
+            $type = $request->category;
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $assignment = new Assignment();
+            $assignment->taskmaster_id = $request->taskmaster;
+            $assignment->type = $type;
+            $assignment->subject = $request->subject;
+            $assignment->description = $request->description;
+            $assignment->is_recurring = $request->is_recurring ? true : false;
+            $assignment->save();
+
+            if ($request->hasFile('attachments')) {
+                foreach ($request->file('attachments') as $attachment) {
+                    $client_original_name = $attachment->getClientOriginalName();
+                    $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
+                    $extension = $attachment->getClientOriginalExtension();
+                    $unique_filename = $filename . '_' . time() . '.' . $extension;
+
+                    $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
+
+                    $file = new File();
+                    $file->name = $filename;
+                    $file->path = $path;
+                    $file->extension = $extension;
+                    $file->size = $attachment->getSize();
+                    $file->type = 'attachment';
+                    $file->fileable_id = $assignment->id;
+                    $file->fileable_type = Assignment::class;
+                    $file->save();
+                }
+            }
+
+            $task = new Task();
+            $task->uuid = $task->generateUniqueId();
+            $task->assignee_id = Auth::User()->id;
+            $task->assignment_id = $assignment->id;
+            $task->difficulty = 'advanced';
+            $task->due = Carbon::now()->addDays(3);
+            $task->save();
+
+            if ($request->is_recurring) {
+                $recurrence_end_date = null;
+                if($request->recurrence_end_date) {
+                    $recurrence_end_date = new Carbon($request->recurrence_end_date);
+                }
+                RecurrencePattern::create([
+                    'assignment_id' => $assignment->id,
+                    'recurrence_type' => $request->repeat,
+                    // 'interval' => $request->interval,
+                    'day_of_week' => $request->day_of_weeks,
+                    'day_of_month' => $request->day_of_month,
+                    'time' => $request->time,
+                    'recurrence_end_date' => $recurrence_end_date
+                ]);
+            }
+
+            // Send notifications
+            $assignees = User::where('id', $task->assignee_id)->get();
+            Notification::send($assignees, new NewAssignment($assignment, $task));
+
+            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
+            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, Auth::User()->name));
 
             // Execute database insertations
             DB::commit();

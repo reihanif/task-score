@@ -298,6 +298,14 @@
                             {{ $assignment->type }}
                         </p>
                     </div>
+                    @if ($assignment->is_recurring)
+                        <div class="text-gray-500 dark:text-gray-400">
+                            <p class="font-medium text-gray-600 dark:text-gray-300">Recurring Pattern</p>
+                            <p>
+                                {{ $assignment->recurrence?->pattern }}
+                            </p>
+                        </div>
+                    @endif
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Created at</p>
                         <p>
