@@ -54,6 +54,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/subordinate-assignments', [AssignmentController::class, 'subordinateAssignment'])->name('assignment.subordinate-assignments');
         Route::get('/tasklists', [TasklistController::class, 'index'])->name('assignment.tasklists');
         Route::post('/store-assignment', [AssignmentController::class, 'store'])->name('assignment.store');
+        Route::post('/store-my-assignment', [AssignmentController::class, 'storeMyAssignment'])->name('assignment.store-my-assignment');
 
         Route::group(['middleware' => 'involved'], function () {
             Route::get('/assignment/{assignment}', [AssignmentController::class, 'show'])->name('assignment.show');

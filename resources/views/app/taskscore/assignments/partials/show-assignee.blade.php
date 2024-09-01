@@ -34,7 +34,7 @@
                     <dt class="text-sm font-semibold leading-none text-gray-900 dark:text-white">Possible Score</dt>
                     <dd class="text-sm text-gray-600 dark:text-gray-400">
                         <div class="mt-1 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
-                            <div class="{{ $assignee_task->score() !== 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-blue-600 p-0.5 text-center text-xs font-medium leading-none"
+                            <div class="{{ $assignee_task->score() !== 0 ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400' }} rounded-full bg-gray-400 dark:bg-gray-500 p-0.5 text-center text-xs font-medium leading-none"
                                 style="width: {{ $assignee_task->score() <= 100 ? $assignee_task->score() : 100 }}%">
                                 {{ $assignee_task->score() }}%
                             </div>

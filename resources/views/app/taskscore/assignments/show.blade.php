@@ -7,7 +7,7 @@
         <div class="col-span-full">
             <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
                 <div class="w-full space-y-3">
-                    <!-- Breadcrumbs if User is Taskmaster of the assignment -->
+                    <!-- Breadcrumbs if User is superior of the assignment -->
                     @involved
                         <x-breadcrumbs class="mb-2"
                             :menus="collect([
@@ -251,7 +251,7 @@
             <div class="grid">
                 <div
                     class="relative space-y-3 rounded-lg border border-gray-200 p-4 text-sm dark:border-gray-700 dark:bg-gray-800">
-                    <div class="text-gray-500 dark:text-gray-400">
+                    {{-- <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Status</p>
                         <p class="mt-1">
                             @if ($assignment->status == 'open')
@@ -271,7 +271,7 @@
                                 </span>
                             @endif
                         </p>
-                    </div>
+                    </div> --}}
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Taskmaster</p>
                         <x-popover.user-profile id="taskmaster-{{ $assignment->taskmaster->id }}"
@@ -298,6 +298,14 @@
                             {{ $assignment->type }}
                         </p>
                     </div>
+                    @if ($assignment->is_recurring)
+                        <div class="text-gray-500 dark:text-gray-400">
+                            <p class="font-medium text-gray-600 dark:text-gray-300">Recurring Pattern</p>
+                            <p>
+                                {{ $assignment->recurrence?->pattern }}
+                            </p>
+                        </div>
+                    @endif
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Created at</p>
                         <p>
@@ -490,11 +498,11 @@
             scoreBar.innerText = `${scoreValue}%`;
 
             if (scoreValue !== 0) {
-                scoreBar.classList.add('bg-blue-600', 'text-blue-100');
+                scoreBar.classList.add('bg-gray-400', 'dark:bg-gray-500', 'text-blue-100');
                 scoreBar.classList.remove('text-gray-500', 'dark:text-gray-400');
             } else {
                 scoreBar.classList.add('text-gray-500', 'dark:text-gray-400');
-                scoreBar.classList.remove('bg-blue-600', 'text-blue-100');
+                scoreBar.classList.remove('bg-gray-400', 'dark:bg-gray-500', 'text-blue-100');
             }
         }
     }
