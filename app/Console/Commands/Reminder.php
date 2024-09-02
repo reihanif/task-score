@@ -8,6 +8,8 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\AssigneeReminder;
 use App\Notifications\AssigneeReminderOverdue;
+use App\Notifications\TaskmasterApprovalReminder;
+use App\Notifications\TaskmasterReminderUpcoming;
 
 class Reminder extends Command
 {
@@ -35,10 +37,14 @@ class Reminder extends Command
 
         foreach ($users as $user) {
             $tasks = $user->unresolvedAssignments();
+            $unapproved_tasks = $user->delegatedTasks()->whereHas('latestSubmission', function($query) {
+                return $query->whereNull('is_approve');
+            })->get();
             $total = 0;
 
             foreach ($tasks as $task) {
                 $notify = false;
+                $notify_taskmaster = false;
                 $overdue = false;
 
                 if ($task->due->isFuture()) {
@@ -47,12 +53,15 @@ class Reminder extends Command
                         switch ($now->format('H:i')) {
                             case '07:30':
                                 $notify = true;
+                                $notify_taskmaster = true;
                                 break;
                             case '13:00':
                                 $notify = true;
+                                $notify_taskmaster = true;
                                 break;
                             case '15:00':
                                 $notify = true;
+                                $notify_taskmaster = true;
                                 break;
                         }
                     }
@@ -68,12 +77,34 @@ class Reminder extends Command
                 }
 
                 if ($notify) {
-
                     if ($overdue) {
                         $user->notify(new AssigneeReminderOverdue($task));
                     } else {
                         $user->notify(new AssigneeReminder($task));
                     }
+
+                    $total++;
+                }
+
+                if ($notify_taskmaster) {
+                    $task->assignment->taskmaster->notify(new TaskmasterReminderUpcoming($task));
+                }
+            }
+
+            foreach ($unapproved_tasks as $unapproved_task) {
+                $notify = false;
+
+                switch ($now->format('H:i')) {
+                    case '07:30':
+                        $notify = true;
+                        break;
+                    case '13:30':
+                        $notify = true;
+                        break;
+                }
+
+                if ($notify) {
+                    $user->notify(new TaskmasterApprovalReminder($unapproved_task));
 
                     $total++;
                 }

@@ -19,6 +19,11 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $delegatedTasks = Auth::user()->delegatedTasks()->whereHas('latestSubmission', function($query) {
+            return $query->whereNull('is_approve');
+        })->get();
+         dd($delegatedTasks);
+
         $unresolved_assignments = Auth::User()->unresolvedAssignments()->count();
         $pending_assignments = Auth::User()->pendingAssignments()->count();
         $resolved_assignments = Auth::User()->resolvedAssignments->map(function ($item) {

@@ -12,7 +12,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('notify:reminder')->everyMinute()->between('7:00', '17:00');
+        $schedule->command('notify:reminder')->everyMinute()->between('7:00', '17:00')->weekdays();
         $schedule->command('recurrence:assignment')->everyMinute()->between('6:00', '18:00');
     }
 
