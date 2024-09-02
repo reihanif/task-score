@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\AssigneeReminder;
 use App\Notifications\AssigneeReminderOverdue;
+use App\Notifications\TaskmasterApprovalReminder;
 
 class Reminder extends Command
 {
@@ -35,6 +36,9 @@ class Reminder extends Command
 
         foreach ($users as $user) {
             $tasks = $user->unresolvedAssignments();
+            $delegated_tasks = $user->delegatedTasks()->whereHas('latestSubmission', function($query) {
+                return $query->whereNull('is_approve');
+            })->get();
             $total = 0;
 
             foreach ($tasks as $task) {
@@ -74,6 +78,22 @@ class Reminder extends Command
                     } else {
                         $user->notify(new AssigneeReminder($task));
                     }
+
+                    $total++;
+                }
+            }
+
+            foreach ($delegated_tasks as $delegated_task) {
+                $notify = false;
+
+                switch ($now->format('H:i')) {
+                    case '07:30':
+                        $notify = true;
+                        break;
+                }
+
+                if ($notify) {
+                    $user->notify(new TaskmasterApprovalReminder($delegated_task));
 
                     $total++;
                 }

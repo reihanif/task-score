@@ -115,6 +115,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all the tasks associated with the user as taskmaster.
+     */
+    public function delegatedTasks(): HasManyThrough
+    {
+        return $this->hasManyThrough(Task::class, Assignment::class, 'taskmaster_id', 'assignment_id', 'id', 'id');
+    }
+
+    /**
      * Get all the assignments associated with the user as assignee.
      */
     public function assignments(): HasManyThrough
