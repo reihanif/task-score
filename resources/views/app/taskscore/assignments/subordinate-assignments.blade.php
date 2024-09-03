@@ -203,6 +203,11 @@
                                 <th class="px-3 py-4 font-medium text-gray-900 dark:text-white"
                                     scope="row">
                                     {{ $assignment->subject }}
+                                    @if ($assignment->is_recurring)
+                                        <span class="inline-block align-middle">
+                                            <x-icons.arrow-repeat class="w-4 h-4 text-yellow-500"/>
+                                        </span>
+                                    @endif
                                 </th>
                                 <td class="whitespace-nowrap px-3 py-4">
                                     {{ $assignment->type }}
