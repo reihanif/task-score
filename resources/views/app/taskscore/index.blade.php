@@ -6,8 +6,8 @@
     <h6 class="text-xl font-semibold text-gray-800 dark:text-white">Dashboard</h6>
 
     <div class="grid grid-cols-12 gap-4">
-        <div class="col-span-12 md:col-span-8 space-y-4">
-            <div class="overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
+        <div class="col-span-12 md:col-span-6 space-y-4">
+            <div class="overflow-x-hidden h-full rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="inline-flex items-center space-x-4">
                     <img class="h-12 rounded-full"
                         src="https://ui-avatars.com/api/?name={{ urlencode(Auth::User()->name) }}&background=0D8ABC&color=fff&bold=true"
@@ -38,7 +38,31 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <div class="col-span-12 md:col-span-6 space-y-4">
+            <div class="overflow-x-hidden h-full rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
+                <div class="flex items-center space-x-4">
+                    <div class="flex-grow space-y-2">
+                        <h1 class="text-2xl italic font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">
+                            SysAssignment
+                        </h1>
+                        <div class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ config('app.version') }}</div>
+                    </div>
+                    <div class="inline-flex items-center">
+                        <svg class="w-4.5 h-4.5 text-gray-400 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" d="M11 4.717c-2.286-.58-4.16-.756-7.045-.71A1.99 1.99 0 0 0 2 6v11c0 1.133.934 2.022 2.044 2.007 2.759-.038 4.5.16 6.956.791V4.717Zm2 15.081c2.456-.631 4.198-.829 6.956-.791A2.013 2.013 0 0 0 22 16.999V6a1.99 1.99 0 0 0-1.955-1.993c-2.885-.046-4.76.13-7.045.71v15.081Z" clip-rule="evenodd"/>
+                        </svg>
+                        <a class="ms-2 hover:underline text-sm font-semibold text-gray-700 dark:text-white" href="{{ substr(config('app.asset_url'), 0, -1) . Storage::url('manual\User Manual - SysAssignment.pdf') }}"
+                            download="User Manual - SysAssignment.pdf">
+                            User Manual
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-span-12 md:col-span-8 space-y-4">
             <!-- Bar Charts -->
             <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="mb-4 flex justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
@@ -151,12 +175,12 @@
 
         <div class="col-span-12 md:col-span-4">
             <div
-                class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-2">
+                class="rounded-lg border h-full border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-2">
                 <div class="mb-4 flex items-center justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
                     <div>
                         <h3 class="text-base font-normal text-gray-500 dark:text-gray-400">Total</h3>
                         <span
-                            class="text-2xl font-bold leading-none text-gray-900 dark:text-white sm:text-3xl">Assignments</span>
+                            class="text-xl font-semibold leading-none text-gray-900 dark:text-white sm:text-2xl">Assignments</span>
                     </div>
                     {{-- <a class="inline-flex items-center rounded-lg p-2 text-xs font-medium uppercase text-blue-700 hover:bg-gray-100 dark:text-blue-500 dark:hover:bg-gray-700 sm:text-sm"
                         href="#">
@@ -176,47 +200,7 @@
                 <!-- Donut Chart -->
                 <div class="py-6"
                     id="donut-chart"
-                    style="min-height: 378.7px;"></div>
-                <!-- Card Footer -->
-                <div class="flex items-center justify-evenly pt-4 sm:pt-6 lg:justify-evenly ">
-                    <div>
-                        <svg class="mb-1 h-8 w-8 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24">
-                            <path stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M18.5 4h-13m13 16h-13M8 20v-3.333a2 2 0 0 1 .4-1.2L10 12.6a1 1 0 0 0 0-1.2L8.4 8.533a2 2 0 0 1-.4-1.2V4h8v3.333a2 2 0 0 1-.4 1.2L13.957 11.4a1 1 0 0 0 0 1.2l1.643 2.867a2 2 0 0 1 .4 1.2V20H8Z" />
-                        </svg>
-
-                        <h3 class="text-gray-500 dark:text-gray-400">Unresolved</h3>
-                        <h4 class="text-xl font-bold dark:text-white">
-                            {{ $unresolved_assignments }}
-                        </h4>
-                    </div>
-                    <div>
-                        <svg class="mb-1 h-8 w-8 text-gray-500 dark:text-gray-400"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24">
-                            <path stroke="currentColor"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="m8.032 12 1.984 1.984 4.96-4.96m4.55 5.272.893-.893a1.984 1.984 0 0 0 0-2.806l-.893-.893a1.984 1.984 0 0 1-.581-1.403V7.04a1.984 1.984 0 0 0-1.984-1.984h-1.262a1.983 1.983 0 0 1-1.403-.581l-.893-.893a1.984 1.984 0 0 0-2.806 0l-.893.893a1.984 1.984 0 0 1-1.403.581H7.04A1.984 1.984 0 0 0 5.055 7.04v1.262c0 .527-.209 1.031-.581 1.403l-.893.893a1.984 1.984 0 0 0 0 2.806l.893.893c.372.372.581.876.581 1.403v1.262a1.984 1.984 0 0 0 1.984 1.984h1.262c.527 0 1.031.209 1.403.581l.893.893a1.984 1.984 0 0 0 2.806 0l.893-.893a1.985 1.985 0 0 1 1.403-.581h1.262a1.984 1.984 0 0 0 1.984-1.984V15.7c0-.527.209-1.031.581-1.403Z" />
-                        </svg>
-
-                        <h3 class="text-gray-500 dark:text-gray-400">Resolved</h3>
-                        <h4 class="text-xl font-bold dark:text-white">
-                            {{ $resolved_assignments }}
-                        </h4>
-                    </div>
+                    style="min-height: 378.7px;">
                 </div>
             </div>
         </div>
