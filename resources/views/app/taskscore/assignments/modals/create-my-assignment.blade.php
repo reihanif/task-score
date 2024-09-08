@@ -52,7 +52,7 @@
 
                      <div class="space-y-2">
                          <x-forms.select id="input-category"
-                                         name="category"
+                                         name="type"
                                          label="Category"
                                          x-model="category"
                                          state="initial"
@@ -67,7 +67,7 @@
                          <template x-if="category == 'Lainnya'">
                              <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
                                     id="input-category-other"
-                                    name="category_other"
+                                    name="type_other"
                                     type="text"
                                     autocomplete="off"
                                     placeholder="Category name"

@@ -9,9 +9,12 @@ use App\Models\User;
 use App\Models\Assignment;
 use App\Models\Submission;
 use Illuminate\Http\Request;
+use App\Services\FileService;
+use App\Services\TaskService;
 use App\Models\RecurrencePattern;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use App\Services\AssignmentService;
 use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\AssignmentResolved;
@@ -22,6 +25,17 @@ use App\Notifications\AssignmentSubmittedAssignee;
 
 class AssignmentController extends Controller
 {
+    protected $assignmentService;
+    protected $fileService;
+    protected $taskService;
+
+    public function __construct(AssignmentService $assignmentService, FileService $fileService, TaskService $taskService)
+    {
+        $this->assignmentService = $assignmentService;
+        $this->fileService = $fileService;
+        $this->taskService = $taskService;
+    }
+
     /**
      * Display a listing of the unresolved assignments.
      *
@@ -31,7 +45,7 @@ class AssignmentController extends Controller
     {
         $categories = $this->getCategories();
         $user = Auth::User();
-        $superiors = $user->position->superior?->users ?? [];
+        $superiors = User::whereIn('position_id', $user->position->superiors->pluck('id'))->get();
 
         return view('app.taskscore.assignments.my-assignments', [
             'unresolved_assignments' => $user->unresolvedAssignments,
@@ -85,87 +99,29 @@ class AssignmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category' => 'required',
+            'type' => 'required|max:255',
             'subject' => 'required|unique:assignments,subject|max:255',
-            'description' => 'required|max:2000',
+            'description' => 'required',
+            'difficulty' => 'required|string|in:basic,intermediate,advanced|max:255',
+            'assignees' => 'array',
+            'assignees.*.id' => 'required|uuid',
         ]);
 
-        if ($request->category == 'Lainnya') {
-            $type = ucwords($request->category_other);
-        } else {
-            $type = $request->category;
-        }
+        $due = $this->calculateDueDate($request->difficulty);
+        $request->merge([
+            'taskmaster' => Auth::id(),
+            'due' => $due,
+        ]);
+        $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type;
 
         DB::beginTransaction();
 
         try {
-            $assignment = new Assignment();
-            $assignment->taskmaster_id = Auth::User()->id;
-            $assignment->type = $type;
-            $assignment->subject = $request->subject;
-            $assignment->description = $request->description;
-            $assignment->is_recurring = $request->is_recurring ? true : false;
-            $assignment->save();
+            $assignment = $this->assignmentService->createAssignment(collect($request));
+            $tasks = $this->createTasks($request, $assignment);
 
             if ($request->hasFile('attachments')) {
-                foreach ($request->file('attachments') as $attachment) {
-                    $client_original_name = $attachment->getClientOriginalName();
-                    $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
-                    $extension = $attachment->getClientOriginalExtension();
-                    $unique_filename = $filename . '_' . time() . '.' . $extension;
-
-                    $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
-
-                    $file = new File();
-                    $file->name = $filename;
-                    $file->path = $path;
-                    $file->extension = $extension;
-                    $file->size = $attachment->getSize();
-                    $file->type = 'attachment';
-                    $file->fileable_id = $assignment->id;
-                    $file->fileable_type = Assignment::class;
-                    $file->save();
-                }
-            }
-
-            $tasks = new Collection;
-            $assignees_name = '';
-
-            foreach ($request->assignees as $key => $assignee) {
-                if ($request->difficulty == 'basic') {
-                    $due = Carbon::now()->addDays(1);
-                } else if ($request->difficulty == 'intermediate') {
-                    $due = Carbon::now()->addDays(2);
-                } else if ($request->difficulty == 'advanced') {
-                    $due = Carbon::now()->addDays(3);
-                }
-
-                $task = new Task();
-                $task->uuid = $task->generateUniqueId();
-                $task->assignee_id = $assignee;
-                $task->assignment_id = $assignment->id;
-                $task->description = $request->details[$key];
-                $task->difficulty = $request->difficulty;
-                $task->due = $due;
-                $task->save();
-
-                $assignees_name .= $task->assignee->name . ' ';
-                $tasks->push($task);
-            }
-
-            if ($request->is_recurring) {
-                $recurrence_end_date = null;
-                if ($request->recurrence_end_date) {
-                    $recurrence_end_date = new Carbon($request->recurrence_end_date);
-                }
-                RecurrencePattern::create([
-                    'assignment_id' => $assignment->id,
-                    'recurrence_type' => $request->repeat,
-                    'day_of_week' => $request->day_of_weeks,
-                    'day_of_month' => $request->day_of_month,
-                    'time' => $request->time,
-                    'recurrence_end_date' => $recurrence_end_date
-                ]);
+                $this->handleAttachments($request->file('attachments'), $assignment);
             }
 
             // Send notifications
@@ -175,7 +131,7 @@ class AssignmentController extends Controller
             }
 
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $assignees_name));
+            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $tasks->pluck('assignee.name')->implode(' ')));
 
             // Execute database insertations
             DB::commit();
@@ -198,79 +154,34 @@ class AssignmentController extends Controller
     public function storeMyAssignment(Request $request)
     {
         $request->validate([
-            'category' => 'required',
+            'type' => 'required|max:255',
             'subject' => 'required|unique:assignments,subject|max:255',
-            'description' => 'required|max:2000',
+            'description' => 'required',
+            'difficulty' => 'required|string|in:basic,intermediate,advanced|max:255',
         ]);
 
-        if ($request->category == 'Lainnya') {
-            $type = ucwords($request->category_other);
-        } else {
-            $type = $request->category;
-        }
+        $due = $this->calculateDueDate($request->difficulty);
+        $request->merge([
+            'due' => $due,
+        ]);
+        $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type;
 
         DB::beginTransaction();
 
         try {
-            $assignment = new Assignment();
-            $assignment->taskmaster_id = $request->taskmaster;
-            $assignment->type = $type;
-            $assignment->subject = $request->subject;
-            $assignment->description = $request->description;
-            $assignment->is_recurring = $request->is_recurring ? true : false;
-            $assignment->save();
+            $assignment = $this->assignmentService->createAssignment(collect($request));
 
             if ($request->hasFile('attachments')) {
-                foreach ($request->file('attachments') as $attachment) {
-                    $client_original_name = $attachment->getClientOriginalName();
-                    $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
-                    $extension = $attachment->getClientOriginalExtension();
-                    $unique_filename = $filename . '_' . time() . '.' . $extension;
-
-                    $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
-
-                    $file = new File();
-                    $file->name = $filename;
-                    $file->path = $path;
-                    $file->extension = $extension;
-                    $file->size = $attachment->getSize();
-                    $file->type = 'attachment';
-                    $file->fileable_id = $assignment->id;
-                    $file->fileable_type = Assignment::class;
-                    $file->save();
-                }
+                $this->handleAttachments($request->file('attachments'), $assignment);
             }
 
-            if ($request->difficulty == 'basic') {
-                $due = Carbon::now()->addDays(1);
-            } else if ($request->difficulty == 'intermediate') {
-                $due = Carbon::now()->addDays(2);
-            } else if ($request->difficulty == 'advanced') {
-                $due = Carbon::now()->addDays(3);
-            }
-
-            $task = new Task();
-            $task->uuid = $task->generateUniqueId();
-            $task->assignee_id = Auth::User()->id;
-            $task->assignment_id = $assignment->id;
-            $task->difficulty = $request->difficulty;
-            $task->due = $due;
-            $task->save();
-
-            if ($request->is_recurring) {
-                $recurrence_end_date = null;
-                if ($request->recurrence_end_date) {
-                    $recurrence_end_date = new Carbon($request->recurrence_end_date);
-                }
-                RecurrencePattern::create([
-                    'assignment_id' => $assignment->id,
-                    'recurrence_type' => $request->repeat,
-                    'day_of_week' => $request->day_of_weeks,
-                    'day_of_month' => $request->day_of_month,
-                    'time' => $request->time,
-                    'recurrence_end_date' => $recurrence_end_date
-                ]);
-            }
+            $task = $this->taskService->createTask(collect([
+                'assignee' => Auth::id(),
+                'assignment' => $assignment->id,
+                'description' => null,
+                'difficulty' => $request->difficulty,
+                'due' => $request->due,
+            ]));
 
             // Send notifications
             $assignees = User::where('id', $task->assignee_id)->get();
@@ -576,5 +487,49 @@ class AssignmentController extends Controller
             ->values()
             ->push('Lainnya')
             ->unique();
+    }
+
+    private function calculateDueDate(string $difficulty)
+    {
+        $days = match ($difficulty) {
+            'basic' => 1,
+            'intermediate' => 2,
+            'advanced' => 3,
+            default => 0,
+        };
+
+        return Carbon::now()->addDays($days);
+    }
+
+    private function createTasks(Request $request, $assignment)
+    {
+        $tasks = collect();
+
+        foreach ($request->assignees as $assignee) {
+            $task = $this->taskService->createTask(collect([
+                'assignee' => $assignee['id'],
+                'assignment' => $assignment->id,
+                'description' => $assignee['description'],
+                'difficulty' => $request->difficulty,
+                'due' => $request->due,
+            ]));
+
+            $tasks->push($task);
+        }
+
+        return $tasks;
+    }
+
+    private function handleAttachments($files, $assignment)
+    {
+        foreach ($files as $file) {
+            $fileable = [
+                'path' => 'public/assignment/' . $assignment->id . '/attachments',
+                'type' => 'attachment',
+                'fileable_id' => $assignment->id,
+                'fileable_type' => Assignment::class,
+            ];
+            $this->fileService->storeFile($file, $fileable);
+        }
     }
 }

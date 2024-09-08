@@ -202,6 +202,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the user position name
+     */
+    public function getPositionNameAttribute()
+    {
+        return $this->position->name;
+    }
+
+    /**
      * Get the user subordinates
      */
     public function subordinates(): HasMany
