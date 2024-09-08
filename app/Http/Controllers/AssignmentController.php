@@ -161,7 +161,7 @@ class AssignmentController extends Controller
             'subject' => 'required|unique:assignments,subject|max:255',
             'description' => 'required',
             'difficulty' => 'required|string|in:basic,intermediate,advanced|max:255',
-            'type_other' => Rule::requiredIf($request->type == 'Lainnya')->max(255),
+            'type_other' => Rule::requiredIf($request->type == 'Lainnya'),
         ]);
 
         // Calculate due date based on difficulty
