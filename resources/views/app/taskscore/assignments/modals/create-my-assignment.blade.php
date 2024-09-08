@@ -76,6 +76,73 @@
                          </template>
                      </div>
 
+                     <div class="space-y-4">
+                        <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
+                            Assignment difficulty level
+                            <span class="text-red-600 dark:text-red-500">*</span>
+                        </p>
+
+                        <div class="pb-2">
+                            <div class="space-y-4">
+                                <div class="flex">
+                                    <div class="flex h-5 items-center">
+                                        <input class="peer/basic h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                               id="basic"
+                                               name="difficulty"
+                                               type="radio"
+                                               value="basic"
+                                               x-model="difficulty"
+                                               x-bind:disabled="disableBasic"
+                                               required>
+                                        <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/basic:cursor-default peer-disabled/basic:text-gray-400 dark:text-gray-300 peer-disabled/basic:dark:text-gray-500"
+                                               for="basic">
+                                            Basic
+                                            <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                               id="basic-text">Assignment due will set in 1 days from now</p>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="flex">
+                                    <div class="flex h-8 items-center">
+                                        <input class="peer/intermediate h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                               id="intermediate"
+                                               name="difficulty"
+                                               type="radio"
+                                               value="intermediate"
+                                               x-model="difficulty"
+                                               x-bind:disabled="disableIntermediate"
+                                               required>
+                                        <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/intermediate:cursor-default peer-disabled/intermediate:text-gray-400 dark:text-gray-300 peer-disabled/intermediate:dark:text-gray-500"
+                                               for="intermediate">
+                                            Intermediate
+                                            <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                               id="intermediate-text">Assignment due will set in 2 days from now</p>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="flex">
+                                    <div class="flex h-5 items-center">
+                                        <input class="peer/advanced h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                               id="advanced"
+                                               name="difficulty"
+                                               type="radio"
+                                               value="advanced"
+                                               x-model="difficulty"
+                                               required>
+                                        <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/advanced:cursor-default peer-disabled/advanced:text-gray-400 dark:text-gray-300 peer-disabled/advanced:dark:text-gray-500"
+                                               for="advanced">
+                                            Advanced
+                                            <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                               id="advanced-text">Assignment due will set in 3 days from now</p>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                      <div class="col-span-2">
                          <x-forms.text-editor name="description"
                                               value="{{ old('description') }}"
