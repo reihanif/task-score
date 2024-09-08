@@ -11,6 +11,7 @@ use App\Models\Submission;
 use Illuminate\Http\Request;
 use App\Services\FileService;
 use App\Services\TaskService;
+use Illuminate\Validation\Rule;
 use App\Models\RecurrencePattern;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -105,14 +106,15 @@ class AssignmentController extends Controller
             'difficulty' => 'required|string|in:basic,intermediate,advanced|max:255',
             'assignees' => 'array',
             'assignees.*.id' => 'required|uuid',
+            'type_other' => Rule::requiredIf($request->type == 'Lainnya'),
         ]);
 
         $due = $this->calculateDueDate($request->difficulty);
         $request->merge([
             'taskmaster' => Auth::id(),
             'due' => $due,
+            'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
         ]);
-        $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type;
 
         DB::beginTransaction();
 
@@ -125,9 +127,10 @@ class AssignmentController extends Controller
             }
 
             // Send notifications
+            $assignees = User::whereIn('id', $tasks->pluck('assignee_id'))->get();
             foreach ($tasks as $task) {
-                $assignees = User::where('id', $task->assignee_id)->get();
-                Notification::send($assignees, new NewAssignment($assignment, $task));
+                $user = $assignees->firstWhere('id', $task->assignee_id);
+                Notification::send($user, new NewAssignment($assignment, $task));
             }
 
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
@@ -158,23 +161,30 @@ class AssignmentController extends Controller
             'subject' => 'required|unique:assignments,subject|max:255',
             'description' => 'required',
             'difficulty' => 'required|string|in:basic,intermediate,advanced|max:255',
+            'type_other' => Rule::requiredIf($request->type == 'Lainnya')->max(255),
         ]);
 
+        // Calculate due date based on difficulty
         $due = $this->calculateDueDate($request->difficulty);
+
+        // Merge necessary values into request
         $request->merge([
             'due' => $due,
+            'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
         ]);
-        $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type;
 
         DB::beginTransaction();
 
         try {
+            // Create assignment
             $assignment = $this->assignmentService->createAssignment(collect($request));
 
+            // Handle file attachments, if any
             if ($request->hasFile('attachments')) {
                 $this->handleAttachments($request->file('attachments'), $assignment);
             }
 
+            // Create the task and assign it to the current user
             $task = $this->taskService->createTask(collect([
                 'assignee' => Auth::id(),
                 'assignment' => $assignment->id,
@@ -183,12 +193,12 @@ class AssignmentController extends Controller
                 'due' => $request->due,
             ]));
 
-            // Send notifications
-            $assignees = User::where('id', $task->assignee_id)->get();
-            Notification::send($assignees, new NewAssignment($assignment, $task));
+            // Send notification to the assignee (current user)
+            Notification::send(Auth::user(), new NewAssignment($assignment, $task));
 
+            // Send notification to the taskmaster (assumed to be assignment creator)
             $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, Auth::User()->name));
+            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, Auth::user()->name));
 
             // Execute database insertations
             DB::commit();
