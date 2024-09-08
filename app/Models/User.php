@@ -9,6 +9,8 @@ use App\Models\Permission;
 use App\Models\TimeExtension;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -135,30 +137,36 @@ class User extends Authenticatable
      */
     public function resolvedAssignments(): HasMany
     {
-        return $this->hasMany(Task::class, 'assignee_id')->where('resolved_at', '!=', null)->whereHas('assignment');
+        return $this->hasMany(Task::class, 'assignee_id')
+            ->resolved()
+            ->withAssignment();
     }
 
     /**
      * Get the unresolved assignments associated with the user as assignee.
      */
-    public function unresolvedAssignments()
+    public function unresolvedAssignments(): HasMany
     {
-        return collect([
-            Task::where('resolved_at', null)->whereHas('assignment')->where('assignee_id', $this->id)->doesntHave('submissions')->get(),
-            Task::where('resolved_at', null)->whereHas('assignment')->where('assignee_id', $this->id)->whereHas('latestSubmission', function($query) {
-                return $query->where('is_approve', false);
-            })->get()
-        ])->flatten(1)->sortBy('created_at');
+        return $this->hasMany(Task::class, 'assignee_id')
+            ->unresolved()
+            ->withAssignment()
+            ->where(function ($query) {
+                $query->withoutSubmissions()
+                      ->orWhereHas('latestSubmission', function ($subQuery) {
+                          $subQuery->where('is_approve', false);
+                      });
+            });
     }
 
     /**
      * Get the pending assignments associated with the user as assignee.
      */
-    public function pendingAssignments()
+    public function pendingAssignments(): HasMany
     {
-        return Task::where('resolved_at', null)->where('assignee_id', $this->id)->whereHas('latestSubmission', function($query) {
-            return $query->whereNull('is_approve');
-        })->whereHas('assignment')->get();
+        return $this->hasMany(Task::class, 'assignee_id')
+            ->unresolved()
+            ->pendingApproval()
+            ->withAssignment();
     }
 
     /**
@@ -196,16 +204,26 @@ class User extends Authenticatable
     /**
      * Get the user subordinates
      */
-    public function subordinates()
+    public function subordinates(): HasMany
     {
-        if($this->position()->exists()) {
-            return User::where('id', '!=', $this->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
+        return $this->hasMany(User::class, 'position_id', 'position_id')
+            ->where('id', '!=', $this->id)
+            ->whereHas('position', function ($query) {
                 $query->where('path', 'LIKE', '%' . $this->position?->id . '%');
-            })->get()->sortBy('name');
-        } elseif($this->role == 'superadmin') {
-            return User::all()->except($this->id);
+            });
+    }
+
+    /**
+     * Scope to include all users for superadmin.
+     */
+    public function scopeAllSubordinates(Builder $query): void
+    {
+        if ($this->isSuperadmin()) {
+            $query->where('id', '!=', $this->id);
         } else {
-            return [];
+            $query->whereHas('position', function ($query) {
+                $query->where('path', 'LIKE', '%' . $this->position?->id . '%');
+            })->where('id', '!=', $this->id);
         }
     }
 

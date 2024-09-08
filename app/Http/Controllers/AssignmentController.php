@@ -29,16 +29,13 @@ class AssignmentController extends Controller
      */
     public function myAssignment()
     {
-        $categories = collect([
-            'Berita Acara',
-            'Sales Order'
-        ]);
+        $categories = $this->getCategories();
         $user = Auth::User();
         $superiors = $user->position->superior?->users ?? [];
 
         return view('app.taskscore.assignments.my-assignments', [
-            'unresolved_assignments' => $user->unresolvedAssignments(),
-            'pending_assignments' => $user->pendingAssignments(),
+            'unresolved_assignments' => $user->unresolvedAssignments,
+            'pending_assignments' => $user->pendingAssignments,
             'resolved_assignments' => $user->resolvedAssignments,
             'categories' => $categories,
             'superiors' => $superiors
@@ -60,48 +57,17 @@ class AssignmentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show list of subordinate assignments.
      *
      * @return \Illuminate\Http\Response
      */
     public function subordinateAssignment()
     {
-        $assignees = Auth::User()->subordinates();
-        $taskmaster_position = [Auth::User()->position_id];
-        if(is_null(Auth::User()->position_id)) {
-            $assignments = Assignment::where('taskmaster_id', Auth::User()->id)->orderBy('created_at', 'desc')->get();
-        } else {
-            $assignees_id = $assignees->pluck('id');
-            $assignments = Assignment::whereHas('taskmaster', function ($query) use ($taskmaster_position) {
-                $query->whereIn('position_id', $taskmaster_position);
-            })->whereHas('tasks', function ($query) use ($assignees_id) {
-                $query->whereIn('assignee_id', $assignees_id);
-            })
-            ->orderBy('created_at', 'desc')
-            ->get();
-        }
+        $user = Auth::user();
 
-        $default_types = collect([
-            'Memorandum',
-            'Surat',
-            'Surat Keputusan',
-            'Surat Perintah',
-            'Surat Edaran',
-            'Presentasi',
-            'Rapat',
-            'Perjalanan Dinas',
-            'SP3',
-            'Berita Acara',
-            'Sales Order'
-        ]);
-        $types = Assignment::all()->map(function ($assignment) {
-            return collect($assignment->toArray())
-                ->only(['type'])
-                ->all();
-        })->flatten()->filter(function ($item) {
-            return $item !== 'Lainnya';
-        });
-        $categories = $default_types->merge($types)->sort()->values()->unique()->merge(collect(['Lainnya']));
+        $assignees = $this->getUserSubordinates($user);
+        $assignments = $this->getUserAssignments($user);
+        $categories = $this->getCategories();
 
         return view('app.taskscore.assignments.subordinate-assignments', [
             'assignees' => $assignees,
@@ -189,13 +155,12 @@ class AssignmentController extends Controller
 
             if ($request->is_recurring) {
                 $recurrence_end_date = null;
-                if($request->recurrence_end_date) {
+                if ($request->recurrence_end_date) {
                     $recurrence_end_date = new Carbon($request->recurrence_end_date);
                 }
                 RecurrencePattern::create([
                     'assignment_id' => $assignment->id,
                     'recurrence_type' => $request->repeat,
-                    // 'interval' => $request->interval,
                     'day_of_week' => $request->day_of_weeks,
                     'day_of_month' => $request->day_of_month,
                     'time' => $request->time,
@@ -276,23 +241,30 @@ class AssignmentController extends Controller
                 }
             }
 
+            if ($request->difficulty == 'basic') {
+                $due = Carbon::now()->addDays(1);
+            } else if ($request->difficulty == 'intermediate') {
+                $due = Carbon::now()->addDays(2);
+            } else if ($request->difficulty == 'advanced') {
+                $due = Carbon::now()->addDays(3);
+            }
+
             $task = new Task();
             $task->uuid = $task->generateUniqueId();
             $task->assignee_id = Auth::User()->id;
             $task->assignment_id = $assignment->id;
-            $task->difficulty = 'advanced';
-            $task->due = Carbon::now()->addDays(3);
+            $task->difficulty = $request->difficulty;
+            $task->due = $due;
             $task->save();
 
             if ($request->is_recurring) {
                 $recurrence_end_date = null;
-                if($request->recurrence_end_date) {
+                if ($request->recurrence_end_date) {
                     $recurrence_end_date = new Carbon($request->recurrence_end_date);
                 }
                 RecurrencePattern::create([
                     'assignment_id' => $assignment->id,
                     'recurrence_type' => $request->repeat,
-                    // 'interval' => $request->interval,
                     'day_of_week' => $request->day_of_weeks,
                     'day_of_month' => $request->day_of_month,
                     'time' => $request->time,
@@ -327,25 +299,12 @@ class AssignmentController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $task = null;
-        if ($request->task) {
-            $task = Task::findOrFail($request->task);
-        }
-
-        $assignees = User::where('id', '!=', Auth::User()->id)->whereNotNull('position_id')->whereHas('position', function ($query) {
-            $query->where('path', 'LIKE', '%' . Auth::User()->position?->id . '%');
-        })->get()->sortBy('name');
-
         $assignment = Assignment::findOrFail($id);
-
-        if (Auth::User()->isAssignee($id) && is_null($task)) {
-            abort(404);
-        }
+        $task = $request->task ? Task::findOrFail($request->task) : null;
 
         return view('app.taskscore.assignments.show', [
             'assignment' => $assignment,
             'assignee_task' => $task,
-            'assignees' => $assignees
         ]);
     }
 
@@ -559,5 +518,63 @@ class AssignmentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    private function getUserSubordinates($user)
+    {
+        return $user->allSubordinates()->get();
+    }
+
+    private function getUserAssignments($user)
+    {
+        // Initialize the query
+        $query = Assignment::query();
+
+        if (is_null($user->position_id)) {
+            // If user has no position, fetch assignments directly assigned to them
+            $query->where('taskmaster_id', $user->id);
+        } else {
+            // If user has a position, fetch assignments for subordinates
+            $assigneeIds = $user->allSubordinates()->pluck('id');
+            $query->whereHas('taskmaster', function ($query) use ($user) {
+                $query->where('position_id', $user->position_id);
+            })->whereHas('tasks', function ($query) use ($assigneeIds) {
+                $query->whereIn('assignee_id', $assigneeIds);
+            });
+        }
+
+        // Order assignments by creation date and get results
+        return $query->orderBy('created_at', 'desc')->get();
+    }
+
+    private function getCategories()
+    {
+        // Default types of assignments
+        $defaultTypes = [
+            'Memorandum',
+            'Surat',
+            'Surat Keputusan',
+            'Surat Perintah',
+            'Surat Edaran',
+            'Presentasi',
+            'Rapat',
+            'Perjalanan Dinas',
+            'SP3',
+            'Berita Acara',
+            'Sales Order'
+        ];
+
+        // Extract and filter assignment types
+        $assignmentTypes = Assignment::pluck('type')->filter(function ($type) {
+            return $type !== 'Lainnya';
+        })->unique()->toArray();
+
+        // Combine and sort categories, adding 'Lainnya' at the end
+        return collect($defaultTypes)
+            ->merge($assignmentTypes)
+            ->sort()
+            ->values()
+            ->push('Lainnya')
+            ->unique();
     }
 }

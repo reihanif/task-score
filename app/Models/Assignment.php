@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Assignment extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes, Notifiable;
+    use HasFactory, HasUuids, Notifiable;
 
     /**
      * The attributes that should be cast.
