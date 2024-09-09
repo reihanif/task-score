@@ -215,9 +215,11 @@
                                 <td class="whitespace-nowrap px-3 py-4">
                                     <ul class="list-none space-y-3">
                                         @foreach ($assignment->tasks as $task)
-                                            <li>
-                                                {{ $task->uuid . ' - ' . $task->assignee->name }}
-                                            </li>
+                                            @if ($assignment->is_recurring && !$task->isResolved() || !$assignment->is_recurring)
+                                                <li>
+                                                    {{ $task->uuid . ' - ' . $task->assignee->name }}
+                                                </li>
+                                            @endif
                                         @endforeach
                                     </ul>
                                 </td>
