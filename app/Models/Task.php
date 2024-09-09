@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -80,6 +81,44 @@ class Task extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
+    /**
+     * Query Scopes
+     */
+    public function scopeResolved(Builder $query)
+    {
+        return $query->whereNotNull('resolved_at');
+    }
+
+    public function scopeUnresolved(Builder $query)
+    {
+        return $query->whereNull('resolved_at');
+    }
+
+    public function scopeWithAssignment(Builder $query)
+    {
+        return $query->whereHas('assignment');
+    }
+
+    public function scopePendingApproval(Builder $query)
+    {
+        return $query->whereHas('latestSubmission', function ($query) {
+            $query->whereNull('is_approve');
+        });
+    }
+
+    public function scopeDisapproved(Builder $query)
+    {
+        return $query->whereHas('latestSubmission', function ($query) {
+            $query->where('is_approve', false);
+        });
+    }
+
+    public function scopeWithoutSubmissions(Builder $query)
+    {
+        return $query->doesntHave('submissions');
+    }
+
 
     /**
      * Check if task is resolved.

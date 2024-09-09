@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Position;
-use App\Models\Department;
-use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -74,16 +71,12 @@ class UserController extends Controller
             $user->role = $request->role;
             $user->save();
 
-            $permission = new Permission();
-            $permission->user_id = $user->id;
-            $permission->save();
-
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             // Handle the error appropriately
-            return redirect()->back()->with('errors', 'Create user failed');
+            return redirect()->back()->withErrors('Create user failed');
         }
 
         return redirect()->route('users.index')->with('success', 'User ' . $user->name . ' added successfully!');
