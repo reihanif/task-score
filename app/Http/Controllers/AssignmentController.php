@@ -46,7 +46,7 @@ class AssignmentController extends Controller
     {
         $categories = $this->getCategories();
         $user = Auth::User();
-        $superiors = User::whereIn('position_id', $user->position->superiors->pluck('id'))->get();
+        $superiors = User::whereIn('position_id', $user->position?->superiors->pluck('id') ?? [])->get();
 
         return view('app.taskscore.assignments.my-assignments', [
             'unresolved_assignments' => $user->unresolvedAssignments,
