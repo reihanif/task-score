@@ -36,7 +36,7 @@ class Reminder extends Command
         $users = User::all();
 
         foreach ($users as $user) {
-            $tasks = $user->unresolvedAssignments();
+            $tasks = $user->unresolvedAssignments;
             $unapproved_tasks = $user->delegatedTasks()->whereHas('latestSubmission', function($query) {
                 return $query->whereNull('is_approve');
             })->get();

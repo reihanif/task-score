@@ -44,7 +44,7 @@ class DashboardController extends Controller
             ]);
         }
 
-        $assignments_last_week = Task::where('created_at', '>=', Carbon::now()->subDays(7))
+        $assignments_last_week = Task::where('created_at', '>=', Carbon::now()->subDays(6))
             ->where('assignee_id', Auth::user()->id)
             ->get()
             ->map(function ($item) {
@@ -56,7 +56,7 @@ class DashboardController extends Controller
         $score_last_week = $assignments_last_week->where('resolved_at', '!=', null)->avg('score');
 
         // Query the database for records created in the last 7 days, grouped by date
-        $assignments = Task::where('created_at', '>=', Carbon::now()->subDays(7))->where('assignee_id', Auth::user()->id)
+        $assignments = Task::where('created_at', '>=', Carbon::now()->subDays(6))->where('assignee_id', Auth::user()->id)
             ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
             ->groupBy(DB::raw('DATE(created_at)'))
             ->pluck('total', 'date');
@@ -80,7 +80,7 @@ class DashboardController extends Controller
             'resolved_assignments' => $total_resolved_assignments,
             'total_score' => $total_score,
             'assignment_last_week' => $daysArray,
-            'total_assignment_last_week' => $assignments_last_week->count(),
+            'total_assignment_last_week' => array_sum($assignments_array),
             'score_last_week' => $score_last_week
         ]);
     }
