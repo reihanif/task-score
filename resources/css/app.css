@@ -54,82 +54,75 @@
     background-color: #f9fafb;
 }
 
-.tree {
-    width: 6000px;
-}
-
-.tree ul {
-    padding-top: 20px;
-    position: relative;
-
+.tree ul.hierarchy {
     transition: all 0.5s;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
 }
 
-.tree li {
-    float: left;
-    text-align: center;
-    list-style-type: none;
-    position: relative;
-    padding: 20px 5px 0 5px;
-
+.tree li.hierarchy-list {
     transition: all 0.5s;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
 }
 
-/*We will use ::before and ::after to draw the connectors*/
-
-.tree li::before,
-.tree li::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 50%;
-    border-top: 1px solid #ccc;
-    width: 50%;
-    height: 20px;
-}
-.tree li::after {
+.tree li.hierarchy-list::after {
     right: auto;
     left: 50%;
     border-left: 1px solid #ccc;
 }
 
-/*We need to remove left-right connectors from elements without
+.tree li.hierarchy-horizontal-list::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background-color: black;
+    transform: translateX(-50%);
+}
+
+.tree li.hierarchy-list.horizontal-list::after {
+    content: ' ';
+    right: auto;
+    left: 50%;
+    border-left: 1px solid #ccc;
+}
+
+/*Remove left-right connectors from elements without
 any siblings*/
-.tree li:only-child::after,
-.tree li:only-child::before {
+.tree li.hierarchy-list:only-child::after,
+.tree li.hierarchy-list:only-child::before {
     display: none;
 }
 
 /*Remove space from the top of single children*/
-.tree li:only-child {
+.tree li.hierarchy-list:only-child {
     padding-top: 0;
 }
 
 /*Remove left connector from first child and
 right connector from last child*/
-.tree li:first-child::before,
-.tree li:last-child::after {
+.tree li.hierarchy-list:first-child::before,
+.tree li.hierarchy-list:last-child::after {
     border: 0 none;
 }
 /*Adding back the vertical connector to the last nodes*/
-.tree li:last-child::before {
+.tree li.hierarchy-list:last-child::before {
     border-right: 1px solid #ccc;
     border-radius: 0 5px 0 0;
     -webkit-border-radius: 0 5px 0 0;
     -moz-border-radius: 0 5px 0 0;
 }
-.tree li:first-child::after {
+.tree li.hierarchy-list:first-child::after {
     border-radius: 5px 0 0 0;
     -webkit-border-radius: 5px 0 0 0;
     -moz-border-radius: 5px 0 0 0;
 }
 
-/*Time to add downward connectors from parents*/
-.tree ul ul::before {
+/*Add downward connectors from parents*/
+.tree ul.hierarchy-horizontal ul.hierarchy-horizontal::before {
     content: "";
     position: absolute;
     top: 0;
@@ -139,19 +132,17 @@ right connector from last child*/
     height: 20px;
 }
 
-.tree li a {
-    border: 1px solid #ccc;
-    padding: 5px 10px;
-    text-decoration: none;
-    /* color: #666; */
-    font-family: arial, verdana, tahoma;
-    font-size: 12px;
-    display: inline-block;
+.tree ul.hierarchy ul.hierarchy::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    border-left: 1px solid #ccc;
+    width: 0;
+    height: 20px;
+}
 
-    border-radius: 5px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-
+.tree li.hierarchy-list a, .tree li.hierarchy-list a p {
     transition: all 0.5s;
     -webkit-transition: all 0.5s;
     -moz-transition: all 0.5s;
@@ -159,18 +150,17 @@ right connector from last child*/
 
 /*Time for some hover effects*/
 /*We will apply the hover effect the the lineage of the element also*/
-.tree li a:hover,
-.tree li a:hover + ul li a {
-    background: #c8e4f8;
-    color: #000;
-    border: 1px solid #94a0b4;
+.tree li.hierarchy-list a:hover,
+.tree li.hierarchy-list a:hover + ul.hierarchy li.hierarchy-list a {
+    @apply bg-blue-100 text-black border-blue-900;
 }
+
 /*Connector styles on hover*/
-.tree li a:hover + ul li::after,
-.tree li a:hover + ul li::before,
-.tree li a:hover + ul::before,
-.tree li a:hover + ul ul::before {
-    border-color: #94a0b4;
+.tree li.hierarchy-list a:hover + ul.hierarchy li.hierarchy-list::after,
+.tree li.hierarchy-list a:hover + ul.hierarchy li.hierarchy-list::before,
+.tree li.hierarchy-list a:hover + ul.hierarchy::before,
+.tree li.hierarchy-list a:hover + ul.hierarchy ul.hierarchy::before {
+    @apply border-blue-900 dark:border-white;
 }
 
 /* Tom Select CSS */

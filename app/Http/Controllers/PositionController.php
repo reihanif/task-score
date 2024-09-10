@@ -46,6 +46,9 @@ class PositionController extends Controller
         try {
             $position = new Position();
             $position->name = $request->name;
+            if($request->is_secretary) {
+                $position->is_secretary = true;
+            }
             if (!is_null($request->superior)) {
                 $position->parent_id = $request->superior;
                 $superior = Position::select('level', 'path')->where('id', $request->superior);

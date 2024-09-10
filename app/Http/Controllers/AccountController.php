@@ -59,9 +59,33 @@ class AccountController extends Controller
     public function updateAccount(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $user->update($request->all());
+
+        try {
+            if($request->update_permitted_positions) {
+                $user->permitted_positions()->sync($request->permitted_positions ?? []);
+            } else {
+                $user->update($request->all());
+            }
+        } catch(\Exception $e) {
+            return redirect()->back()->withErrors($user->name . ' account updated failed!');
+        }
 
         return redirect()->back()->with('success', $user->name . ' account updated successfully!');
+    }
+
+    public function changePosition($user, $position)
+    {
+        $user = User::findOrFail($user);
+
+        try {
+            $user->position_id = $position;
+            $user->save();
+        } catch (\Exception $e) {
+
+            return redirect()->back()->withErrors('Failed to change position!');
+        }
+
+        return redirect()->back()->with('success', 'Position changed to ' . $user->position->name);
     }
 
     public function managePermissions($id)
