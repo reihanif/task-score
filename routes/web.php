@@ -83,6 +83,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::resource('users', UserController::class);
     });
+    Route::put('/account/{user}/{position}/update', [AccountController::class, 'changePosition'])->name('account.change-position');
 
     Route::group(['middleware' => 'can:viewAny,\App\Models\Department'], function () {
         Route::get('/departments', [DepartmentController::class, 'index'])->name('departments.index');
