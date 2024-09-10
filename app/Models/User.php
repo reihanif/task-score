@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
@@ -62,11 +63,19 @@ class User extends Authenticatable
     ];
 
     /**
-     * Get the position that owns the user.
+     * Get the current position that owns the user.
      */
     public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class);
+    }
+
+    /**
+     * Get the premitted position that owns the user.
+     */
+    public function permitted_positions(): BelongsToMany
+    {
+        return $this->belongsToMany(Position::class, 'position_user');
     }
 
     /**

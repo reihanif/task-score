@@ -8,19 +8,8 @@
             <h5 class="mr-3 font-semibold dark:text-white">Organizations Hierarchy</h5>
         </div>
     </div>
-    <div class="tree text-gray-900 dark:text-white">
-        <ul>
-            @foreach ($positions as $position)
-                @if ($position->level == 0)
-                    <li>
-                        <a href="#">
-                            {{ $position->name }}
-                        </a>
-                        @include('app.positions.subhierarchy', ['subordinates' => $position->direct_subordinates])
-                    </li>
-                @endif
-            @endforeach
-        </ul>
+    <div class="tree flex justify-center text-xs text-gray-900 dark:text-white">
+        @include('app.positions.subhierarchy', ['positions' => $positions])
     </div>
 @endsection
 

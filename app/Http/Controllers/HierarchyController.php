@@ -12,7 +12,7 @@ class HierarchyController extends Controller
      */
     public function index()
     {
-        $positions = Position::orderBy('level', 'asc')->get();
+        $positions = Position::where('level', 0)->get();
 
         return view('app.positions.hierarchy', [
             'positions' => $positions,

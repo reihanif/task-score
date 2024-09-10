@@ -24,6 +24,14 @@ class Position extends Model
     }
 
     /**
+     * Get the premitted users for the position.
+     */
+    public function permitted_users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'position_user');
+    }
+
+    /**
      * Get the superior of the positions.
      */
     public function superior(): BelongsTo
