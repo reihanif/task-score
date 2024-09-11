@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Assignment extends Model
 {
@@ -38,6 +39,14 @@ class Assignment extends Model
     public function taskmaster(): BelongsTo
     {
         return $this->belongsTo(User::class, 'taskmaster_id');
+    }
+
+    /**
+     * Get the assignee of the assignments.
+     */
+    public function assignees(): HasManyThrough
+    {
+        return $this->hasManyThrough(User::class, Task::class, 'assignment_id', 'id', 'id', 'assignee_id');
     }
 
     /**
