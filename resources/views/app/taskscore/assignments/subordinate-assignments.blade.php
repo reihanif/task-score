@@ -122,7 +122,7 @@
                     <!-- Modal toggle -->
                     <button class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                             data-modal-target="create-assignment-modal"
-                            data-modal-show="create-assignment-modal"
+                            data-modal-toggle="create-assignment-modal"
                             type="button">
                         <x-icons.plus class="-ml-1 mr-1 h-6 w-6">
                         </x-icons.plus>
@@ -375,7 +375,7 @@
                                                     <li>
                                                         <a class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-600 dark:hover:text-red-400"
                                                            data-modal-target="delete-assignment-modal-{{ $assignment->id }}"
-                                                           data-modal-show="delete-assignment-modal-{{ $assignment->id }}"
+                                                           data-modal-toggle="delete-assignment-modal-{{ $assignment->id }}"
                                                            type="button">Delete</a>
                                                     </li>
                                                 </ul>
@@ -456,109 +456,109 @@
 @section('script')
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            let table = new DataTable(
-                "#table", {
-                    responsive: true,
-                    layout: {
-                        topStart: {},
-                        topEnd: {},
-                        bottomStart: {
-                            pageLength: {
-                                text: "Rows per page_MENU_",
-                            },
-                            info: {
-                                text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+            // Delay DataTables initialization to ensure Flowbite components are fully set up
+            setTimeout(() => {
+                let table = new DataTable(
+                    "#table", {
+                        responsive: true,
+                        layout: {
+                            topStart: {},
+                            topEnd: {},
+                            bottomStart: {
+                                pageLength: {
+                                    text: "Rows per page_MENU_",
+                                },
+                                info: {
+                                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+                                },
                             },
                         },
-                    },
-                    oLanguage: {
-                        sEmptyTable: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No data found</div>',
-                    },
-                    language: {
-                        zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No matching records found</div>',
-                        zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No matching records found</div>',
-                        infoEmpty: '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                    },
-                }
-            );
-            table.on('draw', function () {
-                reinitializeDropdowns();
-            })
-            document
-                .getElementById("filter-search")
-                .addEventListener("keyup", function() {
-                    table.columns(1).search(this.value).draw();
-                });
-            document
-                .getElementById("filter-category")
-                .addEventListener("change", function() {
-                    table.columns(2).search(this.value, false, false, false).draw();
-                });
-            document
-                .getElementById("filter-submission")
-                .addEventListener("change", function() {
-                    table
-                        .columns(4)
-                        .search(this.value, false, false, false)
-                        .draw();
-                });
-            document
-                .getElementById("filter-assignee")
-                .addEventListener("change", function() {
-                    table
-                        .columns(3)
-                        .search(this.value, false, false, false)
-                        .draw();
-                });
-
-            const mindate = document.querySelector("#filter-mindate");
-            const maxdate = document.querySelector("#filter-maxdate");
-
-            table.search.fixed(
-                "range",
-                function(searchStr, data, index) {
-                    // Split the input date string by '/'
-                    const [minYear, minMonth, minDay] = mindate.value.split("-");
-                    const [maxYear, maxMonth, maxDay] = maxdate.value.split("-");
-
-                    // Construct the new date string in the format "YYYYMMDD"
-                    const minDateStr = `${minYear}${minMonth}${minDay}`;
-                    const maxDateStr = `${maxYear}${maxMonth}${maxDay}`;
-
-
-                    var min = parseInt(minDateStr, 10);
-                    var max = parseInt(maxDateStr, 10);
-                    var date = parseFloat(data[9]["@data-search"]); // use data for the date column
-
-                    if (
-                        (isNaN(min) && isNaN(max)) ||
-                        (isNaN(min) && date <= max) ||
-                        (min <= date && isNaN(max)) ||
-                        (min <= date && date <= max)
-                    ) {
-                        return true;
+                        oLanguage: {
+                            sEmptyTable: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                                window.assetUrl +
+                                'assets/illustrations/no-data-animate.svg"></object>' +
+                                '<div class="mb-8">No data found</div>',
+                        },
+                        language: {
+                            zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                                window.assetUrl +
+                                'assets/illustrations/no-data-animate.svg"></object>' +
+                                '<div class="mb-8">No matching records found</div>',
+                            zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                                window.assetUrl +
+                                'assets/illustrations/no-data-animate.svg"></object>' +
+                                '<div class="mb-8">No matching records found</div>',
+                            infoEmpty: '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+                        },
                     }
+                );
+                document
+                    .getElementById("filter-search")
+                    .addEventListener("keyup", function() {
+                        table.columns(1).search(this.value).draw();
+                    });
+                document
+                    .getElementById("filter-category")
+                    .addEventListener("change", function() {
+                        table.columns(2).search(this.value, false, false, false).draw();
+                    });
+                document
+                    .getElementById("filter-submission")
+                    .addEventListener("change", function() {
+                        table
+                            .columns(4)
+                            .search(this.value, false, false, false)
+                            .draw();
+                    });
+                document
+                    .getElementById("filter-assignee")
+                    .addEventListener("change", function() {
+                        table
+                            .columns(3)
+                            .search(this.value, false, false, false)
+                            .draw();
+                    });
 
-                    return false;
-                }
-            );
+                const mindate = document.querySelector("#filter-mindate");
+                const maxdate = document.querySelector("#filter-maxdate");
 
-            // Changes to the inputs will trigger a redraw to update the table
-            mindate.addEventListener("change", function() {
-                table.draw();
-            });
-            maxdate.addEventListener("change", function() {
-                table.draw();
-            });
+                table.search.fixed(
+                    "range",
+                    function(searchStr, data, index) {
+                        // Split the input date string by '/'
+                        const [minYear, minMonth, minDay] = mindate.value.split("-");
+                        const [maxYear, maxMonth, maxDay] = maxdate.value.split("-");
+
+                        // Construct the new date string in the format "YYYYMMDD"
+                        const minDateStr = `${minYear}${minMonth}${minDay}`;
+                        const maxDateStr = `${maxYear}${maxMonth}${maxDay}`;
+
+
+                        var min = parseInt(minDateStr, 10);
+                        var max = parseInt(maxDateStr, 10);
+                        var date = parseFloat(data[9]["@data-search"]); // use data for the date column
+
+                        if (
+                            (isNaN(min) && isNaN(max)) ||
+                            (isNaN(min) && date <= max) ||
+                            (min <= date && isNaN(max)) ||
+                            (min <= date && date <= max)
+                        ) {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                );
+
+                // Changes to the inputs will trigger a redraw to update the table
+                mindate.addEventListener("change", function() {
+                    table.draw();
+                });
+                maxdate.addEventListener("change", function() {
+                    table.draw();
+                });
+            }, 100);
         });
     </script>
 @endsection
