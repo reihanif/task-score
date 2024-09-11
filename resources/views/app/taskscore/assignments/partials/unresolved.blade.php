@@ -119,6 +119,9 @@
                 },
             }
         );
+        table.on('draw', function () {
+            reinitializeDropdowns();
+        })
         document
             .getElementById("filter-search")
             .addEventListener("keyup", function() {

@@ -1,5 +1,7 @@
 import "./bootstrap";
 import "flowbite";
+import { Dropdown } from 'flowbite';
+
 import Litepicker from 'litepicker';
 import 'litepicker/dist/plugins/ranges';
 window.Litepicker = Litepicker;
@@ -15,8 +17,6 @@ import FilePondPluginFileEncode from "filepond-plugin-file-encode";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-
-import { Modal } from "flowbite";
 
 import ApexCharts from "apexcharts";
 window.ApexCharts = ApexCharts;
@@ -403,6 +403,21 @@ labels.forEach((label) => {
 Datatables
 */
 
+function reinitializeDropdowns() {
+    // Find all elements with the 'dropdown' data attribute
+    const dropdownElements = document.querySelectorAll('[data-dropdown-toggle]');
+
+    // Iterate through each element and create a new Dropdown instance
+    dropdownElements.forEach((dropdownToggleEl) => {
+        const dropdownId = dropdownToggleEl.getAttribute('data-dropdown-toggle');
+        const dropdownMenuEl = document.getElementById(dropdownId);
+
+        if (dropdownMenuEl) {
+            new Dropdown(dropdownMenuEl, dropdownToggleEl);
+        }
+    });
+}
+
 // Notifications Table
 if (document.querySelector("#notifications-table") !== null) {
     let notificationsTable = new DataTable("#notifications-table", {
@@ -445,6 +460,11 @@ if (document.querySelector("#positions-table") !== null) {
             },
         },
     });
+
+    positionsTable.on('draw', function () {
+        reinitializeDropdowns();
+    })
+
     document
         .getElementById("table-search-positions")
         .addEventListener("keyup", function () {
@@ -485,6 +505,9 @@ if (document.querySelector("#users-table") !== null) {
                 '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
         },
     });
+    usersTable.on('draw', function () {
+        reinitializeDropdowns();
+    })
     document
         .getElementById("table-search-users")
         .addEventListener("keyup", function () {
@@ -541,6 +564,9 @@ if (document.querySelector("#departments-table") !== null) {
                 '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
         },
     });
+    departmentsTable.on('draw', function () {
+        reinitializeDropdowns();
+    })
     document
         .getElementById("table-search-departments")
         .addEventListener("keyup", function () {
@@ -581,6 +607,9 @@ if (document.querySelector("#pending-assignments-table") !== null) {
                 '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
         },
     });
+    pendingAssignmentsTable.on('draw', function () {
+        reinitializeDropdowns();
+    })
     document
         .getElementById("table-search-pending-assignments")
         .addEventListener("keyup", function () {
@@ -624,6 +653,9 @@ if (document.querySelector("#resolved-assignments-table") !== null) {
             },
         }
     );
+    resolvedAssignmentsTable.on('draw', function () {
+        reinitializeDropdowns();
+    })
     document
         .getElementById("table-search-resolved-assignments")
         .addEventListener("keyup", function () {
@@ -668,6 +700,9 @@ if (document.querySelector("#subordinate-submissions-table") !== null) {
             },
         }
     );
+    subordinateAssignmentsTable.on('draw', function () {
+        reinitializeDropdowns();
+    })
     document
         .getElementById("table-search-subordinate-submissions")
         .addEventListener("keyup", function () {
@@ -685,7 +720,7 @@ if (document.querySelector("#subordinate-submissions-table") !== null) {
 
 // Subordinate Time Extensions Table
 if (document.querySelector("#subordinate-time-extensions-table") !== null) {
-    let subordinateAssignmentsTable = new DataTable(
+    let subordinateTimeExtensionsTable = new DataTable(
         "#subordinate-time-extensions-table",
         {
             order: [[3, "desc"]],
@@ -720,15 +755,18 @@ if (document.querySelector("#subordinate-time-extensions-table") !== null) {
             },
         }
     );
+    subordinateTimeExtensionsTable.on('draw', function () {
+        reinitializeDropdowns();
+    })
     document
         .getElementById("table-search-subordinate-time-extensions")
         .addEventListener("keyup", function () {
-            subordinateAssignmentsTable.columns(1).search(this.value).draw();
+            subordinateTimeExtensionsTable.columns(1).search(this.value).draw();
         });
     document
         .getElementById("time-extensions-resolution-filter")
         .addEventListener("change", function () {
-            subordinateAssignmentsTable
+            subordinateTimeExtensionsTable
                 .columns(4)
                 .search(this.value, false, false, false)
                 .draw();
@@ -738,6 +776,9 @@ if (document.querySelector("#subordinate-time-extensions-table") !== null) {
 window.TomSelect = TomSelect;
 window.initializeTomSelects = initializeTomSelects;
 window.onload = initializeTomSelects();
+
+window.reinitializeDropdowns = reinitializeDropdowns;
+window.onload = reinitializeDropdowns();
 
 window.Alpine = Alpine;
 
