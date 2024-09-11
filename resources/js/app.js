@@ -744,9 +744,6 @@ window.TomSelect = TomSelect;
 window.initializeTomSelects = initializeTomSelects;
 window.onload = initializeTomSelects();
 
-window.reinitializeDropdowns = reinitializeDropdowns;
-window.onload = reinitializeDropdowns();
-
 window.Alpine = Alpine;
 
 Alpine.plugin(collapse);
