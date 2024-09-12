@@ -45,7 +45,7 @@
                                 <li>
                                     <a class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                         data-modal-target="edit-positions-modal-{{ $position->id }}"
-                                        data-modal-show="edit-positions-modal-{{ $position->id }}"
+                                        data-modal-toggle="edit-positions-modal-{{ $position->id }}"
                                         type="button">Edit</a>
                                 </li>
                             </ul>
@@ -57,7 +57,7 @@
                             @if (count($position->users) !== 1)
                                 @foreach ($position->users as $user)
                                     <li>
-                                        {{ $user->name }}
+                                        <x-popover.user-profile id="users-{{ $user->id }}" href="{{ route('account.settings', $user->id) }}" :user="$user" />
                                     </li>
                                 @endforeach
                             @else
