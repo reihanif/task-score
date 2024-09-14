@@ -19,13 +19,13 @@ class TasklistController extends Controller
     {
         $submissions = Submission::latest()->whereHas('task', function($query) {
             return $query->whereHas('assignment', function($query) {
-                return $query->where('taskmaster_id', Auth::User()->id);
+                return $query->where('taskmaster_id', Auth::Id());
             });
         })->get();
 
         $time_extensions = TimeExtension::latest()->whereHas('task', function($query) {
             return $query->whereHas('assignment', function($query) {
-                return $query->where('taskmaster_id', Auth::User()->id);
+                return $query->where('taskmaster_id', Auth::Id());
             });
         });
 

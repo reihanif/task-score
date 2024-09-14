@@ -45,7 +45,7 @@ class DashboardController extends Controller
         }
 
         $assignments_last_week = Task::where('created_at', '>=', Carbon::now()->subDays(6))
-            ->where('assignee_id', Auth::user()->id)
+            ->where('assignee_id', Auth::Id())
             ->get()
             ->map(function ($item) {
                 $item->score = $item->score();
@@ -56,7 +56,7 @@ class DashboardController extends Controller
         $score_last_week = $assignments_last_week->where('resolved_at', '!=', null)->avg('score');
 
         // Query the database for records created in the last 7 days, grouped by date
-        $assignments = Task::where('created_at', '>=', Carbon::now()->subDays(6))->where('assignee_id', Auth::user()->id)
+        $assignments = Task::where('created_at', '>=', Carbon::now()->subDays(6))->where('assignee_id', Auth::Id())
             ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
             ->groupBy(DB::raw('DATE(created_at)'))
             ->pluck('total', 'date');

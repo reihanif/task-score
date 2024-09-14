@@ -45,7 +45,7 @@
                              <option value="">Select taskmaster</option>
                              @foreach ($superiors as $key => $superior)
                                  <option data-order="{{ str_pad($key, 2, '0', STR_PAD_LEFT) }}"
-                                         value="{{ $superior->id }}" data-caption="{{ $superior->position->name }}">{{ $superior->name }}</option>
+                                         value="{{ $superior->position->id }}" data-caption="{{ $superior->name }}">{{ $superior->position->name }}</option>
                              @endforeach
                          </x-forms.select>
                      </div>

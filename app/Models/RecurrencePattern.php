@@ -59,7 +59,7 @@ class RecurrencePattern extends Model
         }
 
         if(!is_null($this->recurrence_end_date)) {
-            $pattern .= ' until ' . $this->recurrence_end_date->format('d F Y');
+            $pattern .= ' until ' . $this->recurrence_end_date->format('d M Y');
         }
 
         return $pattern;

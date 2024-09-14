@@ -45,7 +45,7 @@
                                 <li>
                                     <a class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                         data-modal-target="edit-departments-modal-{{ $department->id }}"
-                                        data-modal-show="edit-departments-modal-{{ $department->id }}"
+                                        data-modal-toggle="edit-departments-modal-{{ $department->id }}"
                                         type="button">Edit</a>
                                 </li>
                             </ul>

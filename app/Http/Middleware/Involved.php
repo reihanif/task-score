@@ -25,10 +25,6 @@ class Involved
             $allowAccess = true;
         }
 
-        if ($request->user()->isInvolved($request->route('assignment'))) {
-            $allowAccess = true;
-        }
-
         if (!$allowAccess) {
             abort(404);
         }

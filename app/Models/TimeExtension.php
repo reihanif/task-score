@@ -31,6 +31,14 @@ class TimeExtension extends Model
     }
 
     /**
+     * Get the approver of the time extensions.
+     */
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approver_id');
+    }
+
+    /**
      * Check if the time extension request is approved.
      */
     public function isApproved()
@@ -41,7 +49,7 @@ class TimeExtension extends Model
     /**
      * Check if the time extension request is rejected.
      */
-    public function isNotApproved()
+    public function isRejected()
     {
         return $this->is_approve == false && $this->approved_at !== null;;
     }

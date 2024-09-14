@@ -331,18 +331,18 @@
                                 </div>
                             </td>
                             <td class="whitespace-nowrap px-3 py-4">
-                                {{ $user->created_at->format('d F Y, H:i') }}
+                                {{ $user->created_at->format('d M Y, H:i') }}
                             </td>
                             <td class="whitespace-nowrap px-3 py-4">
-                                {{ $user->updated_at->format('d F Y, H:i') }}
+                                {{ $user->updated_at->format('d M Y, H:i') }}
                             </td>
                             <td class="flex items-start py-4 pe-2 ps-6">
                                 @if (in_array(true, [
                                         Auth::User()->role == 'superadmin',
-                                        $user->id !== Auth::User()->id &&
+                                        $user->id !== Auth::Id() &&
                                         Auth::User()->role == 'admin' &&
                                         !in_array($user->role, ['superadmin', 'admin']),
-                                        $user->id !== Auth::User()->id && Auth::User()->role == 'superadmin',
+                                        $user->id !== Auth::Id() && Auth::User()->role == 'superadmin',
                                     ]))
                                     <div class="w-full">
                                         <button
@@ -370,7 +370,7 @@
 
                                                         // user can't edit their own account
                                                         // admin can edit except user's with admin & superadmin role
-                                                        $user->id !== Auth::User()->id &&
+                                                        $user->id !== Auth::Id() &&
                                                         Auth::User()->role == 'admin' &&
                                                         ($user->role !== 'superadmin' || $user->role !== 'admin'), // Check if user in row is not the same as logged in user and logged in user role is admin and user in row role is not superadmin
                                                     ]))
@@ -384,18 +384,18 @@
                                                 @endif
                                                 <!-- Only superadmin can delete user, and they can't delete their own account -->
                                                 <!-- Check if user in row is not the same as logged in user and logged in user role is superadmin -->
-                                                @if ($user->id !== Auth::User()->id && Auth::User()->role == 'superadmin')
+                                                @if ($user->id !== Auth::Id() && Auth::User()->role == 'superadmin')
                                                     <li>
                                                         <a class="block cursor-pointer px-4 py-2 text-red-600 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-600 dark:hover:text-red-400"
                                                             data-modal-target="delete-users-modal-{{ $user->id }}"
-                                                            data-modal-show="delete-users-modal-{{ $user->id }}"
+                                                            data-modal-toggle="delete-users-modal-{{ $user->id }}"
                                                             type="button">Delete</a>
                                                     </li>
                                                 @endif
                                             </ul>
                                         </div>
                                     </div>
-                                    @if ($user->id !== Auth::User()->id && Auth::User()->role == 'superadmin')
+                                    @if ($user->id !== Auth::Id() && Auth::User()->role == 'superadmin')
                                         <!-- Modal Delete toggle -->
                                         <x-modals.delete-user
                                             class="ms-3 font-medium text-red-600 hover:text-red-400 dark:text-red-500 dark:hover:text-red-400"
