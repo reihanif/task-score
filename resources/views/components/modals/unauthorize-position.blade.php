@@ -1,7 +1,7 @@
 <div class="table-row-button cursor-default">
     <!-- Modal toggle -->
     <button data-modal-target="remove-{{ $department->id }}"
-        data-modal-show="remove-{{ $department->id }}"
+        data-modal-toggle="remove-{{ $department->id }}"
         type="button"
         {{ $attributes }}>
         {{ $slot }}

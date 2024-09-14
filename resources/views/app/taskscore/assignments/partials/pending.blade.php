@@ -73,7 +73,7 @@
                         </td>
                         <td class="whitespace-nowrap px-3 py-4"
                             data-order="{{ $item->created_at->format('YmdHi') }}">
-                            {{ $item->created_at->format('d F Y H:i') }}
+                            {{ $item->created_at->format('d M Y H:i') }}
                         </td>
                         <td class="whitespace-nowrap px-3 py-4"
                             data-order="{{ $item->due->format('YmdHi') }}">

@@ -133,7 +133,7 @@ class DepartmentController extends Controller
 
             foreach ($submitted_positions as $position) {
                 if (!in_array($position, $current_positions)) {
-                    $department->positions()->attach($position, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => Auth::User()->id]);
+                    $department->positions()->attach($position, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => Auth::Id()]);
                 }
             }
 

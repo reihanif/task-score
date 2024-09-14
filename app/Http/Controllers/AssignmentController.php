@@ -3,26 +3,20 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\File;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\Assignment;
 use App\Models\Submission;
-use Illuminate\Http\Request;
+use App\Notifications\Assignments\AssignmentCreated;
+use App\Notifications\Assignments\AssignmentSubmitted;
+use App\Services\AssignmentService;
 use App\Services\FileService;
 use App\Services\TaskService;
-use Illuminate\Validation\Rule;
-use App\Models\RecurrencePattern;
-use Illuminate\Support\Collection;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Services\AssignmentService;
-use App\Notifications\NewAssignment;
 use Illuminate\Support\Facades\Auth;
-use App\Notifications\AssignmentResolved;
-use App\Notifications\AssignmentSubmitted;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\NewAssignmentTaskmaster;
-use App\Notifications\AssignmentSubmittedAssignee;
+use Illuminate\Validation\Rule;
 
 class AssignmentController extends Controller
 {
@@ -64,7 +58,7 @@ class AssignmentController extends Controller
      */
     public function resolved()
     {
-        $assignments = Assignment::where('assigned_to', Auth::User()->id)->where('resolved_at', '!=', null)->orderBy('created_at')->get();
+        $assignments = Assignment::where('assigned_to', Auth::Id())->where('resolved_at', '!=', null)->orderBy('created_at')->get();
 
         return view('app.taskscore.assignments.resolved', [
             'assignments' => $assignments,
@@ -111,7 +105,8 @@ class AssignmentController extends Controller
 
         $due = $this->calculateDueDate($request->difficulty);
         $request->merge([
-            'taskmaster' => Auth::id(),
+            'taskmaster' => Auth::User()->position_id,
+            'creator' => Auth::Id(),
             'due' => $due,
             'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
         ]);
@@ -127,14 +122,10 @@ class AssignmentController extends Controller
             }
 
             // Send notifications
-            $assignees = User::whereIn('id', $tasks->pluck('assignee_id'))->get();
             foreach ($tasks as $task) {
-                $user = $assignees->firstWhere('id', $task->assignee_id);
-                Notification::send($user, new NewAssignment($assignment, $task));
+                $task->assignee->notify(new AssignmentCreated($task));
             }
-
-            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, $tasks->pluck('assignee.name')->implode(' ')));
+            Notification::send($assignment->taskmaster->permitted_users, new AssignmentCreated($tasks->first()));
 
             // Execute database insertations
             DB::commit();
@@ -169,6 +160,7 @@ class AssignmentController extends Controller
 
         // Merge necessary values into request
         $request->merge([
+            'creator' => Auth::Id(),
             'due' => $due,
             'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
         ]);
@@ -186,19 +178,18 @@ class AssignmentController extends Controller
 
             // Create the task and assign it to the current user
             $task = $this->taskService->createTask(collect([
-                'assignee' => Auth::id(),
+                'assignee' => Auth::Id(),
                 'assignment' => $assignment->id,
                 'description' => null,
                 'difficulty' => $request->difficulty,
                 'due' => $request->due,
             ]));
 
-            // Send notification to the assignee (current user)
-            Notification::send(Auth::user(), new NewAssignment($assignment, $task));
+            // Send notification to the assignee
+            $task->assignee->notify(new AssignmentCreated($task));
 
-            // Send notification to the taskmaster (assumed to be assignment creator)
-            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-            Notification::send($taskmasters, new NewAssignmentTaskmaster($assignment, Auth::user()->name));
+            // Send notification to the taskmaster
+            Notification::send($assignment->taskmaster->permitted_users, new AssignmentCreated($task));
 
             // Execute database insertations
             DB::commit();
@@ -222,10 +213,12 @@ class AssignmentController extends Controller
     {
         $assignment = Assignment::findOrFail($id);
         $task = $request->task ? Task::findOrFail($request->task) : null;
+        $categories = $this->getCategories();
 
         return view('app.taskscore.assignments.show', [
             'assignment' => $assignment,
             'assignee_task' => $task,
+            'categories' => $categories
         ]);
     }
 
@@ -251,7 +244,12 @@ class AssignmentController extends Controller
     {
         $request->validate([
             'subject' => 'required|unique:assignments,subject,' . $id,
+            'type' => 'required|max:255',
+            'type_other' => Rule::requiredIf($request->type == 'Lainnya'),
             'description' => 'required',
+        ]);
+        $request->merge([
+            'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
         ]);
 
         DB::beginTransaction();
@@ -259,6 +257,7 @@ class AssignmentController extends Controller
         try {
             $assignment = Assignment::findOrFail($id);
             $assignment->subject = $request->subject;
+            $assignment->type = $request->type;
             $assignment->description = $request->description;
             $assignment->save();
 
@@ -322,48 +321,36 @@ class AssignmentController extends Controller
         DB::beginTransaction();
 
         try {
-            $task = Task::findOrFail($id);
-            $assignment = Assignment::findOrFail($task->assignment_id);
-
             $submission = new Submission();
             $submission->task_id = $id;
             $submission->detail = $request->resolution;
             $submission->save();
 
             if ($request->hasFile('attachments')) {
-                foreach ($request->file('attachments') as $attachment) {
-                    $client_original_name = $attachment->getClientOriginalName();
-                    $filename = pathinfo($client_original_name, PATHINFO_FILENAME);
-                    $extension = $attachment->getClientOriginalExtension();
-                    $unique_filename = $filename . '_' . time() . '.' . $extension;
-
-                    $path = $attachment->storeAs('public/assignment/' . $assignment->id . '/attachments', $unique_filename);
-
-                    $file = new File();
-                    $file->name = $filename;
-                    $file->path = $path;
-                    $file->extension = $extension;
-                    $file->size = $attachment->getSize();
-                    $file->type = 'submisison';
-                    $file->fileable_id = $submission->id;
-                    $file->fileable_type = Submission::class;
-                    $file->save();
+                foreach ($request->file('attachments') as $file) {
+                    $fileable = [
+                        'path' => 'public/assignment/' . $submission->task->assignment->id . '/attachments',
+                        'type' => 'submission',
+                        'fileable_id' => $submission->id,
+                        'fileable_type' => Submission::class,
+                    ];
+                    $this->fileService->storeFile($file, $fileable);
                 }
             }
 
-            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-            Notification::send($taskmasters, new AssignmentSubmitted($assignment, $task));
-            Notification::send($task->assignee, new AssignmentSubmittedAssignee($assignment, $task));
+            Notification::send($submission->task->assignment->taskmaster->permitted_users, new AssignmentSubmitted($submission->task));
+            $submission->task->assignee->notify(new AssignmentSubmitted($submission->task));
 
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+
             // Handle the error appropriately
             return redirect()->back()->withErrors('Resolve assignment failed');
         }
 
-        return redirect()->back()->with('success', $assignment->subject . ' has been resolved');
+        return redirect()->back()->with('success', $submission->task->assignment->subject . ' has been resolved');
     }
 
     /**
@@ -453,13 +440,11 @@ class AssignmentController extends Controller
 
         if (is_null($user->position_id)) {
             // If user has no position, fetch assignments directly assigned to them
-            $query->where('taskmaster_id', $user->id);
+            $query->where('creator_id', $user->id);
         } else {
             // If user has a position, fetch assignments for subordinates
             $assigneeIds = $user->allSubordinates()->pluck('id');
-            $query->whereHas('taskmaster', function ($query) use ($user) {
-                $query->where('position_id', $user->position_id);
-            })->whereHas('tasks', function ($query) use ($assigneeIds) {
+            $query->where('taskmaster_id', $user->position_id)->whereHas('tasks', function ($query) use ($assigneeIds) {
                 $query->whereIn('assignee_id', $assigneeIds);
             });
         }

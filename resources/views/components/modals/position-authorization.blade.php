@@ -1,6 +1,6 @@
 <!-- Modal toggle -->
 <button data-modal-target="position-authorization-modal"
-    data-modal-show="position-authorization-modal"
+    data-modal-toggle="position-authorization-modal"
     type="button"
     {{ $attributes }}>
     <x-icons.plus class="-ml-1 mr-1 h-6 w-6">

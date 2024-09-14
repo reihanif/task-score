@@ -18,51 +18,47 @@
 
     <div class="col-span-full grid grid-cols-12 gap-4">
         <div class="col-span-full sm:order-2 sm:col-span-3">
-            <div
-                 class="border-1 relative grid space-y-4 overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
-                <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
-                    <div>
+            <div class="border-1 max-h-80 relative space-y-4 overflow-x-hidden rounded-lg border border-gray-200 dark:border-gray-700 dark:bg-gray-800">
+                    <div class="sticky top-0 bg-white dark:bg-gray-700 pb-2 p-4">
                         <h5 class="mr-3 font-semibold dark:text-white">My Subordinates</h5>
                         <p class="text-gray-500 dark:text-gray-400">Your subordinates list</p>
                     </div>
-                </div>
-                <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse ($assignees as $assignee)
-                        <li class="py-3 first:pt-0 last:pb-0 sm:py-4">
-                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                                <div class="flex-shrink-0">
-                                    <img class="h-8 w-8 rounded-full"
-                                         src="https://ui-avatars.com/api/?name={{ urlencode($assignee->name) }}&background=0D8ABC&color=fff&bold=true"
-                                         title="{{ $assignee->name }}"
-                                         alt="{{ $assignee->name }} image">
-                                </div>
-                                <div class="min-w-0 flex-1">
-                                    <p class="truncate text-sm font-medium text-gray-900 dark:text-white"
-                                       title="{{ $assignee->name }}">
-                                        {{ $assignee->name }}
-                                    </p>
-                                    <p class="truncate text-sm text-gray-500 dark:text-gray-400"
-                                       title="{{ $assignee->position?->name }}">
-                                        {{ $assignee->position?->name }}
-                                    </p>
-                                </div>
-                                {{-- <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                    Score
-                                </div> --}}
-                            </div>
-                        </li>
-                    @empty
-                        <li class="py-3 first:pt-0 last:pb-0 sm:py-4">
-                            <div class="flex items-center space-x-4 rtl:space-x-reverse">
-                                <div class="min-w-0 flex-1">
-                                    <p class="truncate text-sm text-gray-900 dark:text-white">
-                                        You don't have subordinate
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                    @endforelse
-                </ul>
+                    <div class="pt-0 p-4">
+                        <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+                            @forelse ($assignees as $assignee)
+                                <li class="py-3 first:pt-0 last:pb-0 sm:py-4">
+                                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                        <div class="flex-shrink-0">
+                                            <img class="h-8 w-8 rounded-full"
+                                                 src="https://ui-avatars.com/api/?name={{ urlencode($assignee->name) }}&background=0D8ABC&color=fff&bold=true"
+                                                 title="{{ $assignee->name }}"
+                                                 alt="{{ $assignee->name }} image">
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="truncate text-sm font-medium text-gray-900 dark:text-white"
+                                               title="{{ $assignee->name }}">
+                                                {{ $assignee->name }}
+                                            </p>
+                                            <p class="truncate text-sm text-gray-500 dark:text-gray-400"
+                                               title="{{ $assignee->position?->name }}">
+                                                {{ $assignee->position?->name }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            @empty
+                                <li class="py-3 first:pt-0 last:pb-0 sm:py-4">
+                                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                                        <div class="min-w-0 flex-1">
+                                            <p class="truncate text-sm text-gray-900 dark:text-white">
+                                                You don't have subordinate
+                                            </p>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforelse
+                        </ul>
+                    </div>
             </div>
         </div>
 
@@ -235,7 +231,7 @@
                                                               class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-green-200 px-1.5 text-xs font-semibold text-green-800">
                                                             {{ $task->submission_status }}
                                                         </span>
-                                                    @elseif ($task->latestsubmission?->isNotApproved())
+                                                    @elseif ($task->latestsubmission?->isRejected())
                                                         <span
                                                               class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-red-200 px-1.5 text-xs font-semibold text-red-800">
                                                             {{ $task->submission_status }}
@@ -264,7 +260,7 @@
                                                               class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-green-200 px-1.5 text-xs font-semibold text-green-800">
                                                             {{ $task->time_extension_status }}
                                                         </span>
-                                                    @elseif ($task->latestTimeExtension?->isNotApproved())
+                                                    @elseif ($task->latestTimeExtension?->isRejected())
                                                         <span
                                                               class="inline-flex h-4 w-fit items-center justify-center rounded-full bg-red-200 px-1.5 text-xs font-semibold text-red-800">
                                                             {{ $task->time_extension_status }}
@@ -283,7 +279,7 @@
                                     <ul class="list-none space-y-3">
                                         @foreach ($assignment->tasks as $task)
                                                 <li>
-                                                    {{ $task->due->format('d F Y, H:i') }}
+                                                    {{ $task->due->format('d M Y, H:i') }}
                                                 </li>
                                         @endforeach
                                     </ul>
@@ -349,7 +345,7 @@
                                 <td class="whitespace-nowrap px-3 py-4"
                                     data-search="{{ $assignment->created_at->format('Ymd') }}"
                                     data-order="{{ $assignment->created_at->format('YmdHis') }}">
-                                    {{ $assignment->created_at->format('d F Y, H:i') }}
+                                    {{ $assignment->created_at->format('d M Y, H:i') }}
                                 </td>
                                 @if (Auth::User()->role == 'superadmin')
                                     <td class="float-end py-4 pe-2 ps-6">
@@ -396,8 +392,8 @@
     <!-- Filter Dropdown -->
     <div class="z-10 hidden w-96 rounded-lg bg-white p-3 shadow dark:bg-gray-700"
          id="filter-dropdown">
-        <div class="grid grid-cols-2 gap-2">
-            <div class="col-span-2">
+        <div class="grid sm:grid-cols-2 gap-2">
+            <div class="sm:col-span-2">
                 <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Assignee</h6>
                 <select class="ts-sm"
                         id="filter-assignee">
@@ -410,13 +406,11 @@
             </div>
             <div>
                 <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Category</h6>
-                <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        id="filter-category"
-                        normal-select>
+                <select id="filter-category">
                     <option value=""
                             selected>All Category</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category }}">{{ $category }}</option>
+                    @foreach ($categories as $key => $category)
+                        <option value="{{ $category }}" data-order="{{ str_pad($key, 2, '0', STR_PAD_LEFT) }}">{{ $category }}</option>
                     @endforeach
                 </select>
             </div>

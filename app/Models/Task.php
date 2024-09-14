@@ -145,11 +145,11 @@ class Task extends Model
     }
 
     /**
-     * Get time extension request.
+     * Get time extension request total.
      */
-    public function getTimeExtensionRequest()
+    public function getTotalTimeExtensionAttribute()
     {
-        return $this->time_extensions()->whereNull('approved_at')->get();
+        return $this->time_extensions()->whereNull('approved_at')->count();
     }
 
     /**
@@ -195,7 +195,7 @@ class Task extends Model
             $status = 'Waiting for approval';
         } elseif ($this->latestSubmission?->isApproved()) {
             $status = 'Resolved';
-        } elseif ($this->latestSubmission?->isNotApproved()) {
+        } elseif ($this->latestSubmission?->isRejected()) {
             $status = 'Rejected';
         } else {
             $status = '-';
@@ -212,7 +212,7 @@ class Task extends Model
             $status = 'Waiting for approval';
         } elseif ($this->latestTimeExtension?->isApproved()) {
             $status = 'Approved';
-        } elseif ($this->latestTimeExtension?->isNotApproved()) {
+        } elseif ($this->latestTimeExtension?->isRejected()) {
             $status = 'Rejected';
         } else {
             $status = '-';

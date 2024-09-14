@@ -4,12 +4,12 @@ namespace App\Models;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Position extends Model
 {
@@ -45,6 +45,14 @@ class Position extends Model
     public function direct_subordinates(): HasMany
     {
         return $this->hasMany(Position::class, 'parent_id', 'id');
+    }
+
+    /**
+     * Get all the tasks associated with the position as taskmaster.
+     */
+    public function supervised_tasks(): HasManyThrough
+    {
+        return $this->hasManyThrough(Task::class, Assignment::class, 'taskmaster_id', 'assignment_id', 'id', 'id');
     }
 
     /**

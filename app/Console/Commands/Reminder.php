@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\AssigneeReminder;
+use Illuminate\Support\Facades\Notification;
 use App\Notifications\AssigneeReminderOverdue;
 use App\Notifications\TaskmasterApprovalReminder;
 use App\Notifications\TaskmasterReminderUpcoming;
@@ -37,7 +38,7 @@ class Reminder extends Command
 
         foreach ($users as $user) {
             $tasks = $user->unresolvedAssignments;
-            $unapproved_tasks = $user->delegatedTasks()->whereHas('latestSubmission', function($query) {
+            $unapproved_tasks = $user->supervisedTasks()->whereHas('latestSubmission', function($query) {
                 return $query->whereNull('is_approve');
             })->get();
             $total = 0;
@@ -87,7 +88,7 @@ class Reminder extends Command
                 }
 
                 if ($notify_taskmaster) {
-                    $task->assignment->taskmaster->notify(new TaskmasterReminderUpcoming($task));
+                    Notification::send($task->assignment->taskmaster->permitted_users, new TaskmasterReminderUpcoming($task));
                 }
             }
 

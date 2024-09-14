@@ -76,7 +76,7 @@
                                 {{ $department->name }}
                             </th>
                             <td class="whitespace-nowrap px-3 py-4">
-                                {{ $department->created_at->format('d F Y, H:i') }}
+                                {{ $department->created_at->format('d M Y, H:i') }}
                             </td>
                             <td class="whitespace-nowrap px-3 py-4">
                                 {{ $department->updated_at->diffForHumans() }}
@@ -106,13 +106,13 @@
                                                 <li>
                                                     <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                                         data-modal-target="edit-departments-modal-{{ $department->id }}"
-                                                        data-modal-show="edit-departments-modal-{{ $department->id }}"
+                                                        data-modal-toggle="edit-departments-modal-{{ $department->id }}"
                                                         type="button">Edit</a>
                                                 </li>
                                                 <li>
                                                     <a class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-600 dark:hover:text-red-400"
                                                         data-modal-target="delete-departments-modal-{{ $department->id }}"
-                                                        data-modal-show="delete-departments-modal-{{ $department->id }}"
+                                                        data-modal-toggle="delete-departments-modal-{{ $department->id }}"
                                                         type="button">Delete</a>
                                                 </li>
                                             </ul>

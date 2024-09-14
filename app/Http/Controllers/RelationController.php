@@ -17,7 +17,7 @@ class RelationController extends Controller
         try {
             $position = Position::findOrFail($id);
             foreach ($request->departments as $department) {
-                $position->departments()->attach($department, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => Auth::User()->id]);
+                $position->departments()->attach($department, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => Auth::Id()]);
             }
 
             // Execute database insertations

@@ -11,7 +11,6 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -126,14 +125,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get all the tasks associated with the user as taskmaster.
-     */
-    public function delegatedTasks(): HasManyThrough
-    {
-        return $this->hasManyThrough(Task::class, Assignment::class, 'taskmaster_id', 'assignment_id', 'id', 'id');
-    }
-
-    /**
      * Get all the assignments associated with the user as assignee.
      */
     public function assignments(): HasManyThrough
@@ -179,13 +170,23 @@ class User extends Authenticatable
     }
 
     /**
+     * Get the pending tasks that supervised by the user.
+     */
+    public function supervisedTasks()
+    {
+        return Task::whereHas('assignment.taskmaster', function ($query) {
+            $query->whereIn('id', $this->permitted_positions->pluck('id'));
+        })->with('assignment.taskmaster');
+    }
+
+    /**
      * Count the waiting approval submission
      */
     public function getWaitingApprovalSubmissionAttribute()
     {
         return Submission::whereNull('approval_detail')->whereNull('is_approve')->whereHas('task', function($query) {
             return $query->whereHas('assignment', function($sub_query) {
-                return $sub_query->where('taskmaster_id', $this->id);
+                return $sub_query->where('taskmaster_id', $this->position_id);
             });
         })->count();
     }
@@ -197,7 +198,7 @@ class User extends Authenticatable
     {
         return TimeExtension::whereNull('approved_at')->whereNull('is_approve')->whereHas('task', function($query) {
             return $query->whereHas('assignment', function($sub_query) {
-                return $sub_query->where('taskmaster_id', $this->id);
+                return $sub_query->where('taskmaster_id', $this->position_id);
             });
         })->count();
     }
@@ -245,11 +246,11 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the assignments associated with the user as taskmaster.
+     * Get the assignments created by user.
      */
     public function created_assignments(): HasMany
     {
-        return $this->hasMany(Assignment::class, 'taskmaster_id');
+        return $this->hasMany(Assignment::class, 'creator_id');
     }
 
     /**
@@ -273,7 +274,15 @@ class User extends Authenticatable
      */
     public function isTaskmaster($assignment_id)
     {
-        return $this->id == Assignment::select('taskmaster_id')->findOrFail($assignment_id)->taskmaster_id;
+        return in_array(Assignment::select('taskmaster_id')->findOrFail($assignment_id)->taskmaster_id, $this->permitted_positions()->pluck('id')->toArray());
+    }
+
+    /**
+     * Check if the user is a creator of specific assignment.
+     */
+    public function isCreator($assignment_id)
+    {
+        return $this->id == Assignment::select('creator_id')->findOrFail($assignment_id)->creator_id;
     }
 
     /**
@@ -282,19 +291,5 @@ class User extends Authenticatable
     public function isSuperadmin()
     {
         return $this->role == 'superadmin';
-    }
-
-    /**
-     * Check if the user is involved (has access) with a specific assignment
-     */
-    public function isInvolved($assignment_id = null)
-    {
-        $is_involved = false;
-        $assignment = Assignment::findOrFail($assignment_id);
-        if ($assignment->taskmaster->position_id == $this->position_id) {
-            $is_involved = true;
-        }
-
-        return $is_involved;
     }
 }

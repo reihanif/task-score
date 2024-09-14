@@ -20,7 +20,7 @@
                         <a href="{{ route('auth.logout') }}"
                             class="inline-flex rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-xs font-medium text-gray-500 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700"
                             data-modal-target="resolve-assignment-modal"
-                            data-modal-show="resolve-assignment-modal">
+                            data-modal-toggle="resolve-assignment-modal">
                             <svg class="me-1 h-3.5 w-3.5"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
