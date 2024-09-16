@@ -1,6 +1,6 @@
 <!-- Modal toggle -->
 <button data-modal-target="create-positions-modal"
-    data-modal-show="create-positions-modal"
+    data-modal-toggle="create-positions-modal"
     type="button"
     {{ $attributes }}>
     <x-icons.plus class="-ml-1 mr-1 h-6 w-6">

@@ -2,22 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\Task;
-use App\Models\User;
 use App\Models\Submission;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use App\Notifications\AssignmentApproved;
-use App\Notifications\AssignmentRejected;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\AssignmentApprovedTaskmaster;
-use App\Notifications\AssignmentRejectedTaskmaster;
+use App\Notifications\Assignments\AssignmentApproved;
+use App\Notifications\Assignments\AssignmentRejected;
+use App\Services\SubmissionService;
 
 class SubmissionController extends Controller
 {
+    protected $submissionService;
+
+    public function __construct(SubmissionService $submissionService)
+    {
+        $this->submissionService = $submissionService;
+    }
+
     /**
      * Approve the specified submission.
      *
@@ -26,30 +28,21 @@ class SubmissionController extends Controller
      */
     public function approve(Request $request, $id)
     {
+        $request->validate([
+            'detail' => 'string|nullable'
+        ]);
+        $request->merge([
+            'id' => $id,
+            'approver_id' => Auth::Id(),
+        ]);
+
         DB::beginTransaction();
 
         try {
-            $submission = Submission::findOrFail($id);
-            $submission->timestamps = false;
-            $submission->is_approve = (bool) true;
-            $submission->approval_detail = $request->detail;
-            $submission->approved_at = Carbon::now()->toDateTimeString();
-            $submission->save();
+            $submission = $this->submissionService->approve(collect($request));
 
-            $task = Task::findOrFail($submission->task_id);
-            $task->timestamps = false;
-            $task->resolved_at = $submission->created_at;
-            $task->save();
-
-            try {
-                $assignees = User::where('id', $task->assignee_id)->get();
-                Notification::send($assignees, new AssignmentApproved($task->assignment, $task));
-
-                $taskmasters = User::where('id', $task->assignment->taskmaster_id)->get();
-                Notification::send($taskmasters, new AssignmentApprovedTaskmaster($task->assignment, $task));
-            } catch (\Exception $e) {
-                return redirect()->back()->withErrors($e->getMessage());
-            }
+            $submission->task->assignee->notify(new AssignmentApproved($submission->task));
+            Notification::send($submission->task->assignment->taskmaster->permitted_users, new AssignmentApproved($submission->task));
 
             // Execute database insertations
             DB::commit();
@@ -71,24 +64,21 @@ class SubmissionController extends Controller
     public function reject(Request $request, $id)
     {
         $request->validate([
-            'detail' => 'required'
+            'detail' => 'required|string'
+        ]);
+        $request->merge([
+            'id' => $id,
+            'approver_id' => Auth::Id(),
         ]);
 
         DB::beginTransaction();
 
         try {
-            $submission = Submission::findOrFail($id);
-            $submission->timestamps = false;
-            $submission->is_approve = (bool) false;
-            $submission->approval_detail = $request->detail;
-            $submission->approved_at = Carbon::now()->toDateTimeString();
-            $submission->save();
+            $submission = $this->submissionService->reject(collect($request));
 
-            $assignees = User::where('id', $submission->task->assignee_id)->get();
-            Notification::send($assignees, new AssignmentRejected($submission->task->assignment, $submission->task));
+            $submission->task->assignee->notify(new AssignmentRejected($submission->task));
+            Notification::send($submission->task->assignment->taskmaster->permitted_users, new AssignmentRejected($submission->task));
 
-            $taskmasters = User::where('id', $submission->task->assignment->taskmaster_id)->get();
-            Notification::send($taskmasters, new AssignmentRejectedTaskmaster($submission->task->assignment, $submission->task));
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
@@ -109,7 +99,7 @@ class SubmissionController extends Controller
     {
         $submissions = Submission::latest()->whereHas('task', function ($query) {
             return $query->whereHas('assignment', function ($query) {
-                return $query->where('taskmaster_id', Auth::User()->id);
+                return $query->where('creator_id', Auth::Id());
             });
         })->get();
 
@@ -129,11 +119,7 @@ class SubmissionController extends Controller
         DB::beginTransaction();
 
         try {
-            $submission = Submission::findOrFail($id);
-            foreach($submission->attachments as $file) {
-                Storage::delete($file->path);
-            }
-            $submission->delete();
+            $this->submissionService->rollback($id);
 
             // Execute database data remove
             DB::commit();

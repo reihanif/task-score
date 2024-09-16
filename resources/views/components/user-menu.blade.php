@@ -107,7 +107,7 @@
                                     @foreach (Auth::User()->permitted_positions as $position)
                                         @if ($position->id !== Auth::User()->position->id)
                                             <li>
-                                                <form action="{{ route('account.change-position', ['user' => Auth::id(), 'position' => $position->id]) }}" method="post">
+                                                <form action="{{ route('account.change-position', ['user' => Auth::Id(), 'position' => $position->id]) }}" method="post">
                                                     @csrf
                                                     @method('put')
                                                     <button class="inline-block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -122,7 +122,7 @@
                     @endif
                     <li>
                         <a class="block px-4 py-2 text-sm hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                           href="{{ route('account.settings', Auth::User()->id) }}">Account settings</a>
+                           href="{{ route('account.settings', Auth::Id()) }}">Account settings</a>
                     </li>
                 </ul>
                 <ul class="py-1 text-gray-700 dark:text-gray-300"

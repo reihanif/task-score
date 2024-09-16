@@ -185,46 +185,49 @@ document.addEventListener("alpine:init", () => {
 /*
 Datepicker
 */
-document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
-    let singleModeOption = true;
-    if(Boolean(datepickerEl.dataset.singleMode)) {
-        singleModeOption = (/true/i).test(datepickerEl.dataset.singleMode);
-    }
+function initializeDatepickers() {
+    console.log('init')
+    document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
+        let singleModeOption = true;
+        if(Boolean(datepickerEl.dataset.singleMode)) {
+            singleModeOption = (/true/i).test(datepickerEl.dataset.singleMode);
+        }
 
-    let resetButtonOption = false;
-    if(Boolean(datepickerEl.dataset.resetButton)) {
-        resetButtonOption = (/true/i).test(datepickerEl.dataset.resetButton);
-    }
+        let resetButtonOption = false;
+        if(Boolean(datepickerEl.dataset.resetButton)) {
+            resetButtonOption = (/true/i).test(datepickerEl.dataset.resetButton);
+        }
 
-    var options = {
-        element: datepickerEl,
-        format: datepickerEl.dataset.format ?? 'DD MMMM YYYY',
-        minDate: datepickerEl.dataset.minDate ?? null,
-        minDays: Number(datepickerEl.dataset.minDays) ?? null,
-        maxDate: datepickerEl.dataset.maxDate ?? null,
-        maxDays: Number(datepickerEl.dataset.maxDays) ?? null,
-        singleMode: singleModeOption,
-        showTooltip: true,
-        autoApply: true,
-        resetButton: resetButtonOption,
-        setup: (picker) => {
-            picker.on('show', (datepickerEl) => {
-                //
-            });
-        },
-    };
+        var options = {
+            element: datepickerEl,
+            format: datepickerEl.dataset.format ?? 'DD MMMM YYYY',
+            minDate: datepickerEl.dataset.minDate ?? null,
+            minDays: Number(datepickerEl.dataset.minDays) ?? null,
+            maxDate: datepickerEl.dataset.maxDate ?? null,
+            maxDays: Number(datepickerEl.dataset.maxDays) ?? null,
+            singleMode: singleModeOption,
+            showTooltip: true,
+            autoApply: true,
+            resetButton: resetButtonOption,
+            setup: (picker) => {
+                picker.on('show', (datepickerEl) => {
+                    //
+                });
+            },
+        };
 
-    if (!options.singleMode) {
-        options.numberOfColumns = 2;
-        options.numberOfMonths = 2;
-    };
+        if (!options.singleMode) {
+            options.numberOfColumns = 2;
+            options.numberOfMonths = 2;
+        };
 
-    if (datepickerEl.hasAttribute("datepicker-predefined-ranges")) {
-        options.plugins = ['ranges']
-    }
+        if (datepickerEl.hasAttribute("datepicker-predefined-ranges")) {
+            options.plugins = ['ranges']
+        }
 
-    new Litepicker(options);
-});
+        new Litepicker(options);
+    });
+}
 
 // make table row clickable
 const tableRows = document.querySelectorAll(".table-clickable tbody tr");
@@ -274,6 +277,7 @@ function initializeTomSelects() {
         if (el.hasAttribute("readonly")) {
             new TomSelect(el, config).lock();
         } else if (el.hasAttribute("hascaption")) {
+            config.searchField = ['text', 'caption']
             config.render = {
                 option: function (data, escape) {
                     return (
@@ -742,7 +746,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.TomSelect = TomSelect;
 window.initializeTomSelects = initializeTomSelects;
+window.initializeDatepickers = initializeDatepickers;
 window.onload = initializeTomSelects();
+window.onload = initializeDatepickers();
 
 window.Alpine = Alpine;
 

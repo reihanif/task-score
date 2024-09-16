@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,111 +25,74 @@ class Assignment extends Model
     ];
 
     /**
-     * Get the tasks of the assignments.
+     * Relationships
      */
+
+    /** Tasks inside assignment */
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
     }
 
-    /**
-     * Get the taskmaster of the assignments.
-     */
+    /** Taskmaster of the assignment. */
     public function taskmaster(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'taskmaster_id');
+        return $this->belongsTo(Position::class, 'taskmaster_id');
     }
 
-    /**
-     * Get the assignee of the assignments.
-     */
+    /** Creator of the assignment. */
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'creator_id');
+    }
+
+    /** Assignees of the assignment. */
     public function assignees(): HasManyThrough
     {
         return $this->hasManyThrough(User::class, Task::class, 'assignment_id', 'id', 'id', 'assignee_id');
     }
 
-    /**
-     * Get the resolution's file.
-     */
+    /** Resolution's file. */
     public function files(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable')->where('files.type', 'resolution');
     }
 
-    /**
-     * Get the assignment's file.
-     */
+    /** Attachments file. */
     public function attachments(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable')->where('files.type', 'attachment');
     }
 
-    /**
-     * Get the assignment's recurrence pattern.
-     */
+    /** Recurrence pattern. */
     public function recurrence()
     {
         return $this->hasOne(RecurrencePattern::class);
     }
 
     /**
-     * Check if assignment status is closed.
+     * Accessors
      */
-    public function isClosed()
+
+    /** Creator Name */
+    public function getCreatedByAttribute()
     {
-        return $this->status == 'closed';
+        return $this->creator->name;
     }
 
     /**
-     * Check if assignment childs is resolved.
+     * Scopes
      */
-    // public function childsIsResolved()
-    // {
-    //     return $this->childs()->whereNotNull('resolved_at');
-    // }
 
-    /**
-     * Check if assignment status is open.
-     */
-    public function isOpen()
+    /** Scope a query to only include closed assignments */
+    public function scopeWhereClosed($query)
     {
-        return $this->status == 'open';
+        return $query->where('status', 'closed');
     }
 
-    /**
-     * Check if there is parent of the assignment.
-     */
-    // public function hasParent()
-    // {
-    //     return $this->parent()->exists();
-    // }
-
-    /**
-     * Check if there is childs of the assignment.
-     */
-    // public function hasChilds()
-    // {
-    //     return $this->childs()->exists();
-    // }
-
-    /**
-     * Check if there is childs of the assignment that unresolved.
-     */
-    // public function hasUnresolvedChilds()
-    // {
-    //     return $this->childs()->whereNull('resolved_at')->exists();
-    // }
-
-    /**
-     * Check if there is siblings of the assignment.
-     */
-    // public function hasSiblings()
-    // {
-    //     return $this->whereNotNull('parent_id')->whereNot('parent_id', $this->id)->where('parent_id', $this->parent_id)->exists();
-    // }
-
-    // public function hasUnresolvedSiblings()
-    // {
-    //     return $this->whereNotNull('parent_id')->whereNot('parent_id', $this->id)->where('parent_id', $this->parent_id)->whereNull('resolved_at')->exists();
-    // }
+    /** Scope a query to only include open assignments */
+    public function scopeWhereOpen($query)
+    {
+        return $query->where('status', 'open');
+    }
 }

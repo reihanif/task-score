@@ -14,6 +14,7 @@ class AssignmentService
     {
         $assignment = new Assignment();
         $assignment->taskmaster_id = $data['taskmaster'];
+        $assignment->creator_id = $data['creator'];
         $assignment->type = $data['type'];
         $assignment->subject = $data['subject'];
         $assignment->description = $data['description'];

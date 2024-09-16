@@ -4,17 +4,14 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\TimeExtension;
 use Illuminate\Support\Facades\DB;
-use App\Notifications\TimeExtensionRequest;
-use App\Notifications\TimeExtensionApproved;
-use App\Notifications\TimeExtensionApprovedTaskmaster;
-use App\Notifications\TimeExtensionRejected;
-use App\Notifications\TimeExtensionRejectedTaskmaster;
-use App\Notifications\TimeExtensionRequestAssignee;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
+use App\Notifications\TimeExtensions\TimeExtensionRequest;
+use App\Notifications\TimeExtensions\TimeExtensionApproved;
+use App\Notifications\TimeExtensions\TimeExtensionRejected;
 
 class TimeExtensionController extends Controller
 {
@@ -28,21 +25,19 @@ class TimeExtensionController extends Controller
 
         try {
             $task = Task::findOrFail($id);
-            $assignment = $task->assignment;
 
             $extension_request = new TimeExtension();
             $extension_request->task_id = $task->id;
             $extension_request->body = $request->justification;
             $extension_request->save();
 
-            $taskmaster = User::where('id', $assignment->taskmaster_id)->get();
-            $assignees = User::where('id', $task->assignee_id)->get();
-            Notification::send($taskmaster, new TimeExtensionRequest($assignment, $task));
-            Notification::send($assignees, new TimeExtensionRequestAssignee($assignment, $task));
+            $task->assignee->notify(new TimeExtensionRequest($task));
+            Notification::send($task->assignment->taskmaster->permitted_users, new TimeExtensionRequest($task));
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+
             // Handle the error appropriately
             return redirect()->back()->withErrors('Failed to send time extension request');
         }
@@ -56,17 +51,15 @@ class TimeExtensionController extends Controller
 
         try {
             $extension_request = TimeExtension::findOrFail($id);
-            $extension_request->is_approve = (bool) false;
+            $extension_request->is_approve = false;
+            $extension_request->approver_id = Auth::Id();
             $extension_request->approved_at = Carbon::now()->toDateTimeString();
             $extension_request->save();
 
             $task = $extension_request->task;
-            $assignment = $task->assignment;
 
-            $assignees = User::where('id', $task->assignee_id)->get();
-            $taskmasters = User::where('id', $assignment->taskmaster_id)->get();
-            Notification::send($assignees, new TimeExtensionRejected($assignment, $task));
-            Notification::send($taskmasters, new TimeExtensionRejectedTaskmaster($assignment, $task));
+            $task->assignee->notify(new TimeExtensionRejected($task));
+            Notification::send($task->assignment->taskmaster->permitted_users, new TimeExtensionRejected($task));
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
@@ -83,30 +76,37 @@ class TimeExtensionController extends Controller
         DB::beginTransaction();
 
         try {
-            $now = Carbon::now();
             $extension_request = TimeExtension::findOrFail($id);
-            $extension_request->is_approve = (bool) true;
-            $extension_request->approved_at = $now->toDateTimeString();
+            $extension_request->is_approve = true;
+            $extension_request->approver_id = Auth::Id();
+            $extension_request->approved_at = Carbon::now()->toDateTimeString();
             $extension_request->save();
 
             $task = $extension_request->task;
-            if ($request->timetable) {
+            if ($request->timetable && $task->due->isFuture()) {
+                $task->due = $task->due->addMinutes($request->timetable);
+            }
+
+            if ($request->timetable && $task->due->isPast()) {
                 $task->due = $extension_request->created_at->addMinutes($request->timetable);
-            } elseif ($request->date && $request->time) {
+            }
+
+            if ($request->date && $request->time) {
                 $date = $request->date;
                 $time = $request->time;
                 $task->due = Carbon::parse("$date $time");
             }
             $task->save();
 
-            $assignees = User::where('id', $task->assignee_id)->get();
-            $taskmasters = User::where('id', $task->assignment->taskmaster_id)->get();
-            Notification::send($assignees, new TimeExtensionApproved($task->assignment, $task));
-            Notification::send($taskmasters, new TimeExtensionApprovedTaskmaster($task->assignment, $task));
+            $task->assignee->notify(new TimeExtensionApproved($task));
+            Notification::send($task->assignment->taskmaster->permitted_users, new TimeExtensionApproved($task));
+
             // Execute database insertations
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+
+            dd($e);
             // Handle the error appropriately
             return redirect()->back()->withErrors('Failed to send time extension request');
         }

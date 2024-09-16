@@ -63,6 +63,11 @@ class AccountController extends Controller
         try {
             if($request->update_permitted_positions) {
                 $user->permitted_positions()->sync($request->permitted_positions ?? []);
+
+                if($user->permitted_positions()->count() == 1) {
+                    $this->changePosition($user->id, $user->permitted_positions()->first()->id);
+                }
+
             } else {
                 $user->update($request->all());
             }

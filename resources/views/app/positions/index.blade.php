@@ -86,10 +86,10 @@
                                 {{ $position->departments->count() }}
                             </td>
                             <td class="whitespace-nowrap px-3 py-4">
-                                {{ $position->created_at->format('d F Y, H:i') }}
+                                {{ $position->created_at->format('d M Y, H:i') }}
                             </td>
                             <td class="whitespace-nowrap px-3 py-4">
-                                {{ $position->updated_at->format('d F Y, H:i') }}
+                                {{ $position->updated_at->format('d M Y, H:i') }}
                             </td>
                             @if (Auth::User()->role == 'superadmin')
                                 <td class="float-end py-4 pe-2 ps-6">
@@ -116,13 +116,13 @@
                                                 <li>
                                                     <a class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                                         data-modal-target="edit-positions-modal-{{ $position->id }}"
-                                                        data-modal-show="edit-positions-modal-{{ $position->id }}"
+                                                        data-modal-toggle="edit-positions-modal-{{ $position->id }}"
                                                         type="button">Edit</a>
                                                 </li>
                                                 <li>
                                                     <a class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:text-red-500 dark:hover:bg-gray-600 dark:hover:text-red-400"
                                                         data-modal-target="delete-positions-modal-{{ $position->id }}"
-                                                        data-modal-show="delete-positions-modal-{{ $position->id }}"
+                                                        data-modal-toggle="delete-positions-modal-{{ $position->id }}"
                                                         type="button">Delete</a>
                                                 </li>
                                             </ul>

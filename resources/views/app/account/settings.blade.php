@@ -61,7 +61,7 @@
                             </dd>
                             <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                data-modal-target="modal-username"
-                               data-modal-show="modal-username"
+                               data-modal-toggle="modal-username"
                                type="button">
                                 Change
                             </a>
@@ -86,7 +86,7 @@
                                 <dd class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-400 sm:mt-0">
                                     <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                        data-modal-target="modal-password"
-                                       data-modal-show="modal-password"
+                                       data-modal-toggle="modal-password"
                                        type="button">
                                         Change Password
                                     </a>
@@ -242,7 +242,7 @@
                             </dd>
                             <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                data-modal-target="modal-name"
-                               data-modal-show="modal-name"
+                               data-modal-toggle="modal-name"
                                type="button">
                                 Change
                             </a>
@@ -268,7 +268,7 @@
                             </dd>
                             <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                data-modal-target="modal-email"
-                               data-modal-show="modal-email"
+                               data-modal-toggle="modal-email"
                                type="button">
                                 Change
                             </a>
@@ -296,7 +296,7 @@
                             @if (Auth::User()->role == 'superadmin')
                                 <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                    data-modal-target="modal-position"
-                                   data-modal-show="modal-position"
+                                   data-modal-toggle="modal-position"
                                    type="button">
                                     Change
                                 </a>
@@ -347,7 +347,7 @@
                             @if (Auth::User()->role == 'superadmin')
                                 <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                    data-modal-target="modal-permitted-position"
-                                   data-modal-show="modal-permitted-position"
+                                   data-modal-toggle="modal-permitted-position"
                                    type="button">
                                     Change
                                 </a>
@@ -397,7 +397,7 @@
                             @if (Auth::User()->role == 'superadmin')
                                 <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                    data-modal-target="modal-role"
-                                   data-modal-show="modal-role"
+                                   data-modal-toggle="modal-role"
                                    type="button">
                                     Change
                                 </a>

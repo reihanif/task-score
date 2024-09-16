@@ -61,7 +61,7 @@
                                 {{ $notification->data['from'] }}
                             </td>
                             <td data-sort="{{ $notification->created_at->format('YmdHMs') }}" class="whitespace-nowrap px-3 py-4">
-                                {{ $notification->created_at->format('d F Y, H:i') }}
+                                {{ $notification->created_at->format('d M Y, H:i') }}
                             </td>
                         </tr>
                     @endforeach
