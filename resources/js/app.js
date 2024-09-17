@@ -186,7 +186,6 @@ document.addEventListener("alpine:init", () => {
 Datepicker
 */
 function initializeDatepickers() {
-    console.log('init')
     document.querySelectorAll("input[datepicker]").forEach((datepickerEl) => {
         let singleModeOption = true;
         if(Boolean(datepickerEl.dataset.singleMode)) {
@@ -265,6 +264,7 @@ function initializeTomSelects() {
         const hasDataOrder = Array.from(el.options).some((option) =>
             option.hasAttribute("data-order")
         );
+        const selectedValues = Array.from(el.options).filter(option => option.selected).map(option => option.value);
         const sortField = hasDataOrder ? "order" : "text";
         const config = {
             create: isCreatable,
@@ -272,6 +272,15 @@ function initializeTomSelects() {
                 field: sortField,
                 direction: "asc",
             },
+            onItemAdd:function() {
+                this.setTextboxValue('');
+                this.refreshOptions();
+            },
+            onInitialize: function() {
+                setTimeout(() => {
+                    this.setValue(selectedValues);
+                }, 100);
+            }
         };
 
         if (el.hasAttribute("readonly")) {

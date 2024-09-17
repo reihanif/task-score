@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    @if (Auth::User()->role == 'superadmin')
+    @if (auth()->user()->role == 'superadmin')
         <x-tabs :tabs="collect([
             [
                 'state' => 'active',
@@ -293,7 +293,7 @@
                             <dd class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-400 sm:mt-0">
                                 {{ $user->position->name ?? '-' }}
                             </dd>
-                            @if (Auth::User()->role == 'superadmin')
+                            @if (auth()->user()->role == 'superadmin')
                                 <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                    data-modal-target="modal-position"
                                    data-modal-toggle="modal-position"
@@ -344,7 +344,7 @@
                                     -
                                 @endforelse
                             </dd>
-                            @if (Auth::User()->role == 'superadmin')
+                            @if (auth()->user()->role == 'superadmin')
                                 <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                    data-modal-target="modal-permitted-position"
                                    data-modal-toggle="modal-permitted-position"
@@ -394,7 +394,7 @@
                             <dd class="mt-1 text-sm leading-6 text-gray-700 dark:text-gray-400 sm:col-span-2 sm:mt-0">
                                 {{ ucwords($user->role) }}
                             </dd>
-                            @if (Auth::User()->role == 'superadmin')
+                            @if (auth()->user()->role == 'superadmin')
                                 <a class="mt-1 cursor-pointer text-sm font-medium text-blue-600 underline dark:text-blue-500 sm:mt-0"
                                    data-modal-target="modal-role"
                                    data-modal-toggle="modal-role"

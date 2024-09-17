@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -10,12 +12,34 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Submission extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, LogsActivity;
+
+    protected $fillable = [
+        'task_id',
+        'detail',
+        'is_approve',
+        'approval_detail',
+        'approver_id',
+        'approved_at'
+    ];
 
     /** * The attributes that should be cast. */
     protected $casts = [
         'approved_at' => 'datetime'
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly([
+            'task_id',
+            'detail',
+            'is_approve',
+            'approval_detail',
+            'approver_id',
+            'approved_at'
+        ]);
+    }
 
     /**
      * Relationships

@@ -7,7 +7,6 @@ use App\Models\Position;
 use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class DepartmentController extends Controller
 {
@@ -133,7 +132,7 @@ class DepartmentController extends Controller
 
             foreach ($submitted_positions as $position) {
                 if (!in_array($position, $current_positions)) {
-                    $department->positions()->attach($position, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => Auth::Id()]);
+                    $department->positions()->attach($position, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => auth()->id()]);
                 }
             }
 

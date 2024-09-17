@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Submission;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Assignments\AssignmentApproved;
@@ -33,7 +32,7 @@ class SubmissionController extends Controller
         ]);
         $request->merge([
             'id' => $id,
-            'approver_id' => Auth::Id(),
+            'approver_id' => auth()->id(),
         ]);
 
         DB::beginTransaction();
@@ -68,7 +67,7 @@ class SubmissionController extends Controller
         ]);
         $request->merge([
             'id' => $id,
-            'approver_id' => Auth::Id(),
+            'approver_id' => auth()->id(),
         ]);
 
         DB::beginTransaction();
@@ -99,7 +98,7 @@ class SubmissionController extends Controller
     {
         $submissions = Submission::latest()->whereHas('task', function ($query) {
             return $query->whereHas('assignment', function ($query) {
-                return $query->where('creator_id', Auth::Id());
+                return $query->where('creator_id', auth()->id());
             });
         })->get();
 

@@ -7,10 +7,10 @@
                 x-on:keydown.escape="expanded = false">
             <span class="sr-only">Open user menu</span>
             <img class="h-8 w-8 rounded-full"
-                 src="https://ui-avatars.com/api/?name={{ urlencode(Auth::User()->name) }}&background=0D8ABC&color=fff&bold=true"
-                 alt="{{ Auth::User()->name }} avatar" />
+                 src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0D8ABC&color=fff&bold=true"
+                 alt="{{ auth()->user()->name }} avatar" />
             <span class="hidden sm:mx-2 sm:block">
-                {{ Auth::User()->username }}
+                {{ auth()->user()->username }}
             </span>
             <svg class="h-5 w-5 transition"
                  aria-hidden="true"
@@ -35,26 +35,26 @@
                 <div class="px-4 py-3">
                     <div class="flex items-center">
                         <img class="h-11 w-11 rounded-full"
-                             src="https://ui-avatars.com/api/?name={{ urlencode(Auth::User()->name) }}&background=0D8ABC&color=fff&bold=true"
-                             alt="{{ Auth::User()->name }} avatar" />
+                             src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0D8ABC&color=fff&bold=true"
+                             alt="{{ auth()->user()->name }} avatar" />
                         <div class="mx-2">
                             <span class="block text-sm font-semibold text-gray-900 dark:text-white">
                                 <div class="inline-flex items-center">
-                                    {{ Auth::User()->name }}
+                                    {{ auth()->user()->name }}
 
-                                    @if (Auth::User()->role == 'superadmin')
+                                    @if (auth()->user()->role == 'superadmin')
                                         <span class="ms-2 h-2.5 w-2.5 rounded-full bg-red-500"
                                               data-tooltip-target="tooltip-role">
                                         </span>
-                                    @elseif (Auth::User()->role == 'admin')
+                                    @elseif (auth()->user()->role == 'admin')
                                         <span class="ms-2 h-2.5 w-2.5 rounded-full bg-yellow-500"
                                               data-tooltip-target="tooltip-role">
                                         </span>
-                                    @elseif (Auth::User()->role == 'user')
+                                    @elseif (auth()->user()->role == 'user')
                                         <span class="ms-2 h-2.5 w-2.5 rounded-full bg-blue-500"
                                               data-tooltip-target="tooltip-role">
                                         </span>
-                                    @elseif (Auth::User()->role == 'guest')
+                                    @elseif (auth()->user()->role == 'guest')
                                         <span class="ms-2 h-2.5 w-2.5 rounded-full bg-gray-500"
                                               data-tooltip-target="tooltip-role">
                                         </span>
@@ -63,16 +63,16 @@
                                     <div class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300"
                                          id="tooltip-role"
                                          role="tooltip">
-                                        {{ ucwords(Auth::User()->role) }}
+                                        {{ ucwords(auth()->user()->role) }}
                                         <div class="tooltip-arrow"
                                              data-popper-arrow>
                                         </div>
                                     </div>
                                 </div>
                             </span>
-                            @if (Auth::User()->position)
+                            @if (auth()->user()->position)
                                 <span class="block text-sm text-gray-900 dark:text-white">
-                                    {{ Auth::User()->position->name }}
+                                    {{ auth()->user()->position->name }}
                                 </span>
                             @endif
                         </div>
@@ -80,7 +80,7 @@
                 </div>
                 <ul class="py-1 text-gray-700 dark:text-gray-300"
                     aria-labelledby="dropdown-user-menu">
-                    @if (Auth::User()->permitted_positions->count() > 1)
+                    @if (auth()->user()->permitted_positions->count() > 1)
                         <li>
                             <button class="flex w-full items-center justify-between px-4 py-2 text-sm hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
                                     id="permitted-positions"
@@ -104,10 +104,10 @@
                                  id="permitted-positions-list">
                                 <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
                                     aria-labelledby="permitted-positions">
-                                    @foreach (Auth::User()->permitted_positions as $position)
-                                        @if ($position->id !== Auth::User()->position->id)
+                                    @foreach (auth()->user()->permitted_positions as $position)
+                                        @if ($position->id !== auth()->user()->position->id)
                                             <li>
-                                                <form action="{{ route('account.change-position', ['user' => Auth::Id(), 'position' => $position->id]) }}" method="post">
+                                                <form action="{{ route('account.change-position', ['user' => auth()->id(), 'position' => $position->id]) }}" method="post">
                                                     @csrf
                                                     @method('put')
                                                     <button class="inline-block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
@@ -122,7 +122,7 @@
                     @endif
                     <li>
                         <a class="block px-4 py-2 text-sm hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                           href="{{ route('account.settings', Auth::Id()) }}">Account settings</a>
+                           href="{{ route('account.settings', auth()->id()) }}">Account settings</a>
                     </li>
                 </ul>
                 <ul class="py-1 text-gray-700 dark:text-gray-300"

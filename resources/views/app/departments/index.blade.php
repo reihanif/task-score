@@ -28,7 +28,7 @@
                         placeholder="Search for department">
                 </div>
             </div>
-            @if (Auth::User()->role == 'superadmin')
+            @if (auth()->user()->role == 'superadmin')
                 <x-modals.create-department
                     class="flex items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 </x-modals.create-department>
@@ -56,7 +56,7 @@
                             scope="col">
                             Last Updated
                         </x-table-head>
-                        @if (Auth::User()->role == 'superadmin')
+                        @if (auth()->user()->role == 'superadmin')
                             <x-table-head class="px-3 py-3"
                                 data-dt-order="disable"
                                 scope="col" />
@@ -81,7 +81,7 @@
                             <td class="whitespace-nowrap px-3 py-4">
                                 {{ $department->updated_at->diffForHumans() }}
                             </td>
-                            @if (Auth::User()->role == 'superadmin')
+                            @if (auth()->user()->role == 'superadmin')
                                 <td class="float-end py-4 pe-2 ps-6">
                                     <div class="flex items-center">
                                         <button

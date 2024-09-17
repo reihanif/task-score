@@ -181,7 +181,7 @@
                                           scope="col">
                                 Created at
                             </x-table-head>
-                            @if (Auth::User()->role == 'superadmin')
+                            @if (auth()->user()->role == 'superadmin')
                                 <x-table-head class="px-3 py-3"
                                               data-dt-order="disable"
                                               scope="col" />
@@ -347,7 +347,7 @@
                                     data-order="{{ $assignment->created_at->format('YmdHis') }}">
                                     {{ $assignment->created_at->format('d M Y, H:i') }}
                                 </td>
-                                @if (Auth::User()->role == 'superadmin')
+                                @if (auth()->user()->role == 'superadmin')
                                     <td class="float-end py-4 pe-2 ps-6">
                                         <div class="flex items-center">
                                             <button class="table-row-button inline-flex items-center self-center rounded-lg p-2 text-center text-sm font-medium text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-700"
