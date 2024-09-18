@@ -274,7 +274,6 @@ function initializeTomSelects() {
             },
             onItemAdd:function() {
                 this.setTextboxValue('');
-                this.refreshOptions();
             },
             onInitialize: function() {
                 setTimeout(() => {
@@ -420,6 +419,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Notifications Table
         if (document.querySelector("#notifications-table") !== null) {
             let notificationsTable = new DataTable("#notifications-table", {
+                stateSave: true,
+                stateSaveCallback: function (settings, data) {
+                    localStorage.setItem(
+                        'DataTables_' + settings.sInstance,
+                        JSON.stringify(data)
+                    );
+                },
+                stateLoadCallback: function (settings) {
+                    return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
+                },
                 order: [[2, "desc"]],
                 responsive: true,
                 layout: {
@@ -443,8 +452,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Positions Table
-        if (document.querySelector("#positions-table") !== null) {
-            let positionsTable = new DataTable("#positions-table", {
+        const positionsTableElement = document.querySelector("#positions-table");
+
+        if (positionsTableElement) {
+            const localStorageKey = `DataTables_${positionsTableElement.id}`;
+
+            const saveState = (settings, data) =>
+                localStorage.setItem(localStorageKey, JSON.stringify(data));
+
+            const loadState = settings =>
+                JSON.parse(localStorage.getItem(localStorageKey));
+
+            const positionsTable = new DataTable("#positions-table", {
+                stateSave: true,
+                stateSaveCallback: saveState,
+                stateLoadCallback: loadState,
                 responsive: true,
                 layout: {
                     topStart: {},
@@ -458,18 +480,85 @@ document.addEventListener('DOMContentLoaded', () => {
                         },
                     },
                 },
+                oLanguage: {
+                    sEmptyTable: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                        window.assetUrl +
+                        'assets/illustrations/no-data-animate.svg"></object>' +
+                        '<div class="mb-8">No data found</div>',
+                },
+                language: {
+                    zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                        window.assetUrl +
+                        'assets/illustrations/no-data-animate.svg"></object>' +
+                        '<div class="mb-8">No matching records found</div>',
+                    zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
+                        window.assetUrl +
+                        'assets/illustrations/no-data-animate.svg"></object>' +
+                        '<div class="mb-8">No matching records found</div>',
+                    infoEmpty: '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+                },
             });
 
-            document
-                .getElementById("table-search-positions")
-                .addEventListener("keyup", function () {
-                    positionsTable.columns(1).search(this.value).draw();
-                });
+            const searchInput = document.getElementById("table-search-positions");
+            searchInput.addEventListener("input", () => {
+                positionsTable.columns(1).search(searchInput.value).draw();
+            });
+
+            const savedState = loadState();
+            if (savedState) {
+                searchInput.value = savedState.columns[1].search.search;
+            }
         }
+        // if (document.querySelector("#positions-table") !== null) {
+        //     let positionsTable = new DataTable("#positions-table", {
+        //         stateSave: true,
+        //         stateSaveCallback: function (settings, data) {
+        //             localStorage.setItem(
+        //                 'DataTables_' + settings.sInstance,
+        //                 JSON.stringify(data)
+        //             );
+        //         },
+        //         stateLoadCallback: function (settings) {
+        //             return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
+        //         },
+        //         responsive: true,
+        //         layout: {
+        //             topStart: {},
+        //             topEnd: {},
+        //             bottomStart: {
+        //                 pageLength: {
+        //                     text: "Rows per page _MENU_",
+        //                 },
+        //                 info: {
+        //                     text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
+        //                 },
+        //             },
+        //         },
+        //     });
+
+        //     document
+        //     .getElementById("table-search-positions")
+        //     .addEventListener("keyup", function () {
+        //         positionsTable.columns(1).search(this.value).draw();
+        //     });
+
+        //     const state = JSON.parse(localStorage.getItem('DataTables_' + 'positions-table'));
+        //     document.getElementById("table-search-positions").value = state.columns[1].search.search;
+        // }
 
         // Users Table
         if (document.querySelector("#users-table") !== null) {
             let usersTable = new DataTable("#users-table", {
+                stateSave: true,
+                stateSaveCallback: function (settings, data) {
+                    localStorage.setItem(
+                        'DataTables_' + settings.sInstance,
+                        JSON.stringify(data)
+                    );
+                },
+                stateLoadCallback: function (settings) {
+                    return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
+                },
                 responsive: true,
                 layout: {
                     topStart: {},
@@ -526,6 +615,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Departments Table
         if (document.querySelector("#departments-table") !== null) {
             let departmentsTable = new DataTable("#departments-table", {
+                stateSave: true,
+                stateSaveCallback: function (settings, data) {
+                    localStorage.setItem(
+                        'DataTables_' + settings.sInstance,
+                        JSON.stringify(data)
+                    );
+                },
+                stateLoadCallback: function (settings) {
+                    return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
+                },
                 responsive: true,
                 layout: {
                     topStart: {},
@@ -566,6 +665,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Pending Assignments Table
         if (document.querySelector("#pending-assignments-table") !== null) {
             let pendingAssignmentsTable = new DataTable("#pending-assignments-table", {
+                stateSave: true,
+                stateSaveCallback: function (settings, data) {
+                    localStorage.setItem(
+                        'DataTables_' + settings.sInstance,
+                        JSON.stringify(data)
+                    );
+                },
+                stateLoadCallback: function (settings) {
+                    return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
+                },
                 responsive: true,
                 layout: {
                     topStart: {},
@@ -608,6 +717,16 @@ document.addEventListener('DOMContentLoaded', () => {
             let resolvedAssignmentsTable = new DataTable(
                 "#resolved-assignments-table",
                 {
+                    stateSave: true,
+                    stateSaveCallback: function (settings, data) {
+                        localStorage.setItem(
+                            'DataTables_' + settings.sInstance,
+                            JSON.stringify(data)
+                        );
+                    },
+                    stateLoadCallback: function (settings) {
+                        return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
+                    },
                     responsive: true,
                     layout: {
                         topStart: {},
@@ -651,6 +770,16 @@ document.addEventListener('DOMContentLoaded', () => {
             let subordinateAssignmentsTable = new DataTable(
                 "#subordinate-submissions-table",
                 {
+                    stateSave: true,
+                    stateSaveCallback: function (settings, data) {
+                        localStorage.setItem(
+                            'DataTables_' + settings.sInstance,
+                            JSON.stringify(data)
+                        );
+                    },
+                    stateLoadCallback: function (settings) {
+                        return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
+                    },
                     order: [[3, "desc"]],
                     responsive: true,
                     layout: {
@@ -703,6 +832,16 @@ document.addEventListener('DOMContentLoaded', () => {
             let subordinateTimeExtensionsTable = new DataTable(
                 "#subordinate-time-extensions-table",
                 {
+                    stateSave: true,
+                    stateSaveCallback: function (settings, data) {
+                        localStorage.setItem(
+                            'DataTables_' + settings.sInstance,
+                            JSON.stringify(data)
+                        );
+                    },
+                    stateLoadCallback: function (settings) {
+                        return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
+                    },
                     order: [[3, "desc"]],
                     responsive: true,
                     layout: {
