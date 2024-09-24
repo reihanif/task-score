@@ -205,11 +205,9 @@
                                 <td class="whitespace-nowrap px-3 py-4">
                                     <ul class="list-none space-y-3">
                                         @foreach ($assignment->tasks as $task)
-                                            @if ($assignment->is_recurring && !$task->isResolved() || !$assignment->is_recurring)
-                                                <li>
-                                                    {{ $task->uuid . ' - ' . $task->assignee->name }}
-                                                </li>
-                                            @endif
+                                            <li>
+                                                {{ $task->uuid . ' - ' . $task->assignee->name }}
+                                            </li>
                                         @endforeach
                                     </ul>
                                 </td>
@@ -389,7 +387,7 @@
                         <option value=""
                                 selected>All Assignee</option>
                         @foreach ($assignees as $assignee)
-                            <option value="{{ $assignee->name }}" data-caption="{{ $assignee->position->name }}">{{ $assignee->name }}</option>
+                            <option value="{{ $assignee->name }}" data-caption="{{ $assignee->position?->name }}">{{ $assignee->name }}</option>
                         @endforeach
                     </select>
                 </div>
