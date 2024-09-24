@@ -387,7 +387,7 @@
                         <option value=""
                                 selected>All Assignee</option>
                         @foreach ($assignees as $assignee)
-                            <option value="{{ $assignee->name }}" data-caption="{{ $assignee->position->name }}">{{ $assignee->name }}</option>
+                            <option value="{{ $assignee->name }}" data-caption="{{ $assignee->position?->name }}">{{ $assignee->name }}</option>
                         @endforeach
                     </select>
                 </div>
