@@ -205,6 +205,7 @@ function initializeDatepickers() {
             maxDate: datepickerEl.dataset.maxDate ?? null,
             maxDays: Number(datepickerEl.dataset.maxDays) ?? null,
             singleMode: singleModeOption,
+            position: datepickerEl.dataset.position ?? 'auto',
             showTooltip: true,
             autoApply: true,
             resetButton: resetButtonOption,
@@ -224,7 +225,8 @@ function initializeDatepickers() {
             options.plugins = ['ranges']
         }
 
-        new Litepicker(options);
+        const picker = new Litepicker(options);
+        datepickerEl.litepicker = picker;
     });
 }
 
@@ -414,483 +416,160 @@ labels.forEach((label) => {
 Datatables
 */
 document.addEventListener('DOMContentLoaded', () => {
-    // Delay DataTables initialization to ensure Flowbite components are fully set up
-    setTimeout(() => {
-        // Notifications Table
-        if (document.querySelector("#notifications-table") !== null) {
-            let notificationsTable = new DataTable("#notifications-table", {
-                stateSave: true,
-                stateSaveCallback: function (settings, data) {
-                    localStorage.setItem(
-                        'DataTables_' + settings.sInstance,
-                        JSON.stringify(data)
-                    );
-                },
-                stateLoadCallback: function (settings) {
-                    return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-                },
-                order: [[2, "desc"]],
-                responsive: true,
-                layout: {
-                    topStart: {},
-                    topEnd: {},
-                    bottomStart: {
-                        pageLength: {
-                            text: "Rows per page _MENU_",
-                        },
-                        info: {
-                            text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                        },
-                    },
-                },
-            });
-            document
-                .getElementById("table-search-notifications")
-                .addEventListener("keyup", function () {
-                    notificationsTable.columns(0).search(this.value).draw();
-                });
-        }
+    DataTable.ext.pager.numbers_length = 5;
 
-        // Positions Table
-        const positionsTableElement = document.querySelector("#positions-table");
+    const initDataTable = (selector, tableOptions = {}) => {
+        const tableElement = document.querySelector(selector);
+        if (!tableElement) return;
 
-        if (positionsTableElement) {
-            const localStorageKey = `DataTables_${positionsTableElement.id}`;
+        const localStorageKey = `DataTables_${tableElement.id}`;
 
-            const saveState = (settings, data) =>
-                localStorage.setItem(localStorageKey, JSON.stringify(data));
+        const saveState = (settings, data) => {
+            const searchRange = {
+                minDate: tableElement.dataset.minDate || '',
+                maxDate: tableElement.dataset.maxDate || ''
+            };
+            localStorage.setItem(localStorageKey, JSON.stringify({ ...data, searchRange }));
+        };
 
-            const loadState = settings =>
-                JSON.parse(localStorage.getItem(localStorageKey));
+        const loadState = () => {
+            const savedState = JSON.parse(localStorage.getItem(localStorageKey)) || null;
+            if (savedState?.searchRange) {
+                const { minDate, maxDate } = savedState.searchRange;
+                if (minDate && maxDate) {
+                    tableElement.dataset.minDate = minDate;
+                    tableElement.dataset.maxDate = maxDate;
+                }
+            }
+            return savedState;
+        };
 
-            const positionsTable = new DataTable("#positions-table", {
-                stateSave: true,
-                stateSaveCallback: saveState,
-                stateLoadCallback: loadState,
-                responsive: true,
-                layout: {
-                    topStart: {},
-                    topEnd: {},
-                    bottomStart: {
-                        pageLength: {
-                            text: "Rows per page _MENU_",
-                        },
-                        info: {
-                            text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                        },
-                    },
-                },
-                oLanguage: {
-                    sEmptyTable: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No data found</div>',
-                },
-                language: {
-                    zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No matching records found</div>',
-                    zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No matching records found</div>',
-                    infoEmpty: '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                },
+        const clearAllFilters = () => {
+            document.querySelectorAll(`[data-filter-target="${tableElement.id}"]`).forEach(filterElement => {
+                if (filterElement.tagName.toLowerCase() === 'input') {
+                    filterElement.value = '';
+                } else if (filterElement.tagName.toLowerCase() === 'select') {
+                    filterElement.selectedIndex = 0;
+                }
+                if (filterElement.tomselect) {
+                    filterElement.tomselect.clear();
+                }
             });
 
-            const searchInput = document.getElementById("table-search-positions");
-            searchInput.addEventListener("input", () => {
-                positionsTable.columns(1).search(searchInput.value).draw();
+            document.querySelectorAll(`[data-filter-target="${tableElement.id}"][data-single-mode="false"]`).forEach(filterElement => {
+                if (filterElement.litepicker) {
+                    filterElement.litepicker.clearSelection();
+                }
             });
+
+            tableElement.dataset.minDate = '';
+            tableElement.dataset.maxDate = '';
+            localStorage.removeItem(localStorageKey);
+            table.search('').columns().search('').draw();
+        };
+
+        const handleFilterInput = (filterElement, column) => {
+            const smart = filterElement.dataset.filterSmart === 'true';
+            const caseInsensitive = filterElement.dataset.filterCaseInsensitive !== 'false';
+            const eventType = filterElement.tagName.toLowerCase() === 'input' ? 'input' : 'change';
+
+            filterElement.addEventListener(eventType, debounce(() => {
+                table.columns(column).search(filterElement.value, false, smart, caseInsensitive).draw();
+            }, 300));
 
             const savedState = loadState();
-            if (savedState) {
-                searchInput.value = savedState.columns[1].search.search;
+            const filterState = savedState?.columns[column]?.search?.search || '';
+
+            if (filterElement.tagName.toLowerCase() === 'input') {
+                filterElement.value = filterState;
+            } else if (filterElement.tagName.toLowerCase() === 'select') {
+                const optionToSelect = filterElement.querySelector(`option[value="${filterState}"]`);
+                optionToSelect?.setAttribute('selected', 'selected');
             }
-        }
-        // if (document.querySelector("#positions-table") !== null) {
-        //     let positionsTable = new DataTable("#positions-table", {
-        //         stateSave: true,
-        //         stateSaveCallback: function (settings, data) {
-        //             localStorage.setItem(
-        //                 'DataTables_' + settings.sInstance,
-        //                 JSON.stringify(data)
-        //             );
-        //         },
-        //         stateLoadCallback: function (settings) {
-        //             return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-        //         },
-        //         responsive: true,
-        //         layout: {
-        //             topStart: {},
-        //             topEnd: {},
-        //             bottomStart: {
-        //                 pageLength: {
-        //                     text: "Rows per page _MENU_",
-        //                 },
-        //                 info: {
-        //                     text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-        //                 },
-        //             },
-        //         },
-        //     });
 
-        //     document
-        //     .getElementById("table-search-positions")
-        //     .addEventListener("keyup", function () {
-        //         positionsTable.columns(1).search(this.value).draw();
-        //     });
-
-        //     const state = JSON.parse(localStorage.getItem('DataTables_' + 'positions-table'));
-        //     document.getElementById("table-search-positions").value = state.columns[1].search.search;
-        // }
-
-        // Users Table
-        if (document.querySelector("#users-table") !== null) {
-            let usersTable = new DataTable("#users-table", {
-                stateSave: true,
-                stateSaveCallback: function (settings, data) {
-                    localStorage.setItem(
-                        'DataTables_' + settings.sInstance,
-                        JSON.stringify(data)
-                    );
-                },
-                stateLoadCallback: function (settings) {
-                    return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-                },
-                responsive: true,
-                layout: {
-                    topStart: {},
-                    topEnd: {},
-                    bottomStart: {
-                        pageLength: {
-                            text: "Rows per page_MENU_",
-                        },
-                        info: {
-                            text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                        },
-                    },
-                },
-                oLanguage: {
-                    sEmptyTable:
-                        '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No data found</div>',
-                },
-                language: {
-                    zeroRecords:
-                        '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No matching records found</div>',
-                    infoEmpty:
-                        '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                },
-            });
-            document
-                .getElementById("table-search-users")
-                .addEventListener("keyup", function () {
-                    usersTable.columns(1).search(this.value).draw();
-                });
-            document
-                .getElementById("users-role-filter")
-                .addEventListener("change", function () {
-                    usersTable
-                        .columns(3)
-                        .search(this.value, false, false, false)
-                        .draw();
-                });
-            document
-                .getElementById("users-position-filter")
-                .addEventListener("change", function () {
-                    usersTable
-                        .columns(2)
-                        .search(this.value, false, false, false)
-                        .draw();
-                });
-        }
-
-        // Departments Table
-        if (document.querySelector("#departments-table") !== null) {
-            let departmentsTable = new DataTable("#departments-table", {
-                stateSave: true,
-                stateSaveCallback: function (settings, data) {
-                    localStorage.setItem(
-                        'DataTables_' + settings.sInstance,
-                        JSON.stringify(data)
-                    );
-                },
-                stateLoadCallback: function (settings) {
-                    return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-                },
-                responsive: true,
-                layout: {
-                    topStart: {},
-                    topEnd: {},
-                    bottomStart: {
-                        pageLength: {
-                            text: "Rows per page_MENU_",
-                        },
-                        info: {
-                            text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                        },
-                    },
-                },
-                oLanguage: {
-                    sEmptyTable:
-                        '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No data found</div>',
-                },
-                language: {
-                    zeroRecords:
-                        '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No matching records found</div>',
-                    infoEmpty:
-                        '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                },
-            });
-            document
-                .getElementById("table-search-departments")
-                .addEventListener("keyup", function () {
-                    departmentsTable.columns(1).search(this.value).draw();
-                });
-        }
-
-        // Pending Assignments Table
-        if (document.querySelector("#pending-assignments-table") !== null) {
-            let pendingAssignmentsTable = new DataTable("#pending-assignments-table", {
-                stateSave: true,
-                stateSaveCallback: function (settings, data) {
-                    localStorage.setItem(
-                        'DataTables_' + settings.sInstance,
-                        JSON.stringify(data)
-                    );
-                },
-                stateLoadCallback: function (settings) {
-                    return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-                },
-                responsive: true,
-                layout: {
-                    topStart: {},
-                    topEnd: {},
-                    bottomStart: {
-                        pageLength: {
-                            text: "Rows per page_MENU_",
-                        },
-                        info: {
-                            text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                        },
-                    },
-                },
-                oLanguage: {
-                    sEmptyTable:
-                        '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No data found</div>',
-                },
-                language: {
-                    zeroRecords:
-                        '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                        window.assetUrl +
-                        'assets/illustrations/no-data-animate.svg"></object>' +
-                        '<div class="mb-8">No matching records found</div>',
-                    infoEmpty:
-                        '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                },
-            });
-            document
-                .getElementById("table-search-pending-assignments")
-                .addEventListener("keyup", function () {
-                    pendingAssignmentsTable.columns(1).search(this.value).draw();
-                });
-        }
-
-        // Resolved Assignments Table
-        if (document.querySelector("#resolved-assignments-table") !== null) {
-            let resolvedAssignmentsTable = new DataTable(
-                "#resolved-assignments-table",
-                {
-                    stateSave: true,
-                    stateSaveCallback: function (settings, data) {
-                        localStorage.setItem(
-                            'DataTables_' + settings.sInstance,
-                            JSON.stringify(data)
-                        );
-                    },
-                    stateLoadCallback: function (settings) {
-                        return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-                    },
-                    responsive: true,
-                    layout: {
-                        topStart: {},
-                        topEnd: {},
-                        bottomStart: {
-                            pageLength: {
-                                text: "Rows per page_MENU_",
-                            },
-                            info: {
-                                text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                            },
-                        },
-                    },
-                    oLanguage: {
-                        sEmptyTable:
-                            '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No data found</div>',
-                    },
-                    language: {
-                        zeroRecords:
-                            '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No matching records found</div>',
-                        infoEmpty:
-                            '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                    },
+            setTimeout(() => {
+                if (filterElement.tomselect) {
+                    filterElement.tomselect.setValue(filterState);
                 }
-            );
-            document
-                .getElementById("table-search-resolved-assignments")
-                .addEventListener("keyup", function () {
-                    resolvedAssignmentsTable.columns(1).search(this.value).draw();
-                });
-        }
+            }, 100);
+        };
 
-        // Subordinate Submissions Table
-        if (document.querySelector("#subordinate-submissions-table") !== null) {
-            let subordinateAssignmentsTable = new DataTable(
-                "#subordinate-submissions-table",
-                {
-                    stateSave: true,
-                    stateSaveCallback: function (settings, data) {
-                        localStorage.setItem(
-                            'DataTables_' + settings.sInstance,
-                            JSON.stringify(data)
-                        );
-                    },
-                    stateLoadCallback: function (settings) {
-                        return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-                    },
-                    order: [[3, "desc"]],
-                    responsive: true,
-                    layout: {
-                        topStart: {},
-                        topEnd: {},
-                        bottomStart: {
-                            pageLength: {
-                                text: "Rows per page_MENU_",
-                            },
-                            info: {
-                                text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                            },
-                        },
-                    },
-                    oLanguage: {
-                        sEmptyTable:
-                            '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No data found</div>',
-                    },
-                    language: {
-                        zeroRecords:
-                            '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No matching records found</div>',
-                        infoEmpty:
-                            '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                    },
+        const table = new DataTable(selector, {
+            stateSave: true,
+            stateSaveCallback: saveState,
+            stateLoadCallback: loadState,
+            responsive: true,
+            pagingType: 'simple_numbers',
+            layout: {
+                topStart: {},
+                topEnd: {},
+                bottomStart: {
+                    pageLength: { text: "Rows per page _MENU_" },
+                    info: { text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>' }
                 }
-            );
-            document
-                .getElementById("table-search-subordinate-submissions")
-                .addEventListener("keyup", function () {
-                    subordinateAssignmentsTable.columns(1).search(this.value).draw();
-                });
-            document
-                .getElementById("submissions-resolution-filter")
-                .addEventListener("change", function () {
-                    subordinateAssignmentsTable
-                        .columns(4)
-                        .search(this.value, false, false, false)
-                        .draw();
-                });
-        }
+            },
+            language: {
+                zeroRecords: `<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="${window.assetUrl}assets/illustrations/no-data-animate.svg"></object><div class="mb-8">No matching records found</div>`,
+                emptyTable: `<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="${window.assetUrl}assets/illustrations/no-data-animate.svg"></object><div class="mb-8">No data available</div>`,
+                infoEmpty: '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
+            },
+            ...tableOptions
+        });
 
-        // Subordinate Time Extensions Table
-        if (document.querySelector("#subordinate-time-extensions-table") !== null) {
-            let subordinateTimeExtensionsTable = new DataTable(
-                "#subordinate-time-extensions-table",
-                {
-                    stateSave: true,
-                    stateSaveCallback: function (settings, data) {
-                        localStorage.setItem(
-                            'DataTables_' + settings.sInstance,
-                            JSON.stringify(data)
-                        );
-                    },
-                    stateLoadCallback: function (settings) {
-                        return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-                    },
-                    order: [[3, "desc"]],
-                    responsive: true,
-                    layout: {
-                        topStart: {},
-                        topEnd: {},
-                        bottomStart: {
-                            pageLength: {
-                                text: "Rows per page_MENU_",
-                            },
-                            info: {
-                                text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                            },
-                        },
-                    },
-                    oLanguage: {
-                        sEmptyTable:
-                            '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No data found</div>',
-                    },
-                    language: {
-                        zeroRecords:
-                            '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No matching records found</div>',
-                        infoEmpty:
-                            '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                    },
+        document.querySelectorAll(`[data-filter-target="${tableElement.id}"]`).forEach(filterElement => {
+            const column = Number(filterElement.dataset.filterColumn);
+
+            if (filterElement.hasAttribute('data-filter-range')) {
+                filterElement.litepicker.on('selected', (mindate, maxdate) => {
+                    tableElement.dataset.minDate = mindate.format('YYYY-MM-DD');
+                    tableElement.dataset.maxDate = maxdate.format('YYYY-MM-DD');
+                    saveState(null, null);
+
+                    table.search.fixed("range", (searchStr, data) => {
+                        const date = parseFloat(data[column]["@data-search"]);
+                        const min = parseInt(mindate.format('YYYYMMDD'), 10);
+                        const max = parseInt(maxdate.format('YYYYMMDD'), 10);
+                        return (isNaN(min) && isNaN(max)) || (isNaN(min) && date <= max) || (min <= date && isNaN(max)) || (min <= date && date <= max);
+                    }).draw();
+                });
+
+                filterElement.litepicker.on('clear:selection', () => {
+                    tableElement.dataset.minDate = '';
+                    tableElement.dataset.maxDate = '';
+                    saveState('', '');
+
+                    table.search.fixed("range", () => true).draw();
+                });
+
+                const savedState = loadState();
+                if (savedState?.searchRange?.minDate && savedState?.searchRange?.maxDate) {
+                    filterElement.litepicker.setDateRange(savedState.searchRange.minDate, savedState.searchRange.maxDate);
                 }
-            );
-            document
-                .getElementById("table-search-subordinate-time-extensions")
-                .addEventListener("keyup", function () {
-                    subordinateTimeExtensionsTable.columns(1).search(this.value).draw();
-                });
-            document
-                .getElementById("time-extensions-resolution-filter")
-                .addEventListener("change", function () {
-                    subordinateTimeExtensionsTable
-                        .columns(4)
-                        .search(this.value, false, false, false)
-                        .draw();
-                });
-        }
+            } else if (filterElement.hasAttribute('data-filter-reset')) {
+                filterElement.addEventListener('click', clearAllFilters);
+            } else {
+                handleFilterInput(filterElement, column);
+            }
+        });
 
+        return table;
+    };
+
+    setTimeout(() => {
+        document.querySelectorAll('table.datatables').forEach(table => {
+            initDataTable(`#${table.id}`);
+        });
     }, 100);
-})
+
+    // Utility debounce function
+    function debounce(fn, delay) {
+        let timeoutId;
+        return (...args) => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => fn.apply(this, args), delay);
+        };
+    }
+});
 
 window.TomSelect = TomSelect;
 window.initializeTomSelects = initializeTomSelects;

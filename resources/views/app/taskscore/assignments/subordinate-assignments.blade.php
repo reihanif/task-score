@@ -72,25 +72,24 @@
             </div>
             <div class="grid gap-4 bg-white dark:bg-gray-800 md:grid-cols-2 md:flex-row md:space-y-0">
                 <div class="inline-flex gap-2">
-                    <div class="grow"
-                         id="search">
-                        <label class="sr-only"
-                               for="filter-search">Search</label>
+                    <div class="grow">
                         <div class="relative">
                             <div
                                  class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                                 <x-icons.search class="h-4 w-4 text-gray-500 dark:text-gray-400"></x-icons.search>
                             </div>
                             <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                   id="filter-search"
-                                   type="text"
+                                   data-filter-target="subordinate-assignments-table"
+                                   data-filter-column="1"
+                                   data-filter-case-insensitive="true"
+                                   type="search"
                                    placeholder="Search for assignment">
                         </div>
                     </div>
                     <div>
                         <button class="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 md:w-auto"
-                                id="filter-dropdown-button"
-                                data-dropdown-toggle="filter-dropdown"
+                                data-modal-target="filter-modal"
+                                data-modal-toggle="filter-modal"
                                 type="button">
                             <svg class="mr-2 h-4 w-4 text-gray-400"
                                  aria-hidden="true"
@@ -131,8 +130,8 @@
 
             <!-- Table -->
             <div>
-                <table class="table-clickable w-full text-left text-xs text-gray-500 rtl:text-right dark:text-gray-400 sm:text-sm"
-                       id="table">
+                <table class="datatables table-clickable w-full text-left text-xs text-gray-500 rtl:text-right dark:text-gray-400 sm:text-sm"
+                       id="subordinate-assignments-table">
                     <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
@@ -166,11 +165,6 @@
                                           data-dt-order="disable"
                                           scope="col">
                                 Due
-                            </x-table-head>
-                            <x-table-head class="whitespace-nowrap px-3 py-3"
-                                          data-dt-order="disable"
-                                          scope="col">
-                                Difficulty
                             </x-table-head>
                             <x-table-head class="whitespace-nowrap px-3 py-3"
                                           data-dt-order="disable"
@@ -284,15 +278,6 @@
                                         @endforeach
                                     </ul>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-4">
-                                    <ul class="list-none space-y-3">
-                                        @foreach ($assignment->tasks as $task)
-                                                <li>
-                                                    {{ ucwords($task->difficulty) }}
-                                                </li>
-                                        @endforeach
-                                    </ul>
-                                </td>
                                 <td class="whitespace-nowrap px-3 py-4 text-center">
                                     <ul class="list-none space-y-3">
                                         @foreach ($assignment->tasks as $task)
@@ -389,180 +374,95 @@
         </div>
     </div>
 
-    <!-- Filter Dropdown -->
-    <div class="z-10 hidden w-96 rounded-lg bg-white p-3 shadow dark:bg-gray-700"
-         id="filter-dropdown">
-        <div class="grid sm:grid-cols-2 gap-2">
-            <div class="sm:col-span-2">
-                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Assignee</h6>
-                <select class="ts-sm"
-                        id="filter-assignee">
-                    <option value=""
-                            selected>All Assignee</option>
-                    @foreach ($assignees as $assignee)
-                        <option value="{{ $assignee->name }}">{{ $assignee->name }}</option>
-                    @endforeach
-                </select>
+    <x-modal id="filter-modal" data-title="Filter">
+        <!-- Filter -->
+        <div class="z-10 p-3">
+            <div class="grid sm:grid-cols-2 gap-2">
+                <div class="sm:col-span-2">
+                    <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Assignee</h6>
+                    <select class="ts-sm"
+                            hascaption
+                            data-filter-target="subordinate-assignments-table"
+                            data-filter-column="3">
+                        <option value=""
+                                selected>All Assignee</option>
+                        @foreach ($assignees as $assignee)
+                            <option value="{{ $assignee->name }}" data-caption="{{ $assignee->position->name }}">{{ $assignee->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Submission</h6>
+                    <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            data-filter-target="subordinate-assignments-table"
+                            data-filter-column="4"
+                            normal-select>
+                        <option value=""
+                                selected>All Submission</option>
+                        <option value="-">-</option>
+                        <option value="Waiting for approval">Waiting for approval</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
+                <div>
+                    <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Time Extension</h6>
+                    <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            data-filter-target="subordinate-assignments-table"
+                            data-filter-column="5"
+                            normal-select>
+                        <option value=""
+                                selected>All Time Extension</option>
+                        <option value="-">-</option>
+                        <option value="Waiting for approval">Waiting for approval</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
+                <div>
+                    <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Created date</h6>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
+                            <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 20 20">
+                                <path
+                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                            </svg>
+                        </div>
+                        <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                            type="text"
+                            datepicker
+                            datepicker-predefined-ranges
+                            data-single-mode="false"
+                            data-format="DD MMM YYYY"
+                            data-reset-button="true"
+                            data-position="top"
+                            data-filter-target="subordinate-assignments-table"
+                            data-filter-column="8"
+                            data-filter-range
+                            autocomplete="off"
+                            placeholder="Select date">
+                    </div>
+                </div>
+                <div>
+                    <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Category</h6>
+                    <select data-filter-target="subordinate-assignments-table"
+                            data-filter-column="2">
+                        <option value=""
+                                selected>All Category</option>
+                        @foreach ($categories as $key => $category)
+                            <option value="{{ $category }}" data-order="{{ str_pad($key, 2, '0', STR_PAD_LEFT) }}">{{ $category }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-            <div>
-                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Category</h6>
-                <select id="filter-category">
-                    <option value=""
-                            selected>All Category</option>
-                    @foreach ($categories as $key => $category)
-                        <option value="{{ $category }}" data-order="{{ str_pad($key, 2, '0', STR_PAD_LEFT) }}">{{ $category }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div>
-                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Submission</h6>
-                <select class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        id="filter-submission"
-                        normal-select>
-                    <option value=""
-                            selected>All Submission</option>
-                    <option value="-">-</option>
-                    <option value="Waiting for approval">Waiting for approval</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="Resolved">Resolved</option>
-                </select>
-            </div>
-            <div>
-                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Created from</h6>
-                <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                       id="filter-mindate"
-                       type="date"
-                       onclick="showPicker()" />
-            </div>
-            <div>
-                <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">to</h6>
-                <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                       id="filter-maxdate"
-                       type="date"
-                       onclick="showPicker()" />
-
+            <div class="mt-4 text-end">
+                <button type="button" data-filter-target="subordinate-assignments-table" data-filter-reset class="px-3 py-2 text-xs font-medium text-center text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Reset</button>
             </div>
         </div>
-    </div>
-    <!-- End of Filter Dropdown -->
-@endsection
-
-@section('script')
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Delay DataTables initialization to ensure Flowbite components are fully set up
-            setTimeout(() => {
-                let table = new DataTable(
-                    "#table", {
-                        stateSave: true,
-                        stateSaveCallback: function (settings, data) {
-                            localStorage.setItem(
-                                'DataTables_' + settings.sInstance,
-                                JSON.stringify(data)
-                            );
-                        },
-                        stateLoadCallback: function (settings) {
-                            return JSON.parse(localStorage.getItem('DataTables_' + settings.sInstance));
-                        },
-                        responsive: true,
-                        layout: {
-                            topStart: {},
-                            topEnd: {},
-                            bottomStart: {
-                                pageLength: {
-                                    text: "Rows per page_MENU_",
-                                },
-                                info: {
-                                    text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                                },
-                            },
-                        },
-                        oLanguage: {
-                            sEmptyTable: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                                window.assetUrl +
-                                'assets/illustrations/no-data-animate.svg"></object>' +
-                                '<div class="mb-8">No data found</div>',
-                        },
-                        language: {
-                            zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                                window.assetUrl +
-                                'assets/illustrations/no-data-animate.svg"></object>' +
-                                '<div class="mb-8">No matching records found</div>',
-                            zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                                window.assetUrl +
-                                'assets/illustrations/no-data-animate.svg"></object>' +
-                                '<div class="mb-8">No matching records found</div>',
-                            infoEmpty: '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                        },
-                    }
-                );
-                document
-                    .getElementById("filter-search")
-                    .addEventListener("keyup", function() {
-                        table.columns(1).search(this.value).draw();
-                    });
-                document
-                    .getElementById("filter-category")
-                    .addEventListener("change", function() {
-                        table.columns(2).search(this.value, false, false, false).draw();
-                    });
-                document
-                    .getElementById("filter-submission")
-                    .addEventListener("change", function() {
-                        table
-                            .columns(4)
-                            .search(this.value, false, false, false)
-                            .draw();
-                    });
-                document
-                    .getElementById("filter-assignee")
-                    .addEventListener("change", function() {
-                        table
-                            .columns(3)
-                            .search(this.value, false, false, false)
-                            .draw();
-                    });
-
-                const mindate = document.querySelector("#filter-mindate");
-                const maxdate = document.querySelector("#filter-maxdate");
-
-                table.search.fixed(
-                    "range",
-                    function(searchStr, data, index) {
-                        // Split the input date string by '/'
-                        const [minYear, minMonth, minDay] = mindate.value.split("-");
-                        const [maxYear, maxMonth, maxDay] = maxdate.value.split("-");
-
-                        // Construct the new date string in the format "YYYYMMDD"
-                        const minDateStr = `${minYear}${minMonth}${minDay}`;
-                        const maxDateStr = `${maxYear}${maxMonth}${maxDay}`;
-
-
-                        var min = parseInt(minDateStr, 10);
-                        var max = parseInt(maxDateStr, 10);
-                        var date = parseFloat(data[9]["@data-search"]); // use data for the date column
-
-                        if (
-                            (isNaN(min) && isNaN(max)) ||
-                            (isNaN(min) && date <= max) ||
-                            (min <= date && isNaN(max)) ||
-                            (min <= date && date <= max)
-                        ) {
-                            return true;
-                        }
-
-                        return false;
-                    }
-                );
-
-                // Changes to the inputs will trigger a redraw to update the table
-                mindate.addEventListener("change", function() {
-                    table.draw();
-                });
-                maxdate.addEventListener("change", function() {
-                    table.draw();
-                });
-            }, 100);
-        });
-    </script>
+        <!-- End of Filter -->
+    </x-modal>
 @endsection

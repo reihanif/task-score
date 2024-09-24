@@ -9,9 +9,10 @@
         <div>
             <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Choose position</h6>
             <select
-                id="users-position-filter">
-                <option value=""
-                    selected>All Position</option>
+                data-filter-target="users-table"
+                data-filter-column="2"
+                data-filter-case-insensitive="false">
+                <option value="">All Position</option>
                 @foreach ($positions as $position)
                     <option value="{{ $position->name }}">{{ $position->name }}</option>
                 @endforeach
@@ -21,7 +22,10 @@
             <h6 class="mb-1.5 text-sm font-medium text-gray-900 dark:text-white">Choose role</h6>
             <select
                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                id="users-role-filter"
+                data-filter-target="users-table"
+                data-filter-column="3"
+                data-filter-smart="false"
+                data-filter-case-insensitive="false"
                 normal-select>
                 <option value=""
                     selected>All Role</option>
@@ -30,6 +34,9 @@
                 <option value="User">User</option>
                 <option value="Guest">Guest</option>
             </select>
+        </div>
+        <div class="text-end">
+            <button type="button" data-filter-target="users-table" data-filter-reset class="px-3 py-2 text-xs font-medium text-center text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Reset</button>
         </div>
     </div>
     <!-- End of Filter Dropdown -->
@@ -47,23 +54,22 @@
             class="grid grid-cols-2 space-y-4 bg-white pt-4 dark:bg-gray-800 md:flex-row md:space-y-0">
             <div class="inline-flex gap-2">
                 <div id="search" class="grow">
-                    <label class="sr-only"
-                        for="table-search-users">Search</label>
                     <div class="relative">
                         <div class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                             <x-icons.search class="h-4 w-4 text-gray-500 dark:text-gray-400"></x-icons.search>
                         </div>
                         <input
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                            id="table-search-users"
-                            type="text"
+                            type="search"
+                            data-filter-target="users-table"
+                            data-filter-column="1"
+                            data-filter-case-insensitive="true"
                             placeholder="Search for users">
                     </div>
                 </div>
                 <div>
                     <button
                         class="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 md:w-auto"
-                        id="filter-dropdown-button"
                         data-dropdown-toggle="filter-dropdown"
                         type="button">
                         <svg class="mr-2 h-4 w-4 text-gray-400"
@@ -104,7 +110,7 @@
             </div>
         </div>
         <div>
-            <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
+            <table class="datatables table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
                 id="users-table">
                 <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                     <tr>

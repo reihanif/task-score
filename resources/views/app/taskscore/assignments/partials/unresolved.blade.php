@@ -10,23 +10,23 @@
 
     <div
          class="flex-column flex flex-wrap items-end justify-between space-y-4 bg-white pt-4 dark:bg-gray-800 md:flex-row md:space-y-0">
-        <div id="search">
-            <label class="sr-only"
-                   for="filter-search">Search</label>
+        <div>
             <div class="relative">
                 <div class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                     <x-icons.search class="h-4 w-4 text-gray-500 dark:text-gray-400"></x-icons.search>
                 </div>
                 <input class="block w-auto rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                       id="filter-search"
-                       type="text"
+                       data-filter-target="unresolved-assignments-table"
+                       data-filter-column="1"
+                       data-filter-case-insensitive="true"
+                       type="search"
                        placeholder="Search for assignment">
             </div>
         </div>
     </div>
     <div>
-        <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
-               id="table">
+        <table class="datatables table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
+               id="unresolved-assignments-table">
             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                 <tr>
                     <x-table-head class="whitespace-nowrap px-3 py-3"
@@ -85,46 +85,3 @@
         </table>
     </div>
 </div>
-
-<script>
-    // Unresolved Assignments Table
-    document.addEventListener("DOMContentLoaded", function() {
-        setTimeout(() => {
-            let table = new DataTable(
-                "#table", {
-                    responsive: true,
-                    layout: {
-                        topStart: {},
-                        topEnd: {},
-                        bottomStart: {
-                            pageLength: {
-                                text: "Rows per page_MENU_",
-                            },
-                            info: {
-                                text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>',
-                            },
-                        },
-                    },
-                    oLanguage: {
-                        sEmptyTable: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No data found</div>',
-                    },
-                    language: {
-                        zeroRecords: '<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="' +
-                            window.assetUrl +
-                            'assets/illustrations/no-data-animate.svg"></object>' +
-                            '<div class="mb-8">No matching records found</div>',
-                        infoEmpty: '<span class="font-semibold dark:text-white"> 0 - 0 </span> of <span class="font-semibold dark:text-white">0</span>',
-                    },
-                }
-            );
-            document
-                .getElementById("filter-search")
-                .addEventListener("keyup", function() {
-                    table.columns(1).search(this.value).draw();
-                });
-            }, 100);
-    })
-</script>
