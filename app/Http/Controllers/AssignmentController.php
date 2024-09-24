@@ -7,15 +7,16 @@ use App\Models\Task;
 use App\Models\User;
 use App\Models\Assignment;
 use App\Models\Submission;
-use App\Notifications\Assignments\AssignmentCreated;
-use App\Notifications\Assignments\AssignmentSubmitted;
-use App\Services\AssignmentService;
+use Illuminate\Http\Request;
 use App\Services\FileService;
 use App\Services\TaskService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use App\Services\AssignmentService;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\Assignments\AssignmentCreated;
+use App\Notifications\Assignments\AssignmentSubmitted;
 
 class AssignmentController extends Controller
 {
@@ -73,7 +74,7 @@ class AssignmentController extends Controller
     {
         $user = auth()->user();
 
-        $assignees = $this->getUserSubordinates($user);
+        $assignees = $user->subordinates;
         $assignments = $this->getUserAssignments($user);
         $categories = $this->getCategories();
 
@@ -96,18 +97,19 @@ class AssignmentController extends Controller
             'type' => 'required|max:255',
             'subject' => 'required|unique:assignments,subject|max:255',
             'description' => 'required',
-            'difficulty' => 'required|string|in:basic,intermediate,advanced|max:255',
+            'difficulty' => 'nullable|string|in:basic,intermediate,advanced|max:255',
             'assignees' => 'array',
             'assignees.*.id' => 'required|uuid',
             'type_other' => Rule::requiredIf($request->type == 'Lainnya'),
+            'ocurrence_type' => 'required|string'
         ]);
 
-        $due = $this->calculateDueDate($request->difficulty);
         $request->merge([
             'taskmaster' => auth()->user()->position_id,
             'creator' => auth()->id(),
-            'due' => $due,
+            'due' => $this->calculateDueDate(collect($request)),
             'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
+            'is_recurring' => $request->ocurrence_type == 'recurring' ? true : false,
         ]);
 
         DB::beginTransaction();
@@ -150,18 +152,16 @@ class AssignmentController extends Controller
             'type' => 'required|max:255',
             'subject' => 'required|unique:assignments,subject|max:255',
             'description' => 'required',
-            'difficulty' => 'required|string|in:basic,intermediate,advanced|max:255',
+            'difficulty' => 'nullable|string|in:basic,intermediate,advanced|max:255',
             'type_other' => Rule::requiredIf($request->type == 'Lainnya'),
         ]);
-
-        // Calculate due date based on difficulty
-        $due = $this->calculateDueDate($request->difficulty);
 
         // Merge necessary values into request
         $request->merge([
             'creator' => auth()->id(),
             'due' => $due,
             'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
+            'is_recurring' => $request->ocurrence_type == 'recurring' ? true : false,
         ]);
 
         DB::beginTransaction();
@@ -211,6 +211,25 @@ class AssignmentController extends Controller
     public function show(Request $request, $id)
     {
         $assignment = Assignment::findOrFail($id);
+        $recurrence = $assignment->recurrence;
+        list($hour, $minute) = explode(':', $recurrence->time->format('H:i'));
+
+        $next_month = Carbon::now()->addMonth()->startOfMonth();
+        $last_day_of_next_month = $next_month->copy()->endOfMonth();
+
+        if ($recurrence->day_of_month > $last_day_of_next_month->day) {
+            $next_month_date = $last_day_of_next_month->setTime($hour, $minute);
+        } else {
+            $next_month_date = $next_month->addDays($recurrence->day_of_month - 1)->setTime($hour, $minute);
+        }
+
+        if (Carbon::now()->diffInDays($next_month_date, false) <= 30 && $assignment->latestTask->created_at->diffInDays($next_month_date, false) < 30 ) {
+            $replicate_assignment = true;
+            $due = $next_month_date;
+        }
+
+        dd($replicate_assignment, $due);
+
         $task = $request->task ? Task::findOrFail($request->task) : null;
         $categories = $this->getCategories();
 
@@ -427,11 +446,6 @@ class AssignmentController extends Controller
         //
     }
 
-    private function getUserSubordinates($user)
-    {
-        return $user->allSubordinates()->get();
-    }
-
     private function getUserAssignments($user)
     {
         // Initialize the query
@@ -483,7 +497,21 @@ class AssignmentController extends Controller
             ->unique();
     }
 
-    private function calculateDueDate(string $difficulty)
+    private function calculateDueDate(Collection $data)
+    {
+        switch ($data['ocurrence_type']) {
+            case('one-time'):
+                $due = $this->calculateOneTimeDue($data['difficulty']);
+                break;
+            case('recurring'):
+                $due = $this->calculateRecurringDue($data);
+                break;
+        }
+
+        return $due;
+    }
+
+    private function calculateOneTimeDue(string $difficulty)
     {
         $days = match ($difficulty) {
             'basic' => 1,
@@ -493,6 +521,47 @@ class AssignmentController extends Controller
         };
 
         return Carbon::now()->addDays($days);
+    }
+
+    private function calculateRecurringDue(Collection $data)
+    {
+        switch($data['repeat']) {
+            case('daily'):
+                $due = Carbon::now()->addDay();
+                break;
+            case('weekly'):
+                $today = Carbon::now()->dayOfWeekIso;
+                $day_of_weeks = $data['day_of_weeks'];
+                $filtered_day_of_weeks = array_filter($day_of_weeks, function($day) use ($today) {
+                    return $day > $today;
+                });
+                $next_week_day = !empty($filtered_day_of_weeks) ? min($filtered_day_of_weeks) : min($day_of_weeks);
+
+                $daysMap = [
+                    1 => Carbon::MONDAY,
+                    2 => Carbon::TUESDAY,
+                    3 => Carbon::WEDNESDAY,
+                    4 => Carbon::THURSDAY,
+                    5 => Carbon::FRIDAY,
+                    6 => Carbon::SATURDAY,
+                    7 => Carbon::SUNDAY,
+                ];
+
+                $due = Carbon::now()->next($daysMap[$next_week_day]);
+                break;
+            case('monthly'):
+                $day_of_month = $data['day_of_month'];
+                $today = Carbon::now();
+
+                if ($today->day >= $day_of_month) {
+                    $due = $today->addMonth()->day($day_of_month);
+                } else {
+                    $due = $today->day($day_of_month);
+                }
+                break;
+        }
+        list($hour, $minute) = explode(':', $data['time']);
+        return $due->setTime($hour, $minute);
     }
 
     private function createTasks(Request $request, $assignment)

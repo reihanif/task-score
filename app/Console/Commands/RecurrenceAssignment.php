@@ -38,6 +38,8 @@ class RecurrenceAssignment extends Command
 
             if($now->format('H:i:00') === $recurrence->time && $assignment->created_at->day !== $now->day) {
                 if(is_null($recurrence->recurrence_end_date) || $now->lessThan($recurrence->recurrence_end_date)) {
+                    list($hour, $minute) = explode(':', $recurrence->time->format('H:i'));
+
                     switch($recurrence->recurrence_type) {
                         case('daily'):
                             $replicate_assignment = true;
@@ -48,11 +50,26 @@ class RecurrenceAssignment extends Command
                             }
                             break;
                         case('monthly'):
-                            if ($now->day == $recurrence->day_of_month) {
-                                $replicate_assignment = true;
-                            } elseif ($recurrence->day_of_month > $now->endOfMonth()->day && $now->day == $now->endOfMonth()->day) {
-                                $replicate_assignment = true;
+                            $next_month = Carbon::now()->addMonth()->startOfMonth();
+                            $last_day_of_next_month = $next_month->copy()->endOfMonth();
+
+                            if ($recurrence->day_of_month > $last_day_of_next_month->day) {
+                                $next_month_date = $last_day_of_next_month->setTime($hour, $minute);
+                            } else {
+                                $next_month_date = $next_month->addDays($recurrence->day_of_month - 1)->setTime($hour, $minute);
                             }
+
+                            if (Carbon::now()->diffInDays($next_month_date, false) <= 30 && $assignment->latestTask->created_at->diffInDays($next_month_date, false) > 30 ) {
+                                $replicate_assignment = true;
+                                $due = $next_month_date;
+                            }
+
+
+                            // if ($now->day == $recurrence->day_of_month) {
+                            //     $replicate_assignment = true;
+                            // } elseif ($recurrence->day_of_month > $now->endOfMonth()->day && $now->day == $now->endOfMonth()->day) {
+                            //     $replicate_assignment = true;
+                            // }
                             break;
                     }
 
@@ -61,18 +78,6 @@ class RecurrenceAssignment extends Command
 
             if($replicate_assignment) {
                 foreach($assignment->tasks as $task) {
-                    switch($task->difficulty){
-                        case('basic'):
-                            $due = Carbon::now()->addDays(1);
-                            break;
-                        case('intermediate'):
-                            $due = Carbon::now()->addDays(2);
-                            break;
-                        case('advanced'):
-                            $due = Carbon::now()->addDays(3);
-                            break;
-                    }
-
                     $newTask = $task->replicate();
                     $newTask->uuid = $task->generateUniqueId();
                     $newTask->due = $due;

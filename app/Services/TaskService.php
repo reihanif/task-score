@@ -17,6 +17,7 @@ class TaskService
         $task->description = $data['description'];
         $task->difficulty = $data['difficulty'];
         $task->due = $data['due'];
+        $task->started_at = null;
         $task->save();
 
         return $task;
