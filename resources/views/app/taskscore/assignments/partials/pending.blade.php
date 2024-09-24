@@ -10,22 +10,22 @@
 
     <div
          class="flex-column flex flex-wrap items-end justify-between space-y-4 bg-white pt-4 dark:bg-gray-800 md:flex-row md:space-y-0">
-        <div id="search">
-            <label class="sr-only"
-                   for="table-search-pending-assignments">Search</label>
+        <div>
             <div class="relative">
                 <div class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                     <x-icons.search class="h-4 w-4 text-gray-500 dark:text-gray-400"></x-icons.search>
                 </div>
                 <input class="block w-auto rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                       id="table-search-pending-assignments"
-                       type="text"
+                       data-filter-target="pending-assignments-table"
+                       data-filter-column="1"
+                       data-filter-case-insensitive="true"
+                       type="search"
                        placeholder="Search for assignment">
             </div>
         </div>
     </div>
     <div>
-        <table class="table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
+        <table class="datatables table-clickable w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
                id="pending-assignments-table">
             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                 <tr>

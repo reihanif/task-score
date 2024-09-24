@@ -10,8 +10,8 @@
             <div class="overflow-x-hidden h-full rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                 <div class="inline-flex items-center space-x-4">
                     <img class="h-12 rounded-full"
-                        src="https://ui-avatars.com/api/?name={{ urlencode(Auth::User()->name) }}&background=0D8ABC&color=fff&bold=true"
-                        alt="{{ Auth::User()->name }} avatar" />
+                        src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=0D8ABC&color=fff&bold=true"
+                        alt="{{ auth()->user()->name }} avatar" />
 
                     <div class="space-y-2">
                         <div class="text-sm font-semibold text-gray-700 dark:text-white">

@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Support\Str;
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,7 +16,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, LogsActivity;
+
+    protected $fillable = [
+        'assignee_id',
+        'assignment_id',
+        'description',
+        'difficulty',
+        'due',
+        'resolved_at',
+    ];
 
     /**
      * The attributes that should be cast.
@@ -25,6 +36,20 @@ class Task extends Model
         'due' => 'datetime',
         'resolved_at' => 'datetime'
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly([
+            'taskmaster_id',
+            'type',
+            'subject',
+            'description',
+            'is_recurring',
+            'status',
+            'creator_id'
+        ]);
+    }
 
     /**
      * Get the submission of the tasks.

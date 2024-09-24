@@ -17,10 +17,7 @@ class PermissionFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => '9bd58171-49e6-48ef-87ee-af18521e1dca',
-            'manage_user' => '1',
-            'manage_department' => '1',
-            'manage_position' => '1',
+
         ];
     }
 }

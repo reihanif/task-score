@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use App\Models\Position;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class RelationController extends Controller
 {
@@ -17,7 +16,7 @@ class RelationController extends Controller
         try {
             $position = Position::findOrFail($id);
             foreach ($request->departments as $department) {
-                $position->departments()->attach($department, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => Auth::Id()]);
+                $position->departments()->attach($department, ['added_at' => Carbon::now()->toDateTimeString(), 'adder_id' => auth()->id()]);
             }
 
             // Execute database insertations

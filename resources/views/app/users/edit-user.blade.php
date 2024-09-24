@@ -82,7 +82,7 @@
                 <div class="grid grid-cols-6 gap-6">
 
                     <div class="col-span-6 sm:col-span-3">
-                        @if (Auth::User()->role == 'superadmin')
+                        @if (auth()->user()->role == 'superadmin')
                             <x-forms.input id="email"
                                 name="email"
                                 type="email"
@@ -154,7 +154,7 @@
                     </x-forms.select>
                 </div>
 
-                @if (Auth::User()->role == 'superadmin')
+                @if (auth()->user()->role == 'superadmin')
                     <div>
                         <x-forms.select id="role"
                             name="role"

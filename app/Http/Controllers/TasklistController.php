@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Submission;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\TimeExtension;
-use Illuminate\Support\Facades\Auth;
 
 class TasklistController extends Controller
 {
@@ -19,13 +17,13 @@ class TasklistController extends Controller
     {
         $submissions = Submission::latest()->whereHas('task', function($query) {
             return $query->whereHas('assignment', function($query) {
-                return $query->where('taskmaster_id', Auth::Id());
+                return $query->where('taskmaster_id', auth()->id());
             });
         })->get();
 
         $time_extensions = TimeExtension::latest()->whereHas('task', function($query) {
             return $query->whereHas('assignment', function($query) {
-                return $query->where('taskmaster_id', Auth::Id());
+                return $query->where('taskmaster_id', auth()->id());
             });
         });
 

@@ -14,7 +14,6 @@ use App\Services\FileService;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rule;
 
@@ -39,7 +38,7 @@ class AssignmentController extends Controller
     public function myAssignment()
     {
         $categories = $this->getCategories();
-        $user = Auth::User();
+        $user = auth()->user();
         $superiors = User::whereIn('position_id', $user->position?->superiors->pluck('id') ?? [])->get();
 
         return view('app.taskscore.assignments.my-assignments', [
@@ -58,7 +57,7 @@ class AssignmentController extends Controller
      */
     public function resolved()
     {
-        $assignments = Assignment::where('assigned_to', Auth::Id())->where('resolved_at', '!=', null)->orderBy('created_at')->get();
+        $assignments = Assignment::where('assigned_to', auth()->id())->where('resolved_at', '!=', null)->orderBy('created_at')->get();
 
         return view('app.taskscore.assignments.resolved', [
             'assignments' => $assignments,
@@ -72,7 +71,7 @@ class AssignmentController extends Controller
      */
     public function subordinateAssignment()
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         $assignees = $this->getUserSubordinates($user);
         $assignments = $this->getUserAssignments($user);
@@ -105,8 +104,8 @@ class AssignmentController extends Controller
 
         $due = $this->calculateDueDate($request->difficulty);
         $request->merge([
-            'taskmaster' => Auth::User()->position_id,
-            'creator' => Auth::Id(),
+            'taskmaster' => auth()->user()->position_id,
+            'creator' => auth()->id(),
             'due' => $due,
             'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
         ]);
@@ -160,7 +159,7 @@ class AssignmentController extends Controller
 
         // Merge necessary values into request
         $request->merge([
-            'creator' => Auth::Id(),
+            'creator' => auth()->id(),
             'due' => $due,
             'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
         ]);
@@ -178,7 +177,7 @@ class AssignmentController extends Controller
 
             // Create the task and assign it to the current user
             $task = $this->taskService->createTask(collect([
-                'assignee' => Auth::Id(),
+                'assignee' => auth()->id(),
                 'assignment' => $assignment->id,
                 'description' => null,
                 'difficulty' => $request->difficulty,

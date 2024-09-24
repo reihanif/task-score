@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Task;
-use App\Models\Submission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -17,11 +15,12 @@ class DashboardController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $unresolved_assignments = Auth::User()->unresolvedAssignments()->count();
-        $pending_assignments = Auth::User()->pendingAssignments()->count();
-        $resolved_assignments = Auth::User()->resolvedAssignments->map(function ($item) {
+        $user = auth()->user();
+        $unresolved_assignments = $user->unresolvedAssignments()->count();
+        $pending_assignments = $user->pendingAssignments()->count();
+        $resolved_assignments = $user->resolvedAssignments->map(function ($item) {
             $item->score = $item->score();
 
             return $item;
@@ -45,7 +44,7 @@ class DashboardController extends Controller
         }
 
         $assignments_last_week = Task::where('created_at', '>=', Carbon::now()->subDays(6))
-            ->where('assignee_id', Auth::Id())
+            ->where('assignee_id', auth()->id())
             ->get()
             ->map(function ($item) {
                 $item->score = $item->score();
@@ -56,7 +55,7 @@ class DashboardController extends Controller
         $score_last_week = $assignments_last_week->where('resolved_at', '!=', null)->avg('score');
 
         // Query the database for records created in the last 7 days, grouped by date
-        $assignments = Task::where('created_at', '>=', Carbon::now()->subDays(6))->where('assignee_id', Auth::Id())
+        $assignments = Task::where('created_at', '>=', Carbon::now()->subDays(6))->where('assignee_id', auth()->id())
             ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
             ->groupBy(DB::raw('DATE(created_at)'))
             ->pluck('total', 'date');

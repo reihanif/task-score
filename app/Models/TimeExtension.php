@@ -2,15 +2,25 @@
 
 namespace App\Models;
 
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class TimeExtension extends Model
 {
-    use HasFactory, HasUuids, Notifiable;
+    use HasFactory, HasUuids, Notifiable, LogsActivity;
+
+    protected $fillable = [
+        'task_id',
+        'body',
+        'is_approve',
+        'approval_detail',
+        'approver_id',
+    ];
 
     /**
      * The attributes that should be cast.
@@ -20,6 +30,18 @@ class TimeExtension extends Model
     protected $casts = [
         'approved_at' => 'datetime'
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly([
+            'task_id',
+            'body',
+            'is_approve',
+            'approval_detail',
+            'approver_id',
+        ]);
+    }
 
 
     /**
