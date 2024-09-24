@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +15,17 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Assignment extends Model
 {
-    use HasFactory, HasUuids, Notifiable;
+    use HasFactory, HasUuids, Notifiable, LogsActivity;
+
+    protected $fillable = [
+        'taskmaster_id',
+        'type',
+        'subject',
+        'description',
+        'is_recurring',
+        'status',
+        'creator_id'
+    ];
 
     /**
      * The attributes that should be cast.
@@ -23,6 +35,20 @@ class Assignment extends Model
     protected $casts = [
         'closed_at' => 'datetime'
     ];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->logOnly([
+            'taskmaster_id',
+            'type',
+            'subject',
+            'description',
+            'is_recurring',
+            'status',
+            'creator_id'
+        ]);
+    }
 
     /**
      * Relationships

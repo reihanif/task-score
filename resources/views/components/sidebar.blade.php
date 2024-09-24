@@ -11,11 +11,11 @@
             </x-sidebar-menu>
 
 
-            @if (in_array(Auth::User()->role, ['superadmin', 'admin', 'user']))
-                @if (Auth::User()->unresolvedAssignments()->count() > 0)
+            @if (in_array(auth()->user()->role, ['superadmin', 'admin', 'user']))
+                @if (auth()->user()->unresolvedAssignments()->count() > 0)
                     <x-sidebar-menu data-menu-name="My Assignment"
                                     data-route-name="taskscore.assignment.my-assignments"
-                                    data-badge-content="{{ Auth::User()->unresolvedAssignments()->count() }}"
+                                    data-badge-content="{{ auth()->user()->unresolvedAssignments()->count() }}"
                                     data-badge-color="blue">
                         <x-icons.person-fill-check />
                     </x-sidebar-menu>
@@ -26,10 +26,10 @@
                     </x-sidebar-menu>
                 @endif
 
-                @if (Auth::User()->waiting_approval_request > 0)
+                @if (auth()->user()->waiting_approval_request > 0)
                     <x-sidebar-menu data-menu-name="Subordinate"
                                     data-route-name="taskscore.assignment.subordinate-assignments"
-                                    data-badge-content="{{ Auth::User()->waiting_approval_request }}"
+                                    data-badge-content="{{ auth()->user()->waiting_approval_request }}"
                                     data-badge-color="yellow">
                         <x-icons.diagram />
                     </x-sidebar-menu>

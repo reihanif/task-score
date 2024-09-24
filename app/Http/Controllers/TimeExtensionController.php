@@ -7,7 +7,6 @@ use App\Models\Task;
 use Illuminate\Http\Request;
 use App\Models\TimeExtension;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\TimeExtensions\TimeExtensionRequest;
 use App\Notifications\TimeExtensions\TimeExtensionApproved;
@@ -52,7 +51,7 @@ class TimeExtensionController extends Controller
         try {
             $extension_request = TimeExtension::findOrFail($id);
             $extension_request->is_approve = false;
-            $extension_request->approver_id = Auth::Id();
+            $extension_request->approver_id = auth()->id();
             $extension_request->approved_at = Carbon::now()->toDateTimeString();
             $extension_request->save();
 
@@ -78,7 +77,7 @@ class TimeExtensionController extends Controller
         try {
             $extension_request = TimeExtension::findOrFail($id);
             $extension_request->is_approve = true;
-            $extension_request->approver_id = Auth::Id();
+            $extension_request->approver_id = auth()->id();
             $extension_request->approved_at = Carbon::now()->toDateTimeString();
             $extension_request->save();
 
@@ -106,7 +105,6 @@ class TimeExtensionController extends Controller
         } catch (\Exception $e) {
             DB::rollback();
 
-            dd($e);
             // Handle the error appropriately
             return redirect()->back()->withErrors('Failed to send time extension request');
         }

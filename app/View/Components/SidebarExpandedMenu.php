@@ -29,7 +29,6 @@ class SidebarExpandedMenu extends Component
      */
     public function __construct($menu = [])
     {
-        // dd(collect($menu)->pluck('data-route-name')->toArray());
         $this->routes = collect($menu)->pluck('data-route-name');
         $this->menus = $menu;
     }
