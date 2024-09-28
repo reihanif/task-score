@@ -14,7 +14,8 @@ class RecurrencePattern extends Model
     protected $casts = [
         'day_of_week' => 'array',
         'time' => 'datetime',
-        'recurrence_end_date' => 'datetime'
+        'recurrence_end_date' => 'datetime',
+        'occurred_at' => 'datetime'
     ];
 
     public function assignment()
