@@ -109,7 +109,6 @@ class AssignmentController extends Controller
             'creator' => auth()->id(),
             'due' => $this->calculateDueDate(collect($request)),
             'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
-            'is_recurring' => $request->ocurrence_type == 'recurring' ? true : false,
         ]);
 
         DB::beginTransaction();
@@ -159,9 +158,8 @@ class AssignmentController extends Controller
         // Merge necessary values into request
         $request->merge([
             'creator' => auth()->id(),
-            'due' => $due,
+            'due' => $this->calculateDueDate(collect($request)),
             'type' => $request->type == 'Lainnya' ? ucwords($request->type_other) : $request->type,
-            'is_recurring' => $request->ocurrence_type == 'recurring' ? true : false,
         ]);
 
         DB::beginTransaction();
@@ -211,25 +209,6 @@ class AssignmentController extends Controller
     public function show(Request $request, $id)
     {
         $assignment = Assignment::findOrFail($id);
-        $recurrence = $assignment->recurrence;
-        list($hour, $minute) = explode(':', $recurrence->time->format('H:i'));
-
-        $next_month = Carbon::now()->addMonth()->startOfMonth();
-        $last_day_of_next_month = $next_month->copy()->endOfMonth();
-
-        if ($recurrence->day_of_month > $last_day_of_next_month->day) {
-            $next_month_date = $last_day_of_next_month->setTime($hour, $minute);
-        } else {
-            $next_month_date = $next_month->addDays($recurrence->day_of_month - 1)->setTime($hour, $minute);
-        }
-
-        if (Carbon::now()->diffInDays($next_month_date, false) <= 30 && $assignment->latestTask->created_at->diffInDays($next_month_date, false) < 30 ) {
-            $replicate_assignment = true;
-            $due = $next_month_date;
-        }
-
-        dd($replicate_assignment, $due);
-
         $task = $request->task ? Task::findOrFail($request->task) : null;
         $categories = $this->getCategories();
 
@@ -574,6 +553,7 @@ class AssignmentController extends Controller
                 'assignment' => $assignment->id,
                 'description' => $assignee['description'],
                 'difficulty' => $request->difficulty,
+                'started_at' => $request->due->copy()->subDays(3),
                 'due' => $request->due,
             ]));
 
