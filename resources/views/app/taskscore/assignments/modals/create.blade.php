@@ -11,29 +11,12 @@
         <div class="mb-5">
             <div class="space-y-4"
                  x-data="difficultyOption()">
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                           for="input-subject">
-                        Subject
-                        <span class="text-red-600 dark:text-red-500">*</span>
-                    </label>
-
-                    <div x-data="{ subject: '' }">
-                        <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                               id="input-subject"
-                               name="subject"
-                               type="text"
-                               value="{{ old('subject') }}"
-                               x-model="subject"
-                               autocomplete="off"
-                               placeholder="Assignment subject"
-                               maxlength="255"
-                               required>
-                        <p class="mt-1 text-end text-xs text-gray-500 dark:text-gray-400">
-                            <span x-text="subject.length"></span>/255
-                        </p>
-                    </div>
-                </div>
+                    <div>
+                         <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                                for="input-subject">
+                             Subject
+                             <span class="text-red-600 dark:text-red-500">*</span>
+                         </label>
 
                 <div class="space-y-2">
                     <x-forms.select id="input-category"
@@ -575,7 +558,7 @@
                                 </div>
                             </div>
                         </div>
-                    </template>
+                    </div>
                 </div>
             </div>
         </div>
