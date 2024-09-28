@@ -18,23 +18,13 @@ class AssignmentService
         $assignment->type = $data['type'];
         $assignment->subject = $data['subject'];
         $assignment->description = $data['description'];
-        $assignment->is_recurring = $data['ocurrence_type'] == 'recurring' ? true : false;
-        $assignment->is_draft = false;
+        $assignment->is_recurring = $data->has('is_recurring') ? true : false;
         $assignment->save();
 
         // Handle Recurrence
-        if ($data['ocurrence_type'] == 'recurring') {
+        if ($assignment->is_recurring) {
             $this->createRecurrencePattern($data, $assignment);
         }
-
-        return $assignment;
-    }
-
-    public function publish($id)
-    {
-        $assignment = Assignment::findOrFail($id);
-        $assignment->is_draft = false;
-        $assignment->save();
 
         return $assignment;
     }

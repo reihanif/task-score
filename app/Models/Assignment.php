@@ -6,7 +6,6 @@ use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -59,12 +58,6 @@ class Assignment extends Model
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
-    }
-
-    /** Get latest task of the assignment. */
-    public function latestTask(): HasOne
-    {
-        return $this->hasOne(Task::class)->latestOfMany();
     }
 
     /** Taskmaster of the assignment. */

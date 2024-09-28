@@ -227,9 +227,16 @@ class User extends Authenticatable
         return $this->position->name;
     }
 
-    public function getSubordinatesAttribute()
+    /**
+     * Get the user subordinates
+     */
+    public function subordinates(): HasMany
     {
-        return $this->allSubordinates()->get();
+        return $this->hasMany(User::class, 'position_id', 'position_id')
+            ->where('id', '!=', $this->id)
+            ->whereHas('position', function ($query) {
+                $query->where('path', 'LIKE', '%' . $this->position?->id . '%');
+            });
     }
 
     /**
