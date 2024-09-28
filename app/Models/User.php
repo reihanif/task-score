@@ -227,14 +227,6 @@ class User extends Authenticatable
         return $this->position->name;
     }
 
-    /**
-     * Get the user position name
-     */
-    public function getPositionNameAttribute()
-    {
-        return $this->position->name;
-    }
-
     public function getSubordinatesAttribute()
     {
         return $this->allSubordinates()->get();
