@@ -18,69 +18,58 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $unresolved_assignments = $user->unresolvedAssignments()->count();
-        $pending_assignments = $user->pendingAssignments()->count();
-        $resolved_assignments = $user->resolvedAssignments->map(function ($item) {
-            $item->score = $item->score();
-
-            return $item;
-        });
+        $unresolved_assignments = $user->unresolvedAssignments->count();
+        $pending_assignments = $user->pendingAssignments->count();
+        $resolved_assignments = $user->resolvedAssignments;
 
         $total_score = $resolved_assignments->avg('score');
         $total_resolved_assignments = $resolved_assignments->count();
 
-        // Create an array of the past 7 days with day names and dates
         $days = collect();
-
         for ($i = 6; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i)->format('Y-m-d');
-            $dayName = Carbon::parse($date)->format('D'); // Get day name (e.g., Monday)
+            $now = Carbon::now();
+            $date = $now->subDays($i);
 
             $days->push([
-                'x' => $dayName . ', ' . Carbon::now()->subDays($i)->format('d M'),
-                'date' => $date,
-                'y' => 0 // Initialize total to 0
+                'x' => $date->format('D, d M'),
+                'date' => $date->format('Y-m-d'),
+                'y' => 0
             ]);
         }
 
-        $assignments_last_week = Task::where('created_at', '>=', Carbon::now()->subDays(6))
+        $daterange = Carbon::now()->subDays(6);
+
+        $score_in_range = Task::where('created_at', '>=', $daterange)
             ->where('assignee_id', auth()->id())
+            ->where('resolved_at', '!=', null)
             ->get()
-            ->map(function ($item) {
-                $item->score = $item->score();
+            ->avg('score');
 
-                return $item;
-            });
-
-        $score_last_week = $assignments_last_week->where('resolved_at', '!=', null)->avg('score');
-
-        // Query the database for records created in the last 7 days, grouped by date
-        $assignments = Task::where('created_at', '>=', Carbon::now()->subDays(6))->where('assignee_id', auth()->id())
+        $assignments_summary = Task::where('created_at', '>=', $daterange)
+            ->where('assignee_id', auth()->id())
             ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
-            ->groupBy(DB::raw('DATE(created_at)'))
+            ->groupBy('date')
             ->pluck('total', 'date');
 
-        $assignments_array = $assignments->toArray();
+        $assignments_array = $assignments_summary->toArray();
 
         // Populate the array with the data from the query
-        $days = $days->map(function ($day) use ($assignments_array) {
+        $assignment_data = $days->map(function ($day) use ($assignments_array) {
             // Check if the date exists in the totals array and set the total
             $day['y'] = $assignments_array[$day['date']] ?? 0;
             unset($day['date']);
-            return $day;
-        });
 
-        // Convert the collection to an array
-        $daysArray = $days->toArray();
+            return $day;
+        })->toArray();
 
         return view('app.taskscore.index', [
             'unresolved_assignments' => $unresolved_assignments,
             'pending_assignments' => $pending_assignments,
             'resolved_assignments' => $total_resolved_assignments,
             'total_score' => $total_score,
-            'assignment_last_week' => $daysArray,
+            'assignment_last_week' => $assignment_data,
             'total_assignment_last_week' => array_sum($assignments_array),
-            'score_last_week' => $score_last_week
+            'score_last_week' => $score_in_range
         ]);
     }
 }
