@@ -25,7 +25,6 @@ class Task extends Model
         'difficulty',
         'due',
         'resolved_at',
-        'started_at'
     ];
 
     /**
@@ -35,8 +34,7 @@ class Task extends Model
      */
     protected $casts = [
         'due' => 'datetime',
-        'resolved_at' => 'datetime',
-        'started_at' => 'datetime'
+        'resolved_at' => 'datetime'
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -49,9 +47,7 @@ class Task extends Model
             'description',
             'is_recurring',
             'status',
-            'creator_id',
-            'started_at',
-            'due'
+            'creator_id'
         ]);
     }
 
