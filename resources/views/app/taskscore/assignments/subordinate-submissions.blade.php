@@ -13,7 +13,7 @@
                         <input
                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                             id="table-search-subordinate-submissions"
-                            type="text"
+                            type="search"
                             placeholder="Search for subject">
                     </div>
                 </div>

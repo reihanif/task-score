@@ -228,15 +228,16 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user subordinates
+     * Get the user position name
      */
-    public function subordinates(): HasMany
+    public function getPositionNameAttribute()
     {
-        return $this->hasMany(User::class, 'position_id', 'position_id')
-            ->where('id', '!=', $this->id)
-            ->whereHas('position', function ($query) {
-                $query->where('path', 'LIKE', '%' . $this->position?->id . '%');
-            });
+        return $this->position->name;
+    }
+
+    public function getSubordinatesAttribute()
+    {
+        return $this->allSubordinates()->get();
     }
 
     /**
