@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Task;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class TaskService
@@ -18,7 +17,6 @@ class TaskService
         $task->description = $data['description'];
         $task->difficulty = $data['difficulty'];
         $task->due = $data['due'];
-        $task->started_at = $data['started_at'] ?? Carbon::now()->toDateTimeString();
         $task->save();
 
         return $task;
