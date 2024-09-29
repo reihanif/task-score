@@ -76,72 +76,243 @@
                          </template>
                      </div>
 
-                     <div class="space-y-4">
-                        <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
-                            Assignment difficulty level
-                            <span class="text-red-600 dark:text-red-500">*</span>
-                        </p>
+                     <ul class="w-full items-center rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white sm:flex">
+                        <li class="w-full border-b border-gray-200 dark:border-gray-600 sm:border-b-0 sm:border-r">
+                            <div class="flex items-center ps-3">
+                                <input class="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
+                                       id="horizontal-list-radio-license"
+                                       name="ocurrence_type"
+                                       type="radio"
+                                       value="one-time"
+                                       x-model="ocurrenceType">
+                                <label class="ms-2 w-full cursor-pointer py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                       for="horizontal-list-radio-license">One time assignment</label>
+                            </div>
+                        </li>
+                        <li class="w-full dark:border-gray-600">
+                            <div class="flex items-center ps-3">
+                                <input class="h-4 w-4 cursor-pointer border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-700 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-700"
+                                       id="horizontal-list-radio-passport"
+                                       name="ocurrence_type"
+                                       type="radio"
+                                       value="recurring"
+                                       x-model="ocurrenceType">
+                                <label class="ms-2 w-full cursor-pointer py-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+                                       for="horizontal-list-radio-passport">Recurring assignment</label>
+                            </div>
+                        </li>
+                    </ul>
 
-                        <div class="pb-2">
-                            <div class="space-y-4">
-                                <div class="flex">
-                                    <div class="flex h-5 items-center">
-                                        <input class="peer/basic h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                               id="basic"
-                                               name="difficulty"
-                                               type="radio"
-                                               value="basic"
-                                               x-model="difficulty"
-                                               x-bind:disabled="disableBasic"
-                                               required>
-                                        <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/basic:cursor-default peer-disabled/basic:text-gray-400 dark:text-gray-300 peer-disabled/basic:dark:text-gray-500"
-                                               for="basic">
-                                            Basic
-                                            <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
-                                               id="basic-text">Assignment due will set in 1 days from now</p>
-                                        </label>
+                    <template x-if="ocurrenceType == 'recurring'">
+                        <div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                            <div class="space-y-2">
+                                <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurrence pattern</div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-normal text-gray-900 dark:text-gray-300"
+                                           for="input-repeat">Repeat<span
+                                              class="text-red-600 dark:text-red-500">*</span></label>
+                                    <select class="recurring-input"
+                                            id="input-repeat"
+                                            name="repeat"
+                                            x-effect="initializeTomSelect()"
+                                            x-model="repeat"
+                                            required>
+                                        <option value="">Select repeat pattern</option>
+                                        <option data-order="0"
+                                                value="daily">Daily</option>
+                                        <option data-order="1"
+                                                value="weekly">Weekly</option>
+                                        <option data-order="2"
+                                                value="monthly">Monthly</option>
+                                    </select>
+                                </div>
+                                <div x-show="repeat && repeat !== 'daily'">
+                                    <div class="space-y-2">
+                                        <div class="text-sm font-normal text-gray-900 dark:text-gray-300">
+                                            On<span x-show="repeat == 'monthly'"> day</span><span
+                                                  class="text-red-600 dark:text-red-500">*</span></div>
+                                        <template x-if="repeat == 'weekly'">
+                                            <ul class="grid w-full grid-cols-5 gap-2">
+                                                <template x-for="(day, index) in days">
+                                                    <li class="relative">
+                                                        <input class="peer absolute opacity-0"
+                                                               name="day_of_weeks[]"
+                                                               type="checkbox"
+                                                               x-model="recureDays"
+                                                               x-bind:id="day.name"
+                                                               x-on:change="validateCheckboxes()"
+                                                               x-bind:value="day.name"
+                                                               x-ref="weeklyDays">
+                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
+                                                               x-bind:for="day.name"
+                                                               x-text="day.shortname">
+                                                        </label>
+                                                    </li>
+                                                </template>
+                                            </ul>
+                                        </template>
+                                        <div x-show="repeat == 'monthly'">
+                                            <select class="recurring-input"
+                                                    id="input-day"
+                                                    x-model="selectedDay"
+                                                    x-bind:name="repeat == 'monthly' ? 'day_of_month' : null"
+                                                    x-bind:required="repeat == 'monthly'"
+                                                    required>
+                                                <option value="">Select day</option>
+                                                <template x-for="days in daysOfMonth()"
+                                                          x-bind:key="days">
+                                                    <option x-bind:value="days"
+                                                            x-text="days">
+                                                    </option>
+                                                </template>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="flex">
-                                    <div class="flex h-8 items-center">
-                                        <input class="peer/intermediate h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                               id="intermediate"
-                                               name="difficulty"
-                                               type="radio"
-                                               value="intermediate"
-                                               x-model="difficulty"
-                                               x-bind:disabled="disableIntermediate"
-                                               required>
-                                        <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/intermediate:cursor-default peer-disabled/intermediate:text-gray-400 dark:text-gray-300 peer-disabled/intermediate:dark:text-gray-500"
-                                               for="intermediate">
-                                            Intermediate
-                                            <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
-                                               id="intermediate-text">Assignment due will set in 2 days from now</p>
-                                        </label>
-                                    </div>
+                                <div class="space-y-2">
+                                    <label class="text-sm font-normal text-gray-900 dark:text-gray-300"
+                                           for="input-time">At<span
+                                              class="text-red-600 dark:text-red-500">*</span></label>
+                                    <select class="recurring-input"
+                                            id="input-time"
+                                            name="time"
+                                            x-model="selectedTime"
+                                            normal-select
+                                            required>
+                                        <option value="">Select time</option>
+                                        <template x-for="time in availableTimes()"
+                                                  x-bind:key="time">
+                                            <option x-bind:value="time"
+                                                    x-text="time">
+                                            </option>
+                                        </template>
+                                    </select>
                                 </div>
-
-                                <div class="flex">
-                                    <div class="flex h-5 items-center">
-                                        <input class="peer/advanced h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                                               id="advanced"
-                                               name="difficulty"
-                                               type="radio"
-                                               value="advanced"
-                                               x-model="difficulty"
+                                <div class="text-xs"
+                                     x-show="repeat == 'daily' && selectedTime || repeat == 'weekly' && recureDays.length > 0 && selectedTime || repeat == 'monthly' && selectedDay && selectedTime">
+                                    Occurs every<span x-show="repeat == 'daily'">day</span>
+                                    <span x-show="repeat == 'weekly'">
+                                        week on
+                                        <span x-text="formattedDays()"></span>
+                                    </span>
+                                    <span x-show="repeat == 'monthly'">
+                                        month on day
+                                        <span x-text="selectedDay"></span>
+                                    </span>
+                                    at
+                                    <span x-text="selectedTime"></span>
+                                </div>
+                            </div>
+                            <div class="mt-2 space-y-2"
+                                 x-data="{ isEndless: false }">
+                                <label class="text-sm font-normal text-gray-900 dark:text-gray-300"
+                                       for="input-recurrence-end-date">
+                                    Ends on<span class="text-red-600 dark:text-red-500">*</span>
+                                </label>
+                                <template x-if="!isEndless">
+                                    <div class="relative">
+                                        <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
+                                            <svg class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                                                 aria-hidden="true"
+                                                 xmlns="http://www.w3.org/2000/svg"
+                                                 fill="currentColor"
+                                                 viewBox="0 0 20 20">
+                                                <path
+                                                      d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                            </svg>
+                                        </div>
+                                        <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                               id="input-recurrence-end-date"
+                                               name="recurrence_end_date"
+                                               data-min-date="{{ Carbon\Carbon::today() }}"
+                                               type="text"
+                                               datepicker
+                                               x-init="initializeDatepickers()"
+                                               autocomplete="off"
+                                               placeholder="Select date"
                                                required>
-                                        <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/advanced:cursor-default peer-disabled/advanced:text-gray-400 dark:text-gray-300 peer-disabled/advanced:dark:text-gray-500"
-                                               for="advanced">
-                                            Advanced
-                                            <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
-                                               id="advanced-text">Assignment due will set in 3 days from now</p>
-                                        </label>
+                                    </div>
+                                </template>
+                                <div class="mb-4 flex items-center">
+                                    <input class="h-4 w-4 cursor-pointer rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                           id="endless-checkbox"
+                                           type="checkbox"
+                                           x-model="isEndless">
+                                    <label class="ms-2 cursor-pointer text-sm font-normal text-gray-900 dark:text-gray-300"
+                                           for="endless-checkbox">Make it endless</label>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template x-if="ocurrenceType == 'one-time'">
+                        <div class="space-y-4">
+                            <p class="due-label block text-sm font-medium text-gray-900 dark:text-white">
+                                Assignment difficulty level
+                                <span class="text-red-600 dark:text-red-500">*</span>
+                            </p>
+
+                            <div class="pb-2">
+                                <div class="space-y-4">
+                                    <div class="flex">
+                                        <div class="flex h-5 items-center">
+                                            <input class="peer/basic h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                                id="basic"
+                                                name="difficulty"
+                                                type="radio"
+                                                value="basic"
+                                                x-model="difficulty"
+                                                x-bind:disabled="disableBasic"
+                                                required>
+                                            <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/basic:cursor-default peer-disabled/basic:text-gray-400 dark:text-gray-300 peer-disabled/basic:dark:text-gray-500"
+                                                for="basic">
+                                                Basic
+                                                <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                                id="basic-text">Assignment due will set in 1 days from now</p>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex">
+                                        <div class="flex h-8 items-center">
+                                            <input class="peer/intermediate h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                                id="intermediate"
+                                                name="difficulty"
+                                                type="radio"
+                                                value="intermediate"
+                                                x-model="difficulty"
+                                                x-bind:disabled="disableIntermediate"
+                                                required>
+                                            <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/intermediate:cursor-default peer-disabled/intermediate:text-gray-400 dark:text-gray-300 peer-disabled/intermediate:dark:text-gray-500"
+                                                for="intermediate">
+                                                Intermediate
+                                                <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                                id="intermediate-text">Assignment due will set in 2 days from now</p>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex">
+                                        <div class="flex h-5 items-center">
+                                            <input class="peer/advanced h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                                                id="advanced"
+                                                name="difficulty"
+                                                type="radio"
+                                                value="advanced"
+                                                x-model="difficulty"
+                                                required>
+                                            <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 peer-disabled/advanced:cursor-default peer-disabled/advanced:text-gray-400 dark:text-gray-300 peer-disabled/advanced:dark:text-gray-500"
+                                                for="advanced">
+                                                Advanced
+                                                <p class="text-xs font-normal text-gray-500 dark:text-gray-400"
+                                                id="advanced-text">Assignment due will set in 3 days from now</p>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </template>
 
                      <div class="col-span-2">
                          <x-forms.text-editor name="description"
@@ -183,138 +354,6 @@
                                 max-files="5"
                                 multiple>
                      </div>
-
-                <div class="space-y-4">
-
-                    <div class="mb-4 flex items-center">
-                        <input class="h-4 w-4 cursor-pointer rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
-                               id="recurring-checkbox"
-                               name="is_recurring"
-                               type="checkbox"
-                               x-model="recurring">
-                        <label class="ms-2 cursor-pointer text-sm font-medium text-gray-900 dark:text-gray-300"
-                               for="recurring-checkbox">Recurring assignment</label>
-                    </div>
-
-                    <div x-show="recurring" class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
-                        <template x-if="recurring">
-                            <div class="space-y-2">
-                                <div class="text-sm font-medium text-gray-900 dark:text-gray-300">Recurrence pattern</div>
-                                <div class="space-y-2">
-                                    <label class="text-sm font-normal text-gray-900 dark:text-gray-300"
-                                           for="input-repeat">Repeat<span
-                                              class="text-red-600 dark:text-red-500">*</span></label>
-                                    <select class="recurring-input"
-                                            id="input-repeat"
-                                            name="repeat"
-                                            x-effect="initializeTomSelect()"
-                                            x-model="repeat"
-                                            required>
-                                        <option value="">Select repeat pattern</option>
-                                        <option data-order="0"
-                                                value="daily">Daily</option>
-                                        <option data-order="1"
-                                                value="weekly">Weekly</option>
-                                        <option data-order="2"
-                                                value="monthly">Monthly</option>
-                                    </select>
-                                </div>
-                                <div x-show="repeat && repeat !== 'daily'">
-                                    <div class="space-y-2">
-                                        <div class="text-sm font-normal text-gray-900 dark:text-gray-300">
-                                            On<span x-show="repeat == 'monthly'"> day</span><span
-                                                  class="text-red-600 dark:text-red-500">*</span></div>
-                                        <template x-if="repeat == 'weekly'">
-                                            <ul class="grid w-full grid-cols-5 gap-2">
-                                                <template x-for="(day, index) in days">
-                                                    <li class="relative">
-                                                        <input class="peer opacity-0 absolute"
-                                                               name="day_of_weeks[]"
-                                                               type="checkbox"
-                                                               x-model="recureDays"
-                                                               x-bind:id="day.name"
-                                                               x-on:change="validateCheckboxes()"
-                                                               x-bind:value="day.name"
-                                                               x-ref="weeklyDays">
-                                                        <label class="inline-flex w-full cursor-pointer items-center justify-center rounded-lg border border-gray-200 bg-white px-2 py-1 text-center text-sm font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900 peer-checked:border-blue-700 peer-checked:bg-blue-50 peer-checked:text-blue-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:peer-checked:border-blue-500 dark:peer-checked:bg-blue-900 dark:peer-checked:text-blue-500"
-                                                               x-bind:for="day.name"
-                                                               x-text="day.shortname">
-                                                        </label>
-                                                    </li>
-                                                </template>
-                                            </ul>
-                                        </template>
-                                        <div x-show="repeat == 'monthly'">
-                                            <select class="recurring-input"
-                                                    id="input-day"
-                                                    x-model="selectedDay"
-                                                    x-bind:name="repeat == 'monthly' ? 'day_of_month' : null"
-                                                    x-bind:required="repeat == 'monthly'"
-                                                    required>
-                                                <option value="">Select day</option>
-                                                <template x-for="days in daysOfMonth()"
-                                                          x-bind:key="days">
-                                                    <option x-bind:value="days"
-                                                            x-text="days">
-                                                    </option>
-                                                </template>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="space-y-2">
-                                    <label class="text-sm font-normal text-gray-900 dark:text-gray-300"
-                                           for="input-time">At<span class="text-red-600 dark:text-red-500">*</span></label>
-                                    <select class="recurring-input"
-                                            id="input-time"
-                                            name="time"
-                                            x-model="selectedTime"
-                                            normal-select
-                                            required>
-                                        <option value="">Select time</option>
-                                        <template x-for="time in availableTimes()"
-                                                  x-bind:key="time">
-                                            <option x-bind:value="time"
-                                                    x-text="time">
-                                            </option>
-                                        </template>
-                                    </select>
-                                </div>
-                                <div class="text-xs"
-                                     x-show="repeat == 'daily' && selectedTime || repeat == 'weekly' && recureDays.length > 0 && selectedTime || repeat == 'monthly' && selectedDay && selectedTime">
-                                    Occurs every<span x-show="repeat == 'daily'">day</span>
-                                    <span x-show="repeat == 'weekly'">
-                                        week on
-                                        <span x-text="formattedDays()"></span>
-                                    </span>
-                                    <span x-show="repeat == 'monthly'">
-                                        month on day
-                                        <span x-text="selectedDay"></span>
-                                    </span>
-                                    at
-                                    <span x-text="selectedTime"></span>
-                                </div>
-                            </div>
-                        </template>
-                        <div x-data="{ isEndless: false }" class="mt-2 space-y-2">
-                            <label class="text-sm font-normal text-gray-900 dark:text-gray-300" for="input-recurrence-end-date">
-                                Ends on<span class="text-red-600 dark:text-red-500">*</span>
-                            </label>
-                            <div class="relative" x-show="!isEndless">
-                                <div class="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-                                  <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z"/>
-                                  </svg>
-                                </div>
-                                <input datepicker x-bind:disabled="isEndless" data-min-date="{{ Carbon\Carbon::today() }}" autocomplete="off" id="input-recurrence-end-date" type="text" name="recurrence_end_date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
-                            </div>
-                            <div class="flex items-center mb-4">
-                                <input id="endless-checkbox" x-model="isEndless" type="checkbox" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                <label for="endless-checkbox" class="cursor-pointer ms-2 text-sm font-normal text-gray-900 dark:text-gray-300">Make it endless</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="flex place-content-end">
@@ -329,7 +368,7 @@
 <script>
     function createForm() {
         return {
-            recurring: false,
+            ocurrenceType: 'one-time',
             repeat: '',
             recureDays: [],
             selectedDay: '',
