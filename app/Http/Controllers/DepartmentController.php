@@ -17,7 +17,18 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::orderBy('name', 'asc')->get();
+        $departments = Department::orderBy('name', 'asc')->get()->map(function ($department) {
+            // Map the tasks from the department's positions and users
+            $tasks = $department->positions->flatMap(function ($position) {
+                return $position->users->flatMap(function ($user) {
+                    return $user->tasks;
+                });
+            });
+
+            // Set the tasks count for each department
+            $department->tasks_count = $tasks->count();
+            return $department;
+        });
         $positions = Position::orderBy('level')->get();
 
         return view('app.departments.index', [
