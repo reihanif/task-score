@@ -66,6 +66,9 @@
                     <label for="select-subordinate" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Overview</label>
                     <select id="select-subordinate" name="subordinate" x-on:change="submit">
                         <option value="">{{ $user->name }}</option>
+                        @if ($user->id !== auth()->id())
+                            <option value="{{ auth()->id() }}">{{ auth()->user()->name }}</option>
+                        @endif
                         @foreach (auth()->user()->subordinates as $subordinate)
                             @if ($subordinate->id !== $user->id)
                                 <option value="{{ $subordinate->id }}">{{ $subordinate->name }}</option>
