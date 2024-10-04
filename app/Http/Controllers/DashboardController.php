@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Carbon\Carbon;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -17,7 +18,11 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $user = auth()->user();
+        if ($request->subordinate) {
+            $user = User::findOrFail($request->subordinate);
+        } else {
+            $user = auth()->user();
+        }
         $unresolved_assignments = $user->unresolvedAssignments->count();
         $pending_assignments = $user->pendingAssignments->count();
         $resolved_assignments = $user->resolvedAssignments;
@@ -25,10 +30,12 @@ class DashboardController extends Controller
         $total_score = $resolved_assignments->avg('score');
         $total_resolved_assignments = $resolved_assignments->count();
 
+        $now = Carbon::now();
+        $days_range = 6;
+
         $days = collect();
-        for ($i = 6; $i >= 0; $i--) {
-            $now = Carbon::now();
-            $date = $now->subDays($i);
+        for ($i = $days_range; $i >= 0; $i--) {
+            $date = $now->copy()->subDays($i);
 
             $days->push([
                 'x' => $date->format('D, d M'),
@@ -37,16 +44,16 @@ class DashboardController extends Controller
             ]);
         }
 
-        $daterange = Carbon::now()->subDays(6);
+        $daterange = $now->copy()->subDays($days_range);
 
         $score_in_range = Task::where('created_at', '>=', $daterange)
-            ->where('assignee_id', auth()->id())
+            ->where('assignee_id', $user->id)
             ->where('resolved_at', '!=', null)
             ->get()
             ->avg('score');
 
         $assignments_summary = Task::where('created_at', '>=', $daterange)
-            ->where('assignee_id', auth()->id())
+            ->where('assignee_id', $user->id)
             ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
             ->groupBy('date')
             ->pluck('total', 'date');
@@ -63,6 +70,7 @@ class DashboardController extends Controller
         })->toArray();
 
         return view('app.taskscore.index', [
+            'user' => $user,
             'unresolved_assignments' => $unresolved_assignments,
             'pending_assignments' => $pending_assignments,
             'resolved_assignments' => $total_resolved_assignments,

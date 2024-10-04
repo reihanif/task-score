@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -7,9 +8,9 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RelationController;
 use App\Http\Controllers\TasklistController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HierarchyController;
 use App\Http\Controllers\AssignmentController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\NotificationController;
@@ -29,6 +30,17 @@ use App\Http\Controllers\TimeExtensionController;
 // Route::get('/', function () {
 //     return view('welcome');
 // });
+
+Route::get('/api/validate-token', function (Request $request) {
+    $token = $request->get('token');
+    $user = User::where('api_token', hash('sha256', $token))->first();
+
+    if ($user) {
+        return response()->json(['is_valid' => true, 'user_id' => $user->id]);
+    } else {
+        return response()->json(['is_valid' => false]);
+    }
+});
 
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/login', [AuthController::class, 'index'])->name('auth.index');
