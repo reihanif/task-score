@@ -232,6 +232,11 @@ class User extends Authenticatable
         return $this->allSubordinates()->get();
     }
 
+    public function getScoreAttribute()
+    {
+        return $this->resolvedAssignments->avg('score') ?? 0;
+    }
+
     /**
      * Scope to include all users for superadmin.
      */
