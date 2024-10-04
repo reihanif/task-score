@@ -66,8 +66,8 @@ class AuthController extends Controller
                     $user = User::firstOrCreate(
                         ['username' => $username],
                         [
-                            'name' => $ldap_results[0]['displayname'][0],
-                            'email' => $ldap_results[0]['mail'][0],
+                            'name' => $ldap_results['count'] == 1 ? $ldap_results[0]['displayname'][0] : null,
+                            'email' => $ldap_results['count'] == 1 ? $ldap_results[0]['mail'][0] : $username . '@pertamina.com',
                             'email_verified_at' => Carbon::now()->toDateTimeString(),
                             'provider' => 'ldap'
                         ]
