@@ -416,7 +416,7 @@
                         <option value="-">-</option>
                         <option value="Waiting for approval">Waiting for approval</option>
                         <option value="Rejected">Rejected</option>
-                        <option value="Resolved">Resolved</option>
+                        <option value="Approved">Approved</option>
                     </select>
                 </div>
                 <div>
