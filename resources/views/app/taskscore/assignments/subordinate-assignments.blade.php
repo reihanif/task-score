@@ -287,7 +287,7 @@
                                                         <span>
                                                             <svg class="inline-block h-4 w-4"
                                                                  xmlns="http://www.w3.org/2000/svg"
-                                                                 viewBox="0 0 448 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                                 viewBox="0 0 448 512">
                                                                 <path fill="currentColor"
                                                                       d="M48 128c-17.7 0-32 14.3-32 32s14.3 32 32 32l352 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48 128zm0 192c-17.7 0-32 14.3-32 32s14.3 32 32 32l352 0c17.7 0 32-14.3 32-32s-14.3-32-32-32L48 320z" />
                                                             </svg>
@@ -300,13 +300,13 @@
                                                         <span>
                                                             <svg class="inline-block h-4 w-4"
                                                                  xmlns="http://www.w3.org/2000/svg"
-                                                                 viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                                 viewBox="0 0 384 512">
                                                                 <path fill="currentColor"
                                                                       d="M214.6 41.4c-12.5-12.5-32.8-12.5-45.3 0l-160 160c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L160 141.2 160 448c0 17.7 14.3 32 32 32s32-14.3 32-32l0-306.7L329.4 246.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3l-160-160z" />
                                                             </svg>
                                                         </span>
                                                     </li>
-                                                @elseif (!$task->isResolved() && $task->score < 100)
+                                                @elseif (!$task->isResolved())
                                                     <li>
                                                         -
                                                     </li>
@@ -317,7 +317,7 @@
                                                         <span>
                                                             <svg class="inline-block h-4 w-4"
                                                                  xmlns="http://www.w3.org/2000/svg"
-                                                                 viewBox="0 0 384 512"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                                 viewBox="0 0 384 512">
                                                                 <path fill="currentColor"
                                                                       d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
                                                             </svg>
