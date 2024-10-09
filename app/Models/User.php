@@ -234,7 +234,7 @@ class User extends Authenticatable
 
     public function getScoreAttribute()
     {
-        return $this->resolvedAssignments->avg('score') ?? 0;
+        return number_format($this->resolvedAssignments->avg('score') ?? 0, 2, '.', '');
     }
 
     /**
