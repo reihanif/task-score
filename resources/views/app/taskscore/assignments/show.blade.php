@@ -273,69 +273,72 @@
                                 <div class="space-y-2">
                                     @foreach ($assignment->attachments as $attachment)
                                         <!-- Files -->
-                                        <div class="max-w-96 flex w-full items-center rounded-lg border border-gray-200 p-1 dark:border-gray-600"
-                                            title="{{ $attachment->name . '.' . $attachment->extension }}">
-                                            <div
-                                                class="min-w-8 max-w-8 min-h-8 mr-2 flex h-8 max-h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900">
-                                                <svg class="h-4 w-4 text-blue-600 dark:text-blue-300 lg:h-4 lg:w-4"
-                                                    aria-hidden="true"
-                                                    fill="currentColor"
-                                                    viewBox="0 0 24 24"
-                                                    xmlns="http://www.w3.org/2000/svg">
-                                                    <path clip-rule="evenodd"
-                                                        fill-rule="evenodd"
-                                                        d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625zM7.5 15a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5A.75.75 0 017.5 15zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H8.25z">
-                                                    </path>
-                                                    <path
-                                                        d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z">
-                                                    </path>
-                                                </svg>
-                                            </div>
-                                            <div class="mr-4 sm:truncate">
-                                                <p class="text-xs font-semibold text-gray-900 dark:text-white sm:truncate">
-                                                    <span>
-                                                        {{ $attachment->name . '.' . $attachment->extension }}
-                                                    </span>
-                                                </p>
-                                                <p class="text-xs text-gray-500 dark:text-gray-400">
-                                                    <span class="uppercase">
-                                                        {{ $attachment->extension }},
-                                                    </span>
-                                                    <span>
-                                                        {{ FileSize::bytesToHuman($attachment->size) }}
-                                                    </span>
-                                                </p>
-                                            </div>
-                                            <div class="ml-auto flex items-center">
-                                                <a class="rounded p-2 hover:bg-gray-100"
-                                                    href="{{ substr(config('app.asset_url'), 0, -1) . Storage::url($attachment->path) }}"
-                                                    download="{{ $attachment->name }}">
-                                                    <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
+                                        <div class="flex items-start gap-1">
+                                            <div class="max-w-96 flex w-full items-center rounded-lg border border-gray-200 p-1 dark:border-gray-600"
+                                                title="{{ $attachment->name . '.' . $attachment->extension }}">
+                                                <div
+                                                    class="min-w-8 max-w-8 min-h-8 mr-2 flex h-8 max-h-8 w-8 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900">
+                                                    <svg class="h-4 w-4 text-blue-600 dark:text-blue-300 lg:h-4 lg:w-4"
                                                         aria-hidden="true"
                                                         fill="currentColor"
                                                         viewBox="0 0 24 24"
                                                         xmlns="http://www.w3.org/2000/svg">
                                                         <path clip-rule="evenodd"
                                                             fill-rule="evenodd"
-                                                            d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z">
+                                                            d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625zM7.5 15a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5A.75.75 0 017.5 15zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H8.25z">
                                                         </path>
-                                                    </svg>
-                                                    <span class="sr-only">Download</span>
-                                                </a>
-                                                <!-- <button class="rounded p-2 hover:bg-gray-100"
-                                                    type="button">
-                                                    <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
-                                                        aria-hidden="true"
-                                                        fill="currentColor"
-                                                        viewBox="0 0 20 20"
-                                                        xmlns="http://www.w3.org/2000/svg">
                                                         <path
-                                                            d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z">
+                                                            d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z">
                                                         </path>
                                                     </svg>
-                                                    <span class="sr-only">Actions</span>
-                                                </button> -->
+                                                </div>
+                                                <div class="mr-4 sm:truncate">
+                                                    <p class="text-xs font-semibold text-gray-900 dark:text-white sm:truncate">
+                                                        <span>
+                                                            {{ $attachment->name . '.' . $attachment->extension }}
+                                                        </span>
+                                                    </p>
+                                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                                        <span class="uppercase">
+                                                            {{ $attachment->extension }},
+                                                        </span>
+                                                        <span>
+                                                            {{ FileSize::bytesToHuman($attachment->size) }}
+                                                        </span>
+                                                    </p>
+                                                </div>
+                                                <div class="ml-auto flex items-center">
+                                                    <a class="rounded p-2 hover:bg-gray-100"
+                                                        href="{{ substr(config('app.asset_url'), 0, -1) . Storage::url($attachment->path) }}"
+                                                        download="{{ $attachment->name }}">
+                                                        <svg class="h-5 w-5 text-gray-500 dark:text-gray-400"
+                                                            aria-hidden="true"
+                                                            fill="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <path clip-rule="evenodd"
+                                                                fill-rule="evenodd"
+                                                                d="M12 2.25a.75.75 0 01.75.75v11.69l3.22-3.22a.75.75 0 111.06 1.06l-4.5 4.5a.75.75 0 01-1.06 0l-4.5-4.5a.75.75 0 111.06-1.06l3.22 3.22V3a.75.75 0 01.75-.75zm-9 13.5a.75.75 0 01.75.75v2.25a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5V16.5a.75.75 0 011.5 0v2.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V16.5a.75.75 0 01.75-.75z">
+                                                            </path>
+                                                        </svg>
+                                                        <span class="sr-only">Download</span>
+                                                    </a>
+                                                </div>
                                             </div>
+                                            {{-- @if (auth()->user()->isCreator($assignment->id))
+                                                <button id="dropdownMenuIconButton" data-dropdown-toggle="dropdown-file-{{ $attachment->id }}" data-dropdown-placement="bottom-start" class="inline-flex self-center items-center p-1.5 text-sm font-medium text-center text-gray-900 bg-white rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none dark:text-white focus:ring-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600" type="button">
+                                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 4 15">
+                                                    <path d="M3.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 6.041a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Zm0 5.959a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"/>
+                                                    </svg>
+                                                </button>
+                                                <div id="dropdown-file-{{ $attachment->id }}" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-40 dark:bg-gray-700 dark:divide-gray-600">
+                                                    <ul class="py-2 text-sm text-gray-700 dark:text-gray-200">
+                                                    <li>
+                                                        <a href="#" class="block px-4 py-2 text-red-600 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-red-500">Delete</a>
+                                                    </li>
+                                                    </ul>
+                                                </div>
+                                            @endif --}}
                                         </div>
                                     @endforeach
                                 </div>
@@ -363,44 +366,29 @@
 @section('script')
 <script>
     function score(task) {
-        const now = new Date();
-        const realizationInterval = diff(new Date(task.created_at), now);
-        const targetInterval = diff(new Date(task.created_at), new Date(task.due));
+        const resolvedAt = new Date();
+        const due = new Date(task.due);
 
-        const realization =
-            realizationInterval.days * 86400 +
-            realizationInterval.hours * 3600 +
-            realizationInterval.minutes * 60 +
-            realizationInterval.seconds;
+        const secondsBeforeDue = (due - resolvedAt) / 1000;
 
-        const target =
-            targetInterval.days * 86400 +
-            targetInterval.hours * 3600 +
-            targetInterval.minutes * 60 +
-            targetInterval.seconds;
+        let score;
 
-        const calculatedScore = calculateScore(realization, target);
-        return Math.max(0, calculatedScore).toFixed(2);
-    }
-
-    function calculateScore(realization, target) {
-        if (realization >= target) {
-            return (1 - ((realization - target) / target)) * 100;
-        } else if (realization <= (target * 1.1)) {
-            return 110;
-        } else {
-            return 100 + ((realization - target) * (110 - 100) / ((realization * 1.1) - target));
+        if (secondsBeforeDue > 10800) {
+            score = 110;
         }
-    }
+        else if (secondsBeforeDue > 0 && secondsBeforeDue <= 10800) {
+            score = 110 - (secondsBeforeDue * 10 / 10800);
+        }
+        else {
+            const secondsAfterDue = Math.abs(secondsBeforeDue);
+            if (secondsAfterDue >= 21600) {
+                score = 60;
+            } else {
+                score = 100 - ((secondsAfterDue * 40) / 21600);
+            }
+        }
 
-    function diff(date1, date2) {
-        const interval = {
-            days: Math.floor((date2 - date1) / (1000 * 60 * 60 * 24)),
-            hours: Math.floor(((date2 - date1) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-            minutes: Math.floor(((date2 - date1) % (1000 * 60 * 60)) / (1000 * 60)),
-            seconds: Math.floor(((date2 - date1) % (1000 * 60)) / 1000)
-        };
-        return interval;
+        return Math.max(0, score).toFixed(2);
     }
 
     function updateProgressBar(task) {
