@@ -27,7 +27,7 @@ class DashboardController extends Controller
         $pending_assignments = $user->pendingAssignments->count();
         $resolved_assignments = $user->resolvedAssignments;
 
-        $total_score = $resolved_assignments->avg('score');
+        $total_score = number_format($resolved_assignments->avg('score'), 2, '.', '');
         $total_resolved_assignments = $resolved_assignments->count();
 
         $now = Carbon::now();
