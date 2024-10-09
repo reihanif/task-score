@@ -254,27 +254,58 @@ class Task extends Model
      */
     public function score()
     {
+        if (!$this->isResolved()) {
+            return;
+        }
+        $seconds_before_due = $this->resolved_at->diffInSeconds($this->due, false);
+
+        // Jika resolved_at lebih dari 3 jam (10800 detik) sebelum due
+        if ($seconds_before_due > 10800) {
+            $score = 110;
+        }
+        // Jika resolved_at dalam rentang 0 hingga 3 jam (10800 detik) sebelum due
+        elseif ($seconds_before_due > 0 && $seconds_before_due <= 10800) {
+            // Hitung penurunan score secara linear dari 110 hingga 100
+            $score = 110 - ($seconds_before_due * 10 / 10800);
+        }
+        // Jika resolved_at melebihi due
+        else {
+            $seconds_after_due = abs($seconds_before_due); // Detik setelah due
+            // Jika lebih dari 6 jam (21600 detik) setelah due, score minimal adalah 60
+            if ($seconds_after_due >= 21600) {
+                $score = 60;
+            } else {
+                // Hitung penurunan score secara linear dari 100 hingga 60
+                $score = 100 - (($seconds_after_due * 40) / 21600);
+            }
+        }
+
+        return number_format($score, 2, '.', '');
+    }
+
+    public function old_score()
+    {
         if ($this->isSubmitted()) {
-            $realization_interval = $this->created_at->diff($this->latestSubmission?->created_at);
+            $realization_interval = $this->started_at->diff($this->latestSubmission?->created_at);
         } elseif ($this->isResolved()) {
-            $realization_interval = $this->created_at->diff($this->resolved_at);
+            $realization_interval = $this->started_at->diff($this->resolved_at);
         } else {
             return 0;
         }
 
-        $target_interval = $this->created_at->diff($this->due);
+        $target_interval = $this->started_at->diff($this->due);
 
-                $realization =
-                    $realization_interval->days * 86400 +
-                    $realization_interval->h * 3600 +
-                    $realization_interval->i * 60 +
-                    $realization_interval->s;
+        $realization =
+            $realization_interval->days * 86400 +
+            $realization_interval->h * 3600 +
+            $realization_interval->i * 60 +
+            $realization_interval->s;
 
-                $target =
-                    $target_interval->days * 86400 +
-                    $target_interval->h * 3600 +
-                    $target_interval->i * 60 +
-                    $target_interval->s;
+        $target =
+            $target_interval->days * 86400 +
+            $target_interval->h * 3600 +
+            $target_interval->i * 60 +
+            $target_interval->s;
 
         return number_format(($this->calculate_score($realization, $target) < 0 ? 0 : $this->calculate_score($realization, $target)), 2, '.', '');
     }
