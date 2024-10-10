@@ -91,6 +91,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'can:viewAny,\App\Models\User'], function () {
         Route::put('/account/{user}/update', [AccountController::class, 'updateAccount'])->name('account.update');
         Route::put('/account/{user}/change-password', [AccountController::class, 'changePassword'])->name('account.change-password');
+        Route::put('/account/{user}/{position}/update', [AccountController::class, 'changePosition'])->name('account.change-position');
 
         Route::resource('users', UserController::class);
     });
