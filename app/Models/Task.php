@@ -257,8 +257,21 @@ class Task extends Model
         if (!$this->isResolved()) {
             return;
         }
+
         $seconds_before_due = $this->resolved_at->diffInSeconds($this->due, false);
 
+        return number_format($this->calculate_score($seconds_before_due), 2, '.', '');
+    }
+
+    public function possibleScore()
+    {
+        $seconds_before_due = $this->latestSubmission->created_at->diffInSeconds($this->due, false);
+
+        return number_format($this->calculate_score($seconds_before_due), 2, '.', '');
+    }
+
+    private function calculate_score($seconds_before_due)
+    {
         // Jika resolved_at lebih dari 3 jam (10800 detik) sebelum due
         if ($seconds_before_due > 10800) {
             $score = 110;
@@ -280,45 +293,6 @@ class Task extends Model
             }
         }
 
-        return number_format($score, 2, '.', '');
-    }
-
-    public function old_score()
-    {
-        if ($this->isSubmitted()) {
-            $realization_interval = $this->started_at->diff($this->latestSubmission?->created_at);
-        } elseif ($this->isResolved()) {
-            $realization_interval = $this->started_at->diff($this->resolved_at);
-        } else {
-            return 0;
-        }
-
-        $target_interval = $this->started_at->diff($this->due);
-
-        $realization =
-            $realization_interval->days * 86400 +
-            $realization_interval->h * 3600 +
-            $realization_interval->i * 60 +
-            $realization_interval->s;
-
-        $target =
-            $target_interval->days * 86400 +
-            $target_interval->h * 3600 +
-            $target_interval->i * 60 +
-            $target_interval->s;
-
-        return number_format(($this->calculate_score($realization, $target) < 0 ? 0 : $this->calculate_score($realization, $target)), 2, '.', '');
-    }
-
-    private function calculate_score(float $realization, float $target)
-    {
-        if ($realization >= $target) {
-            return (1 - (($realization - $target) / $target)) * 100;
-        }
-        elseif ($realization <= ($target * 1.1)) {
-            return 110;
-        } else {
-           return (100 + (($realization - $target) * (110 - 100) / ($realization * 1.1) - $target));
-        }
+        return $score;
     }
 }
