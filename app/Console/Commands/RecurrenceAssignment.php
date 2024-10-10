@@ -51,10 +51,6 @@ class RecurrenceAssignment extends Command
                 continue;
             }
 
-            if ($recurrence->recurrence_end_date && $now->greaterThanOrEqualTo($recurrence->recurrence_end_date)) {
-                continue;
-            }
-
             list($hour, $minute) = explode(':', $recurrence->time->format('H:i'));
             $replicate_assignment = false;
 
@@ -91,13 +87,20 @@ class RecurrenceAssignment extends Command
                     break;
             }
 
+            if (!is_null($recurrence->recurrence_end_date) && $next_occurrence->greaterThanOrEqualTo($recurrence->recurrence_end_date)) {
+                continue;
+            }
+
             if($replicate_assignment) {
                 foreach($assignment->tasks as $task) {
-                    $newTask = $task->replicate();
-                    $newTask->uuid = $task->generateUniqueId();
-                    $newTask->started_at = $started_date->toDateTimeString();
-                    $newTask->due = $next_occurrence->toDateTimeString();
-                    $newTask->save();
+                    if($task->created_at == $assignment->created_at) {
+                        $newTask = $task->replicate();
+                        $newTask->uuid = $task->generateUniqueId();
+                        $newTask->started_at = $started_date->toDateTimeString();
+                        $newTask->due = $next_occurrence->toDateTimeString();
+                        $newTask->resolved_at = null;
+                        $newTask->save();
+                    }
                 }
 
                 $total++;
