@@ -210,8 +210,8 @@ function initializeDatepickers() {
             autoApply: true,
             resetButton: resetButtonOption,
             setup: (picker) => {
-                picker.on('show', (datepickerEl) => {
-                    //
+                picker.on('selected', () => {
+                        datepickerEl.dispatchEvent(new Event('change'));
                 });
             },
         };
@@ -278,9 +278,9 @@ function initializeTomSelects() {
                 this.setTextboxValue('');
             },
             onInitialize: function() {
-                setTimeout(() => {
+                // setTimeout(() => {
                     this.setValue(selectedValues);
-                }, 100);
+                // }, 100);
             }
         };
 
