@@ -126,7 +126,7 @@
                                 </svg>
                             </button>
                             <!-- Dropdown menu -->
-                            <div id="dropdown-range" class="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
+                            <div id="dropdown-range" class="z-10 text-left hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
                                 <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
                                     @foreach ($ranges as $range)
                                         <li>
@@ -143,7 +143,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2">
                         <dl class="flex items-center">
-                            <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Assignment resolved :</dt>
+                            <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Resolved assignment :</dt>
                             <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $data_range['total_resolved'] }}</dd>
                         </dl>
                         <dl class="flex items-center md:justify-end">
@@ -291,81 +291,6 @@
                                 </td>
                             </tr>
                         @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    @endif
-
-    @if (auth()->user()->subordinates->count() > 0)
-        <div class="rounded-lg border border-gray-200 p-4 space-y-2 dark:border-gray-700 dark:bg-gray-800">
-            <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-y-0 sm:space-x-4">
-                <div>
-                    <h5 class="mr-3 font-semibold dark:text-white">My Subordinates</h5>
-                </div>
-                <div class="relative">
-                    <div
-                         class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-                        <x-icons.search class="h-4 w-4 text-gray-500 dark:text-gray-400"></x-icons.search>
-                    </div>
-                    <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                           data-filter-target="my-subordinates"
-                           data-filter-column="1"
-                           data-filter-case-insensitive="true"
-                           type="search"
-                           placeholder="Search for subordinate">
-                </div>
-            </div>
-            <div>
-                <table id="my-subordinates" class="datatables overflow-x-auto">
-                    <thead class="hidden">
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse (auth()->user()->subordinates as $assignee)
-                            <tr class="border-b text-sm">
-                                <th class="py-4 min-w-10 max-w-10 w-10" scope="col">
-                                    <img class="h-8 w-8 rounded-full"
-                                        src="https://ui-avatars.com/api/?name={{ urlencode($assignee->name) }}&background=0D8ABC&color=fff&bold=true"
-                                        title="{{ $assignee->name }}"
-                                        alt="{{ $assignee->name }} image">
-                                </th>
-                                <td class="whitespace-nowrap" scope="col">
-                                    <p class="text-sm font-medium text-gray-900 dark:text-white"
-                                    title="{{ $assignee->name }}">
-                                        {{ $assignee->name }}
-                                    </p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400"
-                                    title="{{ $assignee->email }}">
-                                        {{ $assignee->email }}
-                                    </p>
-                                </td>
-                                <td class="whitespace-nowrap" scope="col">
-                                    <span class="text-base font-semibold">
-                                        {{ $assignee->unresolvedAssignments->count() + $assignee->pendingAssignments->count() + $assignee->resolvedAssignments->count() }}
-                                    </span>
-                                    Assignments
-                                </td>
-                                <td scope="col">
-                                    <div class="float-end me-2 w-40 bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $assignee->score <= 100 ? $assignee->score : '100' }}%"></div>
-                                    </div>
-                                </td>
-                                <td class="font-semibold" scope="col">
-                                    {{ $assignee->score }}%
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                You don't have subordinate
-                            </tr>
-                        @endforelse
                     </tbody>
                 </table>
             </div>
