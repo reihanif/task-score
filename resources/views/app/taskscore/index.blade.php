@@ -61,7 +61,7 @@
                 </div>
             </div>
 
-            <div class="col-span-3 space-y-4">
+            <div class="col-span-12 md:col-span-4 lg:col-span-3 space-y-4">
                 <div class="h-full gap-2 rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
                     <div>
                         <label for="select-user" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Overview</label>
@@ -97,13 +97,12 @@
                 </div>
             </div>
 
-            <div class="col-span-9">
+            <div class="col-span-12 md:col-span-8 lg:col-span-9">
                 <!-- Bar Charts -->
                 <div class="h-full rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
-                    <div class="mb-4 flex justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
+                    <div class="mb-4 space-y-2 md:space-y-0 block md:flex md:justify-between border-b border-gray-200 pb-4 dark:border-gray-700">
                         <div class="flex items-center">
-                            <div
-                                class="me-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700">
+                            <div class="me-3 flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-700">
                                 <svg class="w-6 h-6 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M8 7V2.221a2 2 0 0 0-.5.365L3.586 6.5a2 2 0 0 0-.365.5H8Zm2 0V2h7a2 2 0 0 1 2 2v.126a5.087 5.087 0 0 0-4.74 1.368v.001l-6.642 6.642a3 3 0 0 0-.82 1.532l-.74 3.692a3 3 0 0 0 3.53 3.53l3.694-.738a3 3 0 0 0 1.532-.82L19 15.149V20a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9h5a2 2 0 0 0 2-2Z" clip-rule="evenodd"/>
                                     <path fill-rule="evenodd" d="M17.447 8.08a1.087 1.087 0 0 1 1.187.238l.002.001a1.088 1.088 0 0 1 0 1.539l-.377.377-1.54-1.542.373-.374.002-.001c.1-.102.22-.182.353-.237Zm-2.143 2.027-4.644 4.644-.385 1.924 1.925-.385 4.644-4.642-1.54-1.54Zm2.56-4.11a3.087 3.087 0 0 0-2.187.909l-6.645 6.645a1 1 0 0 0-.274.51l-.739 3.693a1 1 0 0 0 1.177 1.176l3.693-.738a1 1 0 0 0 .51-.274l6.65-6.646a3.088 3.088 0 0 0-2.185-5.275Z" clip-rule="evenodd"/>
@@ -116,7 +115,7 @@
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ $selected_user->name }} Assignment in {{ $selected_range }}</p>
                             </div>
                         </div>
-                        <div class="self-center">
+                        <div class="text-end md:self-center">
                             <button id="dropdownRadioButton" data-dropdown-toggle="dropdown-range" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium text-sm rounded-lg px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
                                 <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
@@ -142,12 +141,12 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2">
                         <dl class="flex items-center">
                             <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Assignment resolved :</dt>
                             <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $data_range['total_resolved'] }}</dd>
                         </dl>
-                        <dl class="flex items-center justify-end">
+                        <dl class="flex items-center md:justify-end">
                             <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Score in {{ $selected_range }} :</dt>
                             <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $data_range['score'] ?? 0 }}%</dd>
                         </dl>
@@ -226,8 +225,8 @@
     </form>
 
     @if (auth()->user()->subordinates->count() > 0)
-        <div class="rounded-lg border border-gray-200 p-4 space-y-2 dark:border-gray-700 dark:bg-gray-800">
-            <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-y-0 sm:space-x-4">
+        <div class="border-1 relative overflow-x-hidden rounded-lg border border-gray-200 p-4 dark:border-gray-700 dark:bg-gray-800">
+            <div class="flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
                 <div>
                     <h5 class="mr-3 font-semibold dark:text-white">My Subordinates</h5>
                 </div>
@@ -244,8 +243,10 @@
                            placeholder="Search for subordinate">
                 </div>
             </div>
+
             <div>
-                <table id="my-subordinates" class="datatables overflow-x-auto">
+                <table class="datatables w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400"
+                    id="my-subordinates">
                     <thead class="hidden">
                         <tr>
                             <td></td>
@@ -256,7 +257,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse (auth()->user()->subordinates as $assignee)
+                        @foreach (auth()->user()->subordinates as $assignee)
                             <tr class="border-b text-sm">
                                 <th class="py-4 min-w-10 max-w-10 w-10" scope="col">
                                     <img class="h-8 w-8 rounded-full"
@@ -274,7 +275,7 @@
                                         {{ $assignee->email }}
                                     </p>
                                 </td>
-                                <td class="whitespace-nowrap" scope="col">
+                                <td class="whitespace-nowrap px-4" scope="col">
                                     <span class="text-base font-semibold">
                                         {{ $assignee->unresolvedAssignments->count() + $assignee->pendingAssignments->count() + $assignee->resolvedAssignments->count() }}
                                     </span>
@@ -289,11 +290,7 @@
                                     {{ $assignee->score }}%
                                 </td>
                             </tr>
-                        @empty
-                            <tr>
-                                You don't have subordinate
-                            </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
                 </table>
             </div>
