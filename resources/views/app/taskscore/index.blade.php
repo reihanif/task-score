@@ -126,7 +126,7 @@
                                 </svg>
                             </button>
                             <!-- Dropdown menu -->
-                            <div id="dropdown-range" class="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
+                            <div id="dropdown-range" class="z-10 text-left hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style="position: absolute; inset: auto auto 0px 0px; margin: 0px; transform: translate3d(522.5px, 3847.5px, 0px);">
                                 <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
                                     @foreach ($ranges as $range)
                                         <li>
@@ -143,7 +143,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2">
                         <dl class="flex items-center">
-                            <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Assignment resolved :</dt>
+                            <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Resolved assignment :</dt>
                             <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $data_range['total_resolved'] }}</dd>
                         </dl>
                         <dl class="flex items-center md:justify-end">

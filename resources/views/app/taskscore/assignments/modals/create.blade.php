@@ -11,29 +11,29 @@
         <div class="mb-5">
             <div class="space-y-4"
                  x-data="difficultyOption()">
-                <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                           for="input-subject">
-                        Subject
-                        <span class="text-red-600 dark:text-red-500">*</span>
-                    </label>
+                    <div>
+                         <label class="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                                for="input-subject">
+                             Subject
+                             <span class="text-red-600 dark:text-red-500">*</span>
+                         </label>
 
-                    <div x-data="{ subject: '' }">
-                        <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
-                               id="input-subject"
-                               name="subject"
-                               type="text"
-                               value="{{ old('subject') }}"
-                               x-model="subject"
-                               autocomplete="off"
-                               placeholder="Assignment subject"
-                               maxlength="255"
-                               required>
-                        <p class="mt-1 text-end text-xs text-gray-500 dark:text-gray-400">
-                            <span x-text="subject.length"></span>/255
-                        </p>
-                    </div>
-                </div>
+                         <div x-data="{ subject: '' }">
+                             <input class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-sm"
+                                    id="input-subject"
+                                    name="subject"
+                                    type="text"
+                                    value="{{ old('subject') }}"
+                                    x-model="subject"
+                                    autocomplete="off"
+                                    placeholder="Assignment subject"
+                                    maxlength="255"
+                                    required>
+                             <p class="mt-1 text-end text-xs text-gray-500 dark:text-gray-400">
+                                 <span x-text="subject.length"></span>/255
+                             </p>
+                         </div>
+                     </div>
 
                 <div class="space-y-2">
                     <x-forms.select id="input-category"
@@ -405,47 +405,47 @@
                                                                               d="M8.21 13c2.106 0 3.412-1.087 3.412-2.823 0-1.306-.984-2.283-2.324-2.386v-.055a2.176 2.176 0 0 0 1.852-2.14c0-1.51-1.162-2.46-3.014-2.46H3.843V13zM5.908 4.674h1.696c.963 0 1.517.451 1.517 1.244 0 .834-.629 1.32-1.73 1.32H5.908V4.673zm0 6.788V8.598h1.73c1.217 0 1.88.492 1.88 1.415 0 .943-.643 1.449-1.832 1.449H5.907z" />
                                                                     </svg>
 
-                                                                    <span class="sr-only">Bold</span>
-                                                                </button>
-                                                                <button class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                                        type="button"
-                                                                        x-on:click="toggleItalic()"
-                                                                        :class="{
-                                                                            'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive(
-                                                                                'italic', updatedAt)
-                                                                        }">
-                                                                    <svg class="h-4 w-4"
-                                                                         aria-hidden="true"
-                                                                         xmlns="http://www.w3.org/2000/svg"
-                                                                         width="24"
-                                                                         height="24"
-                                                                         fill="none"
-                                                                         viewBox="0 0 24 24">
-                                                                        <path stroke="currentColor"
-                                                                              stroke-linecap="round"
-                                                                              stroke-linejoin="round"
-                                                                              stroke-width="2"
-                                                                              d="m8.874 19 6.143-14M6 19h6.33m-.66-14H18" />
-                                                                    </svg>
+                                                                         <span class="sr-only">Bold</span>
+                                                                     </button>
+                                                                     <button class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                                             type="button"
+                                                                             x-on:click="toggleItalic()"
+                                                                             :class="{
+                                                                                 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive(
+                                                                                     'italic', updatedAt)
+                                                                             }">
+                                                                         <svg class="h-4 w-4"
+                                                                              aria-hidden="true"
+                                                                              xmlns="http://www.w3.org/2000/svg"
+                                                                              width="24"
+                                                                              height="24"
+                                                                              fill="none"
+                                                                              viewBox="0 0 24 24">
+                                                                             <path stroke="currentColor"
+                                                                                   stroke-linecap="round"
+                                                                                   stroke-linejoin="round"
+                                                                                   stroke-width="2"
+                                                                                   d="m8.874 19 6.143-14M6 19h6.33m-.66-14H18" />
+                                                                         </svg>
 
-                                                                    <span class="sr-only">Italic</span>
-                                                                </button>
-                                                                <button class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                                        type="button"
-                                                                        x-on:click="toggleUnderline()"
-                                                                        :class="{
-                                                                            'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive(
-                                                                                'underline', updatedAt)
-                                                                        }">
-                                                                    <svg class="h-4 w-4"
-                                                                         xmlns="http://www.w3.org/2000/svg"
-                                                                         fill="currentColor"
-                                                                         width="24"
-                                                                         height="24"
-                                                                         viewBox="0 0 16 16">
-                                                                        <path
-                                                                              d="M5.313 3.136h-1.23V9.54c0 2.105 1.47 3.623 3.917 3.623s3.917-1.518 3.917-3.623V3.136h-1.23v6.323c0 1.49-.978 2.57-2.687 2.57s-2.687-1.08-2.687-2.57zM12.5 15h-9v-1h9z" />
-                                                                    </svg>
+                                                                         <span class="sr-only">Italic</span>
+                                                                     </button>
+                                                                     <button class="cursor-pointer rounded p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                                             type="button"
+                                                                             x-on:click="toggleUnderline()"
+                                                                             :class="{
+                                                                                 'bg-gray-100 text-gray-900 dark:bg-gray-600 dark:text-white': isActive(
+                                                                                     'underline', updatedAt)
+                                                                             }">
+                                                                         <svg class="h-4 w-4"
+                                                                              xmlns="http://www.w3.org/2000/svg"
+                                                                              fill="currentColor"
+                                                                              width="24"
+                                                                              height="24"
+                                                                              viewBox="0 0 16 16">
+                                                                             <path
+                                                                                   d="M5.313 3.136h-1.23V9.54c0 2.105 1.47 3.623 3.917 3.623s3.917-1.518 3.917-3.623V3.136h-1.23v6.323c0 1.49-.978 2.57-2.687 2.57s-2.687-1.08-2.687-2.57zM12.5 15h-9v-1h9z" />
+                                                                         </svg>
 
                                                                     <span class="sr-only">Underline</span>
                                                                 </button>
