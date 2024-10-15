@@ -30,139 +30,99 @@ class DashboardController extends Controller
         $selected_user = $request->user ? User::findOrFail($request->user) : auth()->user();
         $selected_range = $request->range ?? 'last 7 days';
 
-        $unresolved_assignments = $selected_user->unresolvedAssignments->count();
-        $pending_assignments = $selected_user->pendingAssignments->count();
-        $resolved_assignments = $selected_user->resolvedAssignments;
+        $range_assignments = $this->getAssignmentSummary($selected_user, $selected_range);
 
-        $total_score = number_format($resolved_assignments->avg('score'), 2, '.', '');
-        $total_resolved_assignments = $resolved_assignments->count();
-
-        $now = Carbon::now();
-
-        switch ($selected_range) {
-            case ('last 7 days'):
-                $last_date = $now->copy();
-                $data_range = 6;
-                $data_serve = 'daily';
-                break;
-            case ('last 30 days'):
-                $last_date = $now->copy();
-                $data_range = 29;
-                $data_serve = 'daily';
-                break;
-            case ('last month'):
-                $last_date = $now->copy()->subMonth()->endOfMonth();
-                $data_range = $now->copy()->subMonth()->daysInMonth - 1;
-                $data_serve = 'daily';
-                break;
-            case ('last 6 months'):
-                $last_date = $now->copy()->endOfMonth();
-                $data_range = 5;
-                $data_serve = 'monthly';
-                break;
-            case ('this year'):
-                $last_date = $now->copy()->endOfYear();
-                $data_range = 11;
-                $data_serve = 'monthly';
-                break;
-            case ('last year'):
-                $last_date = $now->copy()->subYear()->endOfYear();
-                $data_range = 11;
-                $data_serve = 'monthly';
-                break;
-        }
-
-        $data = collect();
-
-        switch ($data_serve) {
-            case ('daily'):
-                for ($i = $data_range; $i >= 0; $i--) {
-                    $date = $last_date->copy()->subDays($i);
-
-                    $data->push([
-                        'x' => $date->format('D, d M'),
-                        'date' => $date->format('Y-m-d'),
-                        'y' => 0
-                    ]);
-                }
-
-                $first_date = $last_date->copy()->subDays($data_range);
-                $assignments_summary = Task::where('created_at', '>=', $first_date)
-                    ->where('created_at', '<=', $last_date)
-                    ->where('assignee_id', $selected_user->id)
-                    ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
-                    ->groupBy('date')
-                    ->pluck('total', 'date');
-
-                $total_resolved_in_range = Task::where('created_at', '>=', $first_date)
-                    ->where('created_at', '<=', $last_date)
-                    ->where('assignee_id', $selected_user->id)
-                    ->resolved()
-                    ->count();
-                break;
-            case ('monthly'):
-                for ($i = $data_range; $i >= 0; $i--) {
-                    $date = $last_date->copy()->firstOfMonth()->subMonths($i);
-
-                    $data->push([
-                        'x' => $date->format('M Y'),
-                        'date' => $date->format('Y-m'),
-                        'y' => 0
-                    ]);
-                }
-
-                $first_date = $last_date->copy()->firstOfMonth()->subMonths($data_range)->startOfMonth();
-                $assignments_summary = Task::where('created_at', '>=', $first_date)
-                    ->where('created_at', '<=', $last_date)
-                    ->where('assignee_id', $selected_user->id)
-                    ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as total')
-                    ->groupBy('month')
-                    ->pluck('total', 'month');
-
-                $total_resolved_in_range = Task::where('created_at', '>=', $first_date)
-                    ->where('created_at', '<=', $last_date)
-                    ->where('assignee_id', $selected_user->id)
-                    ->resolved()
-                    ->count();
-                break;
-        }
-
-        $score_in_range = Task::where('created_at', '>=', $first_date)
-            ->where('created_at', '<=', $last_date)
-            ->where('assignee_id', $selected_user->id)
-            ->where('resolved_at', '!=', null)
-            ->get()
-            ->avg('score');
-
-        $assignments_array = $assignments_summary->toArray();
-        $assignment_data = $data->map(function ($day) use ($assignments_array) {
-            // Check if the date exists in the totals array and set the total
-            $day['y'] = $assignments_array[$day['date']] ?? 0;
-            unset($day['date']);
-
-            return $day;
-        })->toArray();
-
-        $data_range = collect([
-            'assignments' => $assignment_data,
-            'total_assignment' => array_sum($assignments_array),
-            'total_resolved' => $total_resolved_in_range,
-            'score' => number_format($score_in_range, 2, '.', ''),
-        ]);
-
-        $data_assignments = collect([
-            'unresolved' => $unresolved_assignments,
-            'pending' => $pending_assignments,
-            'resolved' => $total_resolved_assignments,
+        $overall_assignments = collect([
+            'unresolved' => $selected_user->unresolvedAssignments->count(),
+            'pending' => $selected_user->pendingAssignments->count(),
+            'resolved' => $selected_user->resolvedAssignments->count(),
+            'score' => number_format($selected_user->tasks->avg('score'), 2, '.', ''),
         ]);
 
         return view('app.taskscore.index', [
             'selected_user' => $selected_user,
             'ranges' => $ranges,
             'selected_range' => $selected_range,
-            'total_score' => $total_score,
-            'data_assignments' => $data_assignments,
-            'data_range' => $data_range,
+            'overall_assignments' => $overall_assignments,
+            'range_assignments' => $range_assignments,
+        ]);
+    }
+
+    private function getDateRangeAndServeType($selected_range, $now)
+    {
+        switch ($selected_range) {
+            case 'last 7 days':
+                return [$now->copy(), 6, 'daily'];
+            case 'last 30 days':
+                return [$now->copy(), 29, 'daily'];
+            case 'last month':
+                return [$now->copy()->subMonth()->endOfMonth(), $now->copy()->subMonth()->daysInMonth - 1, 'daily'];
+            case 'last 6 months':
+                return [$now->copy()->endOfMonth(), 5, 'monthly'];
+            case 'this year':
+                return [$now->copy()->endOfYear(), 11, 'monthly'];
+            case 'last year':
+                return [$now->copy()->subYear()->endOfYear(), 11, 'monthly'];
+        }
+    }
+
+    private function generateChartData($data_range, $last_date, $data_serve)
+    {
+        $data = collect();
+        if ($data_serve == 'daily') {
+            for ($i = $data_range; $i >= 0; $i--) {
+                $date = $last_date->copy()->subDays($i);
+                $data->push(['x' => $date->format('D, d M'), 'date' => $date->format('Y-m-d'), 'y' => 0]);
+            }
+        } else {
+            for ($i = $data_range; $i >= 0; $i--) {
+                $date = $last_date->copy()->firstOfMonth()->subMonths($i);
+                $data->push(['x' => $date->format('M Y'), 'date' => $date->format('Y-m'), 'y' => 0]);
+            }
+        }
+
+        return $data;
+    }
+
+    private function getAssignmentSummary($user, $range)
+    {
+        $now = Carbon::now();
+
+        [$last_date, $data_range, $data_serve] = $this->getDateRangeAndServeType($range, $now);
+        $data_structure = $this->generateChartData($data_range, $last_date, $data_serve);
+
+        $first_date = $data_serve == 'daily'
+            ? $last_date->copy()->subDays($data_range)
+            : $last_date->copy()->firstOfMonth()->subMonths($data_range)->startOfMonth();
+
+        $date_format = $data_serve == 'daily' ? 'DATE(created_at)' : 'DATE_FORMAT(created_at, "%Y-%m")';
+
+        $query = Task::where('created_at', '>=', $first_date)
+            ->where('created_at', '<=', $last_date)
+            ->where('assignee_id', $user->id);
+
+        $assignments_summary = $query->clone()
+            ->selectRaw("$date_format as period, COUNT(*) as total")
+            ->groupBy('period')
+            ->pluck('total', 'period')
+            ->toArray();
+
+        $assignment_data = $data_structure->map(function ($day) use ($assignments_summary) {
+            $day['y'] = $assignments_summary[$day['date']] ?? 0;
+            unset($day['date']);
+
+            return $day;
+        })->toArray();
+
+        $total_assignment = array_sum($assignments_summary);
+        $total_resolved = $query->clone()->resolved()->count();
+        $score = $query->clone()->resolved()->get()->avg('score');
+
+        return collect([
+            'assignments' => $assignment_data,
+            'total_assignment' => $total_assignment,
+            'total_resolved' => $total_resolved,
+            'score' => number_format($score, 2, '.', ''),
         ]);
     }
 }
