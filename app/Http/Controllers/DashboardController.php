@@ -72,12 +72,12 @@ class DashboardController extends Controller
         if ($data_serve == 'daily') {
             for ($i = $data_range; $i >= 0; $i--) {
                 $date = $last_date->copy()->subDays($i);
-                $data->push(['x' => $date->format('D, d M'), 'date' => $date->format('Y-m-d'), 'y' => 0]);
+                $data->push(['x' => $date->format('Y-m-d'), 'date' => $date->format('Y-m-d'), 'y' => 0]);
             }
         } else {
             for ($i = $data_range; $i >= 0; $i--) {
                 $date = $last_date->copy()->firstOfMonth()->subMonths($i);
-                $data->push(['x' => $date->format('M Y'), 'date' => $date->format('Y-m'), 'y' => 0]);
+                $data->push(['x' => $date->format('Y-m'), 'date' => $date->format('Y-m'), 'y' => 0]);
             }
         }
 
