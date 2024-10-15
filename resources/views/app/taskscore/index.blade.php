@@ -83,7 +83,7 @@
                             Overall score :
                         </h6>
                         <div class="text-4xl font-bold text-blue-700 dark:text-blue-400">
-                            {{ $total_score ?? 0 }}%
+                            {{ $overall_assignments['score'] ?? 0 }}%
                         </div>
                     </div>
 
@@ -111,12 +111,12 @@
 
                             </div>
                             <div>
-                                <h5 class="pb-1 text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ $data_range['total_assignment'] }}</h5>
+                                <h5 class="pb-1 text-2xl font-bold leading-none text-gray-900 dark:text-white">{{ $range_assignments['total_assignment'] }}</h5>
                                 <p class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ $selected_user->name }} Assignment in {{ $selected_range }}</p>
                             </div>
                         </div>
                         <div class="text-end md:self-center">
-                            <button id="dropdownRadioButton" data-dropdown-toggle="dropdown-range" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium text-sm rounded-lg px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                            <button data-dropdown-toggle="dropdown-range" class="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium text-sm rounded-lg px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
                                 <svg class="w-3 h-3 text-gray-500 dark:text-gray-400 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
                                     </svg>
@@ -130,9 +130,9 @@
                                 <ul class="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
                                     @foreach ($ranges as $range)
                                         <li>
-                                            <div class="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                <input {{ $range == $selected_range ? 'checked' : '' }} x-on:click="submit" id="range-{{ str_replace(' ', '-', $range) }}" type="radio" value="{{ $range }}" name="range" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                                <label for="range-{{ str_replace(' ', '-', $range) }}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{ ucfirst($range) }}</label>
+                                            <div class="cursor-pointer flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                                <input {{ $range == $selected_range ? 'checked' : '' }} x-on:click="submit" id="range-{{ str_replace(' ', '-', $range) }}" type="radio" value="{{ $range }}" name="range" class="cursor-pointer w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                                <label for="range-{{ str_replace(' ', '-', $range) }}" class="cursor-pointer w-full ms-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">{{ ucfirst($range) }}</label>
                                             </div>
                                         </li>
                                     @endforeach
@@ -144,11 +144,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2">
                         <dl class="flex items-center">
                             <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Resolved assignment :</dt>
-                            <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $data_range['total_resolved'] }}</dd>
+                            <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $range_assignments['total_resolved'] }}</dd>
                         </dl>
                         <dl class="flex items-center md:justify-end">
                             <dt class="me-1 text-sm font-normal text-gray-500 dark:text-gray-400">Score in {{ $selected_range }} :</dt>
-                            <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $data_range['score'] ?? 0 }}%</dd>
+                            <dd class="text-sm font-semibold text-gray-900 dark:text-white">{{ $range_assignments['score'] ?? 0 }}%</dd>
                         </dl>
                     </div>
 
@@ -257,8 +257,8 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (auth()->user()->subordinates as $assignee)
-                            <tr class="border-b text-sm">
+                        @foreach (auth()->user()->subordinates->sortBy('name') as $assignee)
+                            <tr class="border-b dark:border-gray-700 text-sm">
                                 <th class="py-4 min-w-10 max-w-10 w-10" scope="col">
                                     <img class="h-8 w-8 rounded-full"
                                         src="https://ui-avatars.com/api/?name={{ urlencode($assignee->name) }}&background=0D8ABC&color=fff&bold=true"
@@ -275,8 +275,8 @@
                                         {{ $assignee->email }}
                                     </p>
                                 </td>
-                                <td class="whitespace-nowrap px-4" scope="col">
-                                    <span class="text-base font-semibold">
+                                <td class="whitespace-nowrap px-4 text-xs" scope="col">
+                                    <span class="text-base font-semibold text-gray-900 dark:text-white">
                                         {{ $assignee->unresolvedAssignments->count() + $assignee->pendingAssignments->count() + $assignee->resolvedAssignments->count() }}
                                     </span>
                                     Assignments
@@ -307,7 +307,7 @@
                 {
                     name: "Assignment",
                     color: "#1A56DB",
-                    data: {!! json_encode($data_range['assignments'], JSON_PRETTY_PRINT) !!},
+                    data: {!! json_encode($range_assignments['assignments'], JSON_PRETTY_PRINT) !!},
                 },
             ],
             chart: {
@@ -392,7 +392,7 @@
 
         const getChartOptions = () => {
             return {
-                series: [{!! $data_assignments['resolved'] !!}, {!! $data_assignments['pending'] !!}, {!! $data_assignments['unresolved'] !!}],
+                series: [{!! $overall_assignments['resolved'] !!}, {!! $overall_assignments['pending'] !!}, {!! $overall_assignments['unresolved'] !!}],
                 colors: ["#1C64F2", "#FDBA8C", "#E74694"],
                 chart: {
                     height: 320,
