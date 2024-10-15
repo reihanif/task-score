@@ -300,183 +300,175 @@
 @endsection
 
 @section('script')
-    <script type="module">
-        const options2 = {
-            colors: ["#1A56DB", "#FDBA8C"],
-            series: [
-                {
-                    name: "Assignment",
-                    color: "#1A56DB",
-                    data: {!! json_encode($range_assignments['assignments'], JSON_PRETTY_PRINT) !!},
-                },
-            ],
-            chart: {
-                type: "bar",
-                height: "320px",
-                fontFamily: "Inter, sans-serif",
-                toolbar: {
-                    show: false,
-                },
+<script type="module">
+function formatDate(value) {
+    let date = new Date(value);
+    const dayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(date);
+    const day = new Intl.DateTimeFormat('en-US', { day: '2-digit' }).format(date);
+    const month = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date);
+    const year = new Intl.DateTimeFormat('en-US', { year: 'numeric' }).format(date);
+
+    return { year, month, day, dayOfWeek };
+}
+
+const getBarChartOptions = (assignmentData) => {
+    const fullDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+    const monthYearPattern = /^\d{4}-\d{2}$/;
+
+    return {
+        colors: ["#1A56DB", "#FDBA8C"],
+        series: [
+            {
+                name: "Assignment",
+                color: "#1A56DB",
+                data: assignmentData,
             },
-            plotOptions: {
-                bar: {
-                    horizontal: false,
-                    columnWidth: "70%",
-                    borderRadiusApplication: "end",
-                    borderRadius: 4,
-                },
+        ],
+        chart: {
+            type: "bar",
+            height: "320px",
+            fontFamily: "Inter, sans-serif",
+            toolbar: { show: false },
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: "70%",
+                borderRadiusApplication: "end",
+                borderRadius: 4,
             },
-            tooltip: {
-                shared: true,
-                intersect: false,
-                style: {
-                    fontFamily: "Inter, sans-serif",
-                },
-            },
-            states: {
-                hover: {
-                    filter: {
-                        type: "darken",
-                        value: 1,
-                    },
-                },
-            },
-            stroke: {
+        },
+        tooltip: {
+            shared: true,
+            intersect: false,
+            style: { fontFamily: "Inter, sans-serif" },
+            x: {
                 show: true,
-                width: 0,
-                colors: ["transparent"],
-            },
-            grid: {
-                show: false,
-                strokeDashArray: 4,
-                padding: {
-                    left: 2,
-                    right: 2,
-                    top: -14
+                formatter: function (value) {
+                    const { year, month, day, dayOfWeek } = formatDate(value);
+                    return fullDatePattern.test(value) ? `${dayOfWeek}, ${day} ${month} ${year}` : `${month} ${year}`;
                 },
             },
-            dataLabels: {
-                enabled: false,
-            },
-            legend: {
-                show: false,
-            },
-            xaxis: {
-                floating: false,
-                labels: {
-                    show: true,
-                    style: {
-                        fontFamily: "Inter, sans-serif",
-                        cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400'
+        },
+        states: {
+            hover: { filter: { type: "darken", value: 1 } },
+        },
+        stroke: {
+            show: true,
+            width: 0,
+            colors: ["transparent"],
+        },
+        grid: {
+            show: false,
+            strokeDashArray: 4,
+            padding: { left: 2, right: 2, top: -14 },
+        },
+        dataLabels: { enabled: false },
+        legend: { show: false },
+        xaxis: {
+            floating: false,
+            labels: {
+                show: true,
+                style: { fontFamily: "Inter, sans-serif", cssClass: 'text-xs font-normal fill-gray-500 dark:fill-gray-400' },
+                formatter: function (value) {
+                    const { year, month, day, dayOfWeek } = formatDate(value);
+
+                    if (fullDatePattern.test(value)) {
+                        return assignmentData.length > 7 ? `${day}` : `${dayOfWeek}, ${day} ${month}`;
+                    } else if (monthYearPattern.test(value)) {
+                        return `${month} ${year}`
                     }
                 },
-                axisBorder: {
-                    show: false,
-                },
-                axisTicks: {
-                    show: false,
-                },
             },
-            yaxis: {
-                show: false,
-            },
-            fill: {
-                opacity: 1,
-            },
-        }
+            axisBorder: { show: false },
+            axisTicks: { show: false },
+        },
+        yaxis: { show: false },
+        fill: { opacity: 1 },
+    }
+};
 
-        if (document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
-            const chart = new ApexCharts(document.getElementById("column-chart"), options2);
-            chart.render();
-        }
-
-        const getChartOptions = () => {
-            return {
-                series: [{!! $overall_assignments['resolved'] !!}, {!! $overall_assignments['pending'] !!}, {!! $overall_assignments['unresolved'] !!}],
-                colors: ["#1C64F2", "#FDBA8C", "#E74694"],
-                chart: {
-                    height: 320,
-                    width: "100%",
-                    type: "donut",
-                },
-                stroke: {
-                    colors: ["transparent"],
-                    lineCap: "",
-                },
-                plotOptions: {
-                    pie: {
-                        donut: {
-                            labels: {
-                                show: true,
-                                name: {
-                                    show: true,
-                                    fontFamily: "Inter, sans-serif",
-                                    offsetY: 20,
-                                },
-                                total: {
-                                    showAlways: true,
-                                    show: true,
-                                    label: "Assignments",
-                                    fontFamily: "Inter, sans-serif",
-                                    formatter: function(w) {
-                                        const sum = w.globals.seriesTotals.reduce((a, b) => {
-                                            return a + b
-                                        }, 0)
-                                        return sum
-                                    },
-                                },
-                                value: {
-                                    show: true,
-                                    fontFamily: "Inter, sans-serif",
-                                    offsetY: -20,
-                                    formatter: function(value) {
-                                        return value
-                                    },
-                                },
-                            },
-                            size: "80%",
+const getDonutChartOptions = (resolved, pending, unresolved) => ({
+    series: [resolved, pending, unresolved],
+    colors: ["#1C64F2", "#FDBA8C", "#E74694"],
+    chart: { height: 320, width: "100%", type: "donut" },
+    stroke: { colors: ["transparent"], lineCap: "" },
+    plotOptions: {
+        pie: {
+            donut: {
+                labels: {
+                    show: true,
+                    name: { show: true, fontFamily: "Inter, sans-serif", offsetY: 20 },
+                    total: {
+                        showAlways: true,
+                        show: true,
+                        label: "Assignments",
+                        fontFamily: "Inter, sans-serif",
+                        formatter: function(w) {
+                            const sum = w.globals.seriesTotals.reduce((a, b) => { return a + b }, 0)
+                            return sum
                         },
                     },
-                },
-                grid: {
-                    padding: {
-                        top: -2,
-                    },
-                },
-                labels: ["Resolved", "Pending", "Unresolved"],
-                dataLabels: {
-                    enabled: false,
-                },
-                legend: {
-                    position: "bottom",
-                    fontFamily: "Inter, sans-serif",
-                },
-                yaxis: {
-                    labels: {
+                    value: {
+                        show: true,
+                        fontFamily: "Inter, sans-serif",
+                        offsetY: -20,
                         formatter: function(value) {
                             return value
                         },
                     },
                 },
-                xaxis: {
-                    labels: {
-                        formatter: function(value) {
-                            return value
-                        },
-                    },
-                    axisTicks: {
-                        show: false,
-                    },
-                    axisBorder: {
-                        show: false,
-                    },
-                },
-            }
-        }
+                size: "80%",
+            },
+        },
+    },
+    grid: {
+        padding: {
+            top: -2,
+        },
+    },
+    labels: ["Resolved", "Pending", "Unresolved"],
+    dataLabels: {
+        enabled: false,
+    },
+    legend: {
+        position: "bottom",
+        fontFamily: "Inter, sans-serif",
+    },
+    yaxis: {
+        labels: {
+            formatter: function(value) {
+                return value
+            },
+        },
+    },
+    xaxis: {
+        labels: {
+            formatter: function(value) {
+                return value
+            },
+        },
+        axisTicks: {
+            show: false,
+        },
+        axisBorder: {
+            show: false,
+        },
+    },
+});
 
-        if (document.getElementById("donut-chart") && typeof ApexCharts !== 'undefined') {
-            const chart = new ApexCharts(document.getElementById("donut-chart"), getChartOptions());
-            chart.render();
-        }
-    </script>
+if (document.getElementById("column-chart") && typeof ApexCharts !== 'undefined') {
+    const assignmentData = @json($range_assignments['assignments']);
+    const barChart = new ApexCharts(document.getElementById("column-chart"), getBarChartOptions(assignmentData));
+    barChart.render();
+}
+
+if (document.getElementById("donut-chart") && typeof ApexCharts !== 'undefined') {
+    const resolved = @json($overall_assignments['resolved']);
+    const pending = @json($overall_assignments['pending']);
+    const unresolved = @json($overall_assignments['unresolved']);
+    const donutChart = new ApexCharts(document.getElementById("donut-chart"), getDonutChartOptions(resolved, pending, unresolved));
+    donutChart.render();
+}
+</script>
 @endsection
