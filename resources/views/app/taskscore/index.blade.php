@@ -277,7 +277,7 @@
                                 </td>
                                 <td class="whitespace-nowrap px-4 text-xs" scope="col">
                                     <span class="text-base font-semibold text-gray-900 dark:text-white">
-                                        {{ $assignee->unresolvedAssignments->count() + $assignee->pendingAssignments->count() + $assignee->resolvedAssignments->count() }}
+                                        {{ $assignee->assignments->count() }}
                                     </span>
                                     Assignments
                                 </td>
