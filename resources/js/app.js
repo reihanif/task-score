@@ -494,19 +494,51 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
         };
 
+        let lengthMenuOption = tableElement.dataset.lengthMenu
+        ? tableElement.dataset.lengthMenu.split(',').map(item => {
+            item = item.trim();
+            return item === 'All' ? { label: 'All', value: -1 } : parseInt(item);
+        })
+        : [10, 25, 50, { label: 'All', value: -1 }]
+
+        let lengthChangeOption = true
+        if(Boolean(tableElement.dataset.lengthChange)) {
+            lengthChangeOption = (/true/i).test(tableElement.dataset.lengthChange);
+        }
+
+        let bottomStartOption = {
+            pageLength: {
+                text: "Rows per page _MENU_",
+                menu: lengthMenuOption
+            },
+            info: { text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>' }
+        }
+
+        let bottomEndOption = {
+            paging: {
+                type: 'simple_numbers'
+            }
+        }
+
+        if(Boolean(tableElement.dataset.layoutBottom)) {
+            if (!(/true/i).test(tableElement.dataset.layoutBottom)) {
+                bottomStartOption = {}
+                bottomEndOption = {}
+            }
+        }
+
         const table = new DataTable(selector, {
             stateSave: true,
             stateSaveCallback: saveState,
             stateLoadCallback: loadState,
             responsive: true,
-            pagingType: 'simple_numbers',
+            lengthChange: lengthChangeOption,
+            pageLength: tableElement.dataset.pageLength,
             layout: {
                 topStart: {},
                 topEnd: {},
-                bottomStart: {
-                    pageLength: { text: "Rows per page _MENU_" },
-                    info: { text: '<span class="font-semibold dark:text-white"> _START_ - _END_ </span> of <span class="font-semibold dark:text-white">_TOTAL_</span>' }
-                }
+                bottomStart: bottomStartOption,
+                bottomEnd: bottomEndOption
             },
             language: {
                 zeroRecords: `<object class="mx-auto w-full sm:h-64 sm:w-64 sm:p-0" data="${window.assetUrl}assets/illustrations/no-data-animate.svg"></object><div class="mb-8">No matching records found</div>`,

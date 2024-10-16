@@ -17,18 +17,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::orderBy('name', 'asc')->get()->map(function ($department) {
-            // Map the tasks from the department's positions and users
-            $tasks = $department->positions->flatMap(function ($position) {
-                return $position->users->flatMap(function ($user) {
-                    return $user->tasks;
-                });
-            });
-
-            // Set the tasks count for each department
-            $department->tasks_count = $tasks->count();
-            return $department;
-        });
+        $departments = Department::orderBy('name', 'asc')->get();
         $positions = Position::orderBy('level')->get();
 
         return view('app.departments.index', [
@@ -83,19 +72,44 @@ class DepartmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $department = Department::findOrFail($id);
         $positions = Position::orderBy('level')->get();
-        $users = collect();
-        foreach ($department->positions as $position) {
-            foreach ($position->users as $user) {
-                $users->push($user);
+
+        if ($request->daterange) {
+            $dates = explode(' - ', $request->daterange);
+
+            $startDate = Carbon::parse($dates[0])->setTime(00, 00, 00);
+            $endDate = Carbon::parse($dates[1])->setTime(23, 59, 59);
+        } else {
+            $startDate = Carbon::now()->startOfMonth()->setTime(22, 32, 5);
+            $endDate = Carbon::now()->endOfMonth()->setTime(23, 59, 59);
+        }
+
+        $users_has_tasks_count = $department->users->filter(function ($user) use ($startDate, $endDate) {
+            return $user->tasks()
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->exists();
+        })->count();
+
+        $assignments_radial = [
+            'data' => $department->users_count ? $users_has_tasks_count / $department->users_count * 100 : 0,
+            'total_users' => $department->users_count,
+            'total_users_has_tasks' => $users_has_tasks_count,
+            'start' => $startDate,
+            'end' => $endDate
+        ];
+
+        $assignments_treemap = collect();
+        foreach ($department->users as $user) {
+            if ($user->assignments->count() > 0) {
+                $assignments_treemap->push(['x' => $user->name, 'y' => $user->assignments->count()]);
             }
         }
-        $users = $users->sortBy(['name', 'asc']);
+        $assignments_treemap = $assignments_treemap->toArray();
 
-        return view('app.departments.show', compact('department','users', 'positions'));
+        return view('app.departments.show', compact('department', 'positions', 'assignments_radial', 'assignments_treemap'));
     }
 
     /**

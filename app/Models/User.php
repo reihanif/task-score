@@ -260,6 +260,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if the user has assignment.
+     */
+    public function hasTasks()
+    {
+        return $this->tasks()->exists();
+    }
+
+    /**
      * Check if the user is an assignee of specific assignment.
      */
     public function isAssignee($assignment_id)

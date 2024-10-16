@@ -50,10 +50,6 @@
                         </x-table-head>
                         <x-table-head class="whitespace-nowrap px-3 py-3"
                             scope="col">
-                            Total Assignments
-                        </x-table-head>
-                        <x-table-head class="whitespace-nowrap px-3 py-3"
-                            scope="col">
                             Created at
                         </x-table-head>
                         <x-table-head class="whitespace-nowrap px-3 py-3"
@@ -79,9 +75,6 @@
                                 scope="row">
                                 {{ $department->name }}
                             </th>
-                            <td class="whitespace-nowrap px-3 py-4">
-                                {{ $department->tasks_count }}
-                            </td>
                             <td class="whitespace-nowrap px-3 py-4">
                                 {{ $department->created_at->format('d M Y, H:i') }}
                             </td>
