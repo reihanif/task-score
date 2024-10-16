@@ -3,7 +3,7 @@
 @section('title', $department->name)
 
 @section('content')
-    <div class="lg:grid lg:grid-cols-12 lg:gap-4">
+    <div class="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-12 lg:gap-4">
         <div class="col-span-full flex-row items-center justify-between space-y-3 sm:flex sm:space-x-4 sm:space-y-0">
             <div>
                 <h5 class="mr-3 font-semibold dark:text-white">{{ $department->name }} Department</h5>
