@@ -381,10 +381,10 @@
         }
         else {
             const secondsAfterDue = Math.abs(secondsBeforeDue);
-            if (secondsAfterDue >= 21600) {
+            if (secondsAfterDue >= 259200) {
                 score = 60;
             } else {
-                score = 100 - ((secondsAfterDue * 40) / 21600);
+                score = 100 - ((secondsAfterDue * 40) / 259200);
             }
         }
 
