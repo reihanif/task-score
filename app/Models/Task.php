@@ -284,12 +284,12 @@ class Task extends Model
         // Jika resolved_at melebihi due
         else {
             $seconds_after_due = abs($seconds_before_due); // Detik setelah due
-            // Jika lebih dari 6 jam (21600 detik) setelah due, score minimal adalah 60
-            if ($seconds_after_due >= 21600) {
+            // Jika lebih dari 3 hari (259200 detik) setelah due, score minimal adalah 60
+            if ($seconds_after_due >= 259200) {
                 $score = 60;
             } else {
                 // Hitung penurunan score secara linear dari 100 hingga 60
-                $score = 100 - (($seconds_after_due * 40) / 21600);
+                $score = 100 - (($seconds_after_due * 40) / 259200);
             }
         }
 
