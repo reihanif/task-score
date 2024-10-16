@@ -94,7 +94,7 @@ class DepartmentController extends Controller
         })->count();
 
         $assignments_radial = [
-            'data' => $department->users_count ? $users_has_tasks_count / $department->users_count * 100 : 0,
+            'data' => $department->users_count ? number_format($users_has_tasks_count / $department->users_count * 100, 2, '.', '') : 0,
             'total_users' => $department->users_count,
             'total_users_has_tasks' => $users_has_tasks_count,
             'start' => $startDate,
