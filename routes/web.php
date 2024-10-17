@@ -71,6 +71,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['middleware' => 'involved'], function () {
             Route::get('/assignment/{assignment}', [AssignmentController::class, 'show'])->name('assignment.show');
             Route::put('/{assignment}/update-assignment', [AssignmentController::class, 'update'])->name('assignment.update');
+            Route::post('/{assignment}/upload-attachment', [AssignmentController::class, 'addAttachment'])->name('assignment.store-attachment');
+            Route::delete('/{assignment}/delete-attachment', [AssignmentController::class, 'deleteAttachment'])->name('assignment.delete-attachment');
             Route::delete('/assignment/{assignment}/delete', [AssignmentController::class, 'delete'])->name('assignment.delete');
             Route::put('/{assignment}/close', [AssignmentController::class, 'close'])->name('assignment.close');
             Route::put('/{assignment}/open', [AssignmentController::class, 'open'])->name('assignment.open');

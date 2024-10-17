@@ -350,6 +350,43 @@ class AssignmentController extends Controller
         return redirect()->back()->with('success', $submission->task->assignment->subject . ' has been resolved');
     }
 
+    public function addAttachment(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $assignment = Assignment::findOrFail($id);
+            $this->handleAttachments($request->file('attachments'), $assignment);
+
+            // Execute database insertations
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->with('errors', 'Upload attachment failed');
+        }
+
+        return redirect()->back()->with('success', 'Attachment uploaded successfully');
+    }
+
+    public function deleteAttachment(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $this->fileService->deleteFile($request->file_id);
+
+            // Execute database data remove
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            // Handle the error appropriately
+            return redirect()->back()->withErrors('Delete attachment failed');
+        }
+
+        return redirect()->back()->with('success', 'Attachment has been deleted');
+    }
+
     /**
      * Close the specified assignment.
      *

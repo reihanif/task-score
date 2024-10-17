@@ -21,6 +21,10 @@ class Involved
             $allowAccess = true;
         }
 
+        if ($request->user()->isCreator($request->route('assignment'))) {
+            $allowAccess = true;
+        }
+
         if ($request->user()->isTaskAssignee($request->task)) {
             $allowAccess = true;
         }
