@@ -66,7 +66,7 @@
                     <div>
                         <label for="select-user" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Overview</label>
                         <select id="select-user" name="user" x-on:change="submit">
-                            <option value="{{ $selected_user->id }}">{{ $selected_user->name }}</option>
+                            <option value="{{ $selected_user->id }}" selected>{{ $selected_user->name }}</option>
                             @if ($selected_user->id !== auth()->id())
                                 <option value="{{ auth()->id() }}">{{ auth()->user()->name }}</option>
                             @endif
