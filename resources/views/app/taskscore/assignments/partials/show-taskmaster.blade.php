@@ -1,6 +1,6 @@
 @foreach ($assignment->tasks as $task)
     <div class="h-auto rounded-lg border border-gray-200 p-4 text-gray-800 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-         x-data="{ expanded: {{ auth()->user()->isTaskAssignee($task->id) ||auth()->user()->isTaskmaster($assignment->id) }} }">
+         x-data="{ expanded: {{ auth()->user()->isTaskAssignee($task->id) || auth()->user()->isTaskmaster($assignment->id) || auth()->user()->isCreator($assignment->id) }} }">
         <div class="space-y-3">
             <dl>
                 <dt>

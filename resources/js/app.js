@@ -268,6 +268,7 @@ function initializeTomSelects() {
         );
         const selectedValues = Array.from(el.options).filter(option => option.selected).map(option => option.value);
         const sortField = hasDataOrder ? "order" : "text";
+
         const config = {
             create: isCreatable,
             sortField: {
@@ -278,9 +279,9 @@ function initializeTomSelects() {
                 this.setTextboxValue('');
             },
             onInitialize: function() {
-                // setTimeout(() => {
-                    this.setValue(selectedValues);
-                // }, 100);
+                setTimeout(() => {
+                    this.setValue(selectedValues, true);
+                }, 0);
             }
         };
 
