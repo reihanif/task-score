@@ -199,11 +199,11 @@
                                     </dl>
                                     <dl class="flex items-center justify-between">
                                         <dt class="text-sm font-normal text-gray-500 dark:text-gray-400">
-                                            Total users that has assignments:
+                                            Total contributed users:
                                         </dt>
                                         <dd
                                             class="inline-flex items-center rounded-md bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800 dark:bg-gray-600 dark:text-gray-300">
-                                            {{ $assignments_radial['total_users_has_tasks'] }}
+                                            {{ $assignments_radial['total_users_contributed'] }}
                                         </dd>
                                     </dl>
                                 </div>

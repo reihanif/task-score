@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\File;
-use App\Models\Assignment;
+use Illuminate\Support\Facades\Storage;
 
 class FileService
 {
@@ -25,5 +25,16 @@ class FileService
         $file->fileable_id = $fileable['fileable_id'];
         $file->fileable_type = $fileable['fileable_type'];
         $file->save();
+
+        return $file;
+    }
+
+    public function deleteFile($id)
+    {
+        $file = File::find($id);
+        Storage::delete($file->path);
+        $file->delete();
+
+        return $file;
     }
 }

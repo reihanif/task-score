@@ -87,16 +87,19 @@ class DepartmentController extends Controller
             $endDate = Carbon::now()->endOfMonth()->setTime(23, 59, 59);
         }
 
-        $users_has_tasks_count = $department->users->filter(function ($user) use ($startDate, $endDate) {
+        $users_contributed_count = $department->users->filter(function ($user) use ($startDate, $endDate) {
             return $user->tasks()
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->exists()
+                || $user->created_assignments()
                 ->whereBetween('created_at', [$startDate, $endDate])
                 ->exists();
         })->count();
 
         $assignments_radial = [
-            'data' => $department->users_count ? number_format($users_has_tasks_count / $department->users_count * 100, 2, '.', '') : 0,
+            'data' => $department->users_count ? number_format($users_contributed_count / $department->users_count * 100, 2, '.', '') : 0,
             'total_users' => $department->users_count,
-            'total_users_has_tasks' => $users_has_tasks_count,
+            'total_users_contributed' => $users_contributed_count,
             'start' => $startDate,
             'end' => $endDate
         ];
@@ -104,7 +107,7 @@ class DepartmentController extends Controller
         $assignments_treemap = collect();
         foreach ($department->users as $user) {
             if ($user->assignments->count() > 0) {
-                $assignments_treemap->push(['x' => $user->name, 'y' => $user->assignments->count()]);
+                $assignments_treemap->push(['x' => $user->name, 'y' => $user->assignments()->whereBetween('assignments.created_at', [$startDate, $endDate])->count()]);
             }
         }
         $assignments_treemap = $assignments_treemap->toArray();
