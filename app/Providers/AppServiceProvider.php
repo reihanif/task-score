@@ -22,7 +22,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Blade::directive('taskmaster', function ($expression) {
-            return "<?php if (auth()->user()->isTaskmaster(Route::current()->parameters()['assignment']) || auth()->user()->isCreator(Route::current()->parameters()['assignment']) && !auth()->user()->isAssignee(Route::current()->parameters()['assignment'])): ?>";
+            $condition = "auth()->user()->isTaskmaster(Route::current()->parameters()['assignment'])";
+
+            if ($expression) {
+                $expression = trim($expression, "'");
+                $condition = "$condition || ($expression) ";
+            }
+
+            return "<?php if ($condition): ?>";
+        });
+
+
+        Blade::directive('old_taskmaster', function ($expression) {
+            return "<?php if (auth()->user()->isTaskmaster(Route::current()->parameters()['assignment']) || (auth()->user()->isCreator(Route::current()->parameters()['assignment']) && !auth()->user()->isAssignee(Route::current()->parameters()['assignment']))): ?>";
         });
 
         Blade::directive('endtaskmaster', function ($expression) {
