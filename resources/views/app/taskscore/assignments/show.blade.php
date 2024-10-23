@@ -284,8 +284,8 @@
                 </div>
             </div>
 
-            <!-- Assignment tasks as taskmaster -->
-            @taskmaster
+            <!-- Assignment tasks as taskmaster and creator that is not assignee -->
+            @taskmaster('auth()->user()->isCreator(Route::current()->parameters()['assignment']) && !auth()->user()->isAssignee(Route::current()->parameters()['assignment'])')
                 @include('app.taskscore.assignments.partials.show-taskmaster', $assignment)
             @endtaskmaster
 
