@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use App\Models\RecurrencePattern;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HierarchyController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\RecurrenceController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\TimeExtensionController;
@@ -76,6 +78,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::delete('/assignment/{assignment}/delete', [AssignmentController::class, 'delete'])->name('assignment.delete');
             Route::put('/{assignment}/close', [AssignmentController::class, 'close'])->name('assignment.close');
             Route::put('/{assignment}/open', [AssignmentController::class, 'open'])->name('assignment.open');
+            Route::post('/{assignment}/store-recurrence', [RecurrenceController::class, 'store'])->name('assignment.recurrence.store');
+            Route::delete('/{assignment}/{recurrence}/delete', [RecurrenceController::class, 'destroy'])->name('assignment.recurrence.delete');
         });
 
         Route::post('/{task}/resolve', [AssignmentController::class, 'resolve'])->name('assignment.resolve');

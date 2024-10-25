@@ -148,14 +148,41 @@
                             {{ $assignment->type }}
                         </p>
                     </div>
-                    @if ($assignment->is_recurring)
-                        <div class="text-gray-500 dark:text-gray-400">
-                            <p class="font-medium text-gray-600 dark:text-gray-300">Recurring Pattern</p>
-                            <p>
-                                {{ $assignment->recurrence?->pattern }}
-                            </p>
-                        </div>
-                    @endif
+                    <div class="text-gray-500 dark:text-gray-400">
+                        <p class="font-medium text-gray-600 dark:text-gray-300">Recurring</p>
+                        @if ($assignment->is_recurring)
+                            <div class="mt-1.5 rounded-lg bg-gray-50 p-3 dark:bg-gray-700">
+                                <div class="space-y-1 border-gray-200 dark:border-gray-600">
+                                    <dl class="flex items-center justify-between">
+                                        <dt class="inline-flex items-center rounded-md bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-800 dark:bg-blue-700 dark:text-blue-50">
+                                            {{ $assignment->recurrence?->pattern }}
+                                        </dt>
+                                    </dl>
+                                </div>
+                                @creator
+                                    <div class="flex gap-3 mt-2 border-t pt-2">
+                                        <dl class="flex flex-col items-center justify-center rounded-lg">
+                                            <button type="button" data-modal-target="unset-recurring-modal-{{ $assignment->id }}" data-modal-toggle="unset-recurring-modal-{{ $assignment->id }}" class="text-xs font-medium text-red-600 dark:text-red-500 hover:underline">
+                                                Remove Recurrence
+                                            </button>
+                                        </dl>
+                                    </div>
+
+                                    @include('app.taskscore.assignments.modals.unset-recurring')
+                                @endcreator
+                            </div>
+                        @else
+                            @creator
+                                <button type="button" data-modal-target="set-recurring-modal-{{ $assignment->id }}" data-modal-toggle="set-recurring-modal-{{ $assignment->id }}" class="text-xs font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                    Set as recurring
+                                </button>
+
+                                @include('app.taskscore.assignments.modals.set-recurring')
+                            @else
+                                <p>-</p>
+                            @endcreator
+                        @endif
+                    </div>
                     <div class="text-gray-500 dark:text-gray-400">
                         <p class="font-medium text-gray-600 dark:text-gray-300">Created at</p>
                         <p>
