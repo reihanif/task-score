@@ -4,8 +4,12 @@
     aria-hidden="true"
     tabindex="-1">
     <div @class([
-        'relative max-h-full w-full p-4',
-        'max-w-3xl' => ! $attributes->has('modal-fullscreen'),
+        'relative max-h-full w-full p-4 max-w-3xl',
+        'max-w-sm' => $attributes->has('modal-sm'),
+        'max-w-md' => $attributes->has('modal-md'),
+        'max-w-lg' => $attributes->has('modal-lg'),
+        'max-w-xl' => $attributes->has('modal-xl'),
+        'max-w-2xl' => $attributes->has('modal-2xl'),
         'max-w-7xl' => $attributes->has('modal-fullscreen'),
     ])>
         <!-- Modal content -->
