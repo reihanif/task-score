@@ -128,4 +128,17 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect()->route('auth.index');
     }
+
+    public function redirectToCodeIgniterApp()
+    {
+        // Get the authenticated user
+        $user = Auth::user();
+
+        // Generate a Sanctum token
+        $token = $user->createToken('CodeIgniterAccessToken')->plainTextToken;
+
+        // Redirect to the CodeIgniter app with the token in the URL
+        return redirect("http://10.251.236.19/remind_me/index.php/web/autologin?token=$token");
+    }
+
 }
