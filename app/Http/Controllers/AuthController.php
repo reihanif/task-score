@@ -129,16 +129,19 @@ class AuthController extends Controller
         return redirect()->route('auth.index');
     }
 
-    public function redirectToCodeIgniterApp()
+    public function authRemindme()
     {
         // Get the authenticated user
         $user = Auth::user();
 
+        /** @var User $user */
         // Generate a Sanctum token
         $token = $user->createToken('CodeIgniterAccessToken')->plainTextToken;
 
-        // Redirect to the CodeIgniter app with the token in the URL
-        return redirect("http://10.251.236.19/remind_me/index.php/web/autologin?token=$token");
-    }
+        // Capture the current URL in Laravel and URL-encode it
+        $currentUrl = urlencode(url('/api/user'));
 
+        // Redirect to the CodeIgniter app with both the token and current URL as query parameters
+        return redirect("http://10.251.236.19/remind_me/index.php/web/autologin?token=$token&url=$currentUrl");
+    }
 }

@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::get('/', [DashboardController::class, 'index'])->name('homepage');
 
-    Route::get('/redirect-to-codeigniter', [AuthController::class, 'redirectToCodeIgniterApp'])->name('redirect');
+    Route::get('/redirect-to-remindme', [AuthController::class, 'authRemindme'])->name('remindme');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
