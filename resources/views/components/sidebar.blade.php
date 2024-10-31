@@ -40,6 +40,12 @@
                         <x-icons.diagram />
                     </x-sidebar-menu>
                 @endif
+
+                <x-sidebar-menu data-menu-name="Remindme"
+                                data-route-name="remindme.page"
+                                data-menu-title="Remindme App">
+                    <x-icons.diagram />
+                </x-sidebar-menu>
             @endif
         </ul>
 

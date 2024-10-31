@@ -54,6 +54,9 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('homepage');
 
     Route::get('/redirect-to-remindme', [AuthController::class, 'authRemindme'])->name('remindme');
+    Route::get('/remindme', function (Request $request) {
+        return view('app.remindme.index');
+    })->name('remindme.page');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications/mark-as-read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
